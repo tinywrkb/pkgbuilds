@@ -1,0 +1,24 @@
+# man bootup
+# man dracut.bootup
+# man systemd.mount
+
+[Unit]
+Description=sysroot-etc.mount
+DefaultDependencies=no
+After=sysroot.mount dracut-mount.service uosys-sysroot-mount.service
+Before=shutdown.target
+# cannot be before initrd-parse-etc.service as dracut-mount.service is after it
+ConditionPathIsDirectory=/sysroot/etc
+# the directory condition doesn't seem to enough
+#  "Mount path /sysroot/etc is not canonical (contains a symlink)."
+ConditionPathIsSymbolicLink=!/sysroot/etc
+ConditionPathIsDirectory=/sysroot/usr/etc
+ConditionPathExists=/sysroot/usr/etc/shadow
+
+[Mount]
+What=/sysroot/usr/etc
+Where=/sysroot/etc
+Options=bind
+
+[Install]
+WantedBy=initrd-fs.target

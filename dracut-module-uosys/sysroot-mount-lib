@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# TODO: uuid: find based on parition label, priority: first match, non removable media, ...
+# TODO: uuid: support caching, maybe load as a variable to systemd environment
+# TODO: uuid: hardcoded & fallback
+
+# old hacks
+#if [ "$islive" -eq 1 ]; then
+#  fsuuid=${fsuuid:-d95e8e7d-3f15-4e7b-a17c-a0a9075eea5d}
+#else
+#  fsuuid=${fsuuid:-34a329fa-8020-4139-9bd5-0d509a3c5ddd}
+#fi
+
+getarg() {
+  cmdline=$(cat /proc/cmdline)
+  for line in $cmdline; do
+    if [ $line = $1 ]; then
+      echo 1
+      return 0
+    fi
+    if [ ${line%%=*} = $1 ]; then
+      echo ${line#*=}
+      return 0
+    fi
+  done
+  return 1
+}
+
+getuuid() {
+  val=$(getarg rd.uosys.osuuid)
+  if [ $? -eq 0 ] && [ "$val" != 1 ]; then
+    echo $val
+    return 0
+  fi
+  val=$(getarg root)
+  if [ $? -eq 0 ]; then
+    [ "$val" = 1 ] && return 1
+    [ "${val#UUID=}" = "$val" ] && return 1
+    echo ${val#UUID=}
+    return 0
+  fi
+  return 1
+}

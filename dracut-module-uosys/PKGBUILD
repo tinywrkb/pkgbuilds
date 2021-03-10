@@ -1,0 +1,46 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# TODO: move uuid function to its own service that adds it to the system environment as a variable
+
+pkgname=dracut-module-uosys
+pkgver=2021.03.08.1
+pkgrel=1
+pkgdesc='dracut uosys mount module'
+url=''
+arch=('any')
+license=('GPL')
+depends=('dracut')
+source=('module-setup.sh'
+        'sysroot-etc.mount'
+         run-os-mount{,.service}
+         sysroot-efi-mount{,.service}
+         sysroot-mount{,-lib,.service})
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP' 'SKIP'
+            'SKIP' 'SKIP'
+            'SKIP' 'SKIP' 'SKIP')
+
+package() {
+  install -Dm644 -t ${pkgdir}/usr/lib/dracut/modules.d/95uosys/ \
+    module-setup.sh
+
+  install -Dm755 -t ${pkgdir}/usr/lib/os/ \
+    run-os-mount \
+    sysroot-efi-mount \
+    sysroot-mount{,-lib}
+
+  install -Dm644 -t ${pkgdir}/usr/lib/systemd/system/ \
+    run-os-mount.service \
+    sysroot-efi-mount.service \
+    sysroot-etc.mount \
+    sysroot-mount.service
+
+  install -dm755 ${pkgdir}/usr/lib/systemd/system/initrd-fs.target.wants
+  ln -s -t ${pkgdir}/usr/lib/systemd/system/initrd-fs.target.wants/ \
+    ../run-os-mount.service \
+    ../sysroot-efi-mount.service \
+    ../sysroot-etc.mount \
+    ../sysroot-mount.service
+}
+
+# vim: et sw=2 ts=2

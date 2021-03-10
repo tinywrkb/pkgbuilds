@@ -1,0 +1,56 @@
+#!/bin/bash
+
+source /usr/lib/os/sysroot-mount-lib
+
+unset uuid
+
+getefiuuid(){
+  val=$(getarg rd.uosys.efiuuid)
+  if [ $? -eq 0 ] && [ "$val" != 1 ]; then
+    echo $val
+    return 0
+  fi
+  return 1
+}
+
+# TODO: question: is bootloader logic for finding efiuuid should be trusted? why is it on the 1st try?
+# TODO: maybe it's possible to have multiple conditions in mount to select same partuuid as system with the efi label
+# TODO: hardcoded live media label/uuid?
+
+uuid=$(getefiuuid)
+if [ $? -eq 0 ] && [ "$uuid" != 1 ]; then
+  mount -t vfat -o rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,utf8,errors=remount-ro UUID=$uuid /sysroot/efi
+  [ $? -eq 0 ] && exit 0
+fi
+
+# try to guess efi partition path based on the mounted system path, this always should work
+unset mode
+mode=$(getarg rd.uosys.mode)
+
+#if ab boot mode
+if [ "$mode" = ab ]; then
+  syspath=$(findmnt --noheading --output SOURCE /sysroot/usr)
+# always assume it's legacy mode
+else
+  syspath=$(findmnt --noheading --output SOURCE /sysroot)
+fi
+
+if [ -n "$syspath" ]; then
+  # drop filessystem specific path, like btrfs subvolume
+  syspath=${syspath%[*}
+  efipath=${syspath%2}1
+
+  mount -t vfat -o rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,utf8,errors=remount-ro $efipath /sysroot/efi
+  [ $? -eq 0 ] && exit 0
+fi
+
+
+# mount efi according to partition label
+# this probably will never be reached unless something went terribly wrong when mounting the system
+#  or when it doesn't follow the standard partition table
+# creates a conflict when multiple drives, e.g. system installed on ssd and live media on usb
+mount -t vfat -o rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,utf8,errors=remount-ro LABEL=efiboot /sysroot/efi
+[ $? -eq 0 ] && exit 0
+
+echo 'Cannot find filesystem UUID: efi partition was not mounted on /efi'
+exit 1

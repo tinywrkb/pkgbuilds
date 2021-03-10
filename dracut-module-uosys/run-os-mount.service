@@ -1,0 +1,18 @@
+# man bootup
+# man dracut.bootup
+
+[Unit]
+Description=run-os-mount.service
+DefaultDependencies=no
+After=sysroot.mount sysroot-mount.service
+ConditionKernelCommandLine=!rd.uosys.mode=virtiofs_ab
+ConditionKernelCommandLine=!rd.uosys.mode=virtiofs_legacy
+ConditionKernelCommandLine=!rd.uosys.mode=virtiofs_system
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/os/run-os-mount
+RemainAfterExit=yes
+
+[Install]
+WantedBy=initrd-fs.target

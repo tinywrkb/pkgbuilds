@@ -1,0 +1,22 @@
+# man bootup
+# man dracut.bootup
+
+[Unit]
+Description=sysroot-efi-mount.service
+DefaultDependencies=no
+After=sysroot.mount sysroot-mount.service
+ConditionPathIsDirectory=/sysroot/efi
+# in case already mounted
+# TODO: test this actually works
+#ConditionPathIsMountPoint=!/sysroot/efi
+ConditionKernelCommandLine=!rd.uosys.mode=virtiofs_ab
+ConditionKernelCommandLine=!rd.uosys.mode=virtiofs_legacy
+ConditionKernelCommandLine=!rd.uosys.mode=virtiofs_system
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/os/sysroot-efi-mount
+RemainAfterExit=yes
+
+[Install]
+WantedBy=initrd-fs.target

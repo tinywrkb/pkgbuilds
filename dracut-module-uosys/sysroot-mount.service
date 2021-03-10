@@ -1,0 +1,19 @@
+# man bootup
+# man dracut.bootup
+
+[Unit]
+Description=sysroot-mount
+DefaultDependencies=no
+After=sysroot.mount initrd-root-fs.target
+Before=dracut-mount.service initrd-switch-root.service
+#Before=initrd-parse-etc.service
+ConditionPathIsDirectory=/sysroot
+ConditionPathExists=!/sysroot/usr
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/os/sysroot-mount
+RemainAfterExit=yes
+
+[Install]
+WantedBy=initrd-fs.target

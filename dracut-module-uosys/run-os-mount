@@ -1,0 +1,57 @@
+#!/bin/bash
+
+source /usr/lib/os/sysroot-mount-lib
+
+die() {
+  [ $# -gt 0 ] && echo "$@"
+  exit 1
+}
+
+early_exit() {
+  [ $# -gt 0 ] && echo "$@"
+  exit 0
+}
+
+unset uuid
+
+uuid=$(getuuid) || \
+  die 'Cannot find filesystem UUID: os filesystem was not mounted on /run/os'
+
+mkdir -p /run/os || \
+  die 'Failed creating /run/os'
+
+mount \
+  -t btrfs \
+  -o rw,noatime,ssd,space_cache,compress-force=zstd,subvolid=5,subvol=/ \
+  UUID=$uuid \
+  /run/os || \
+    die 'Failed mounting os filesystem on /run/os'
+
+# create
+[ -d /run/os/store/live/current ] || \
+  mkdir -p /run/os/store/live/current || \
+  early_exit 'Cannot create /run/os/store/live/current'
+mount -t tmpfs tmpfs /run/os/store/live/current || \
+  early_exit 'Cannot mount tmpfs on /run/os/store/live/current'
+
+val=$(getarg rd.uosys.mode) || \
+  exit_early 'Cannot find uosys mode'
+
+if [ "$val" = 'ab' ]; then
+  val=$(getarg rd.uosys.mode.active) || \
+    exit_early 'Cannot find uosys active mode'
+  if [ "$val" = 'a' -o "$val" = 'b' ]; then
+    echo "Found uosys mode ${val}, creating active mode symlinks"
+    # TODO: maybe drop this now that boot is also in usr/lib/boot
+    ln -s /run/os/boot/${val} /run/os/store/live/current/boot || \
+      echo 'Failed creating active mode symlink at /run/os/store/live/current/boot'
+    ln -s /run/os/system/${val} /run/os/store/live/current/system || \
+      echo 'Failed creating active mode symlink at /run/os/store/live/current/system'
+  else
+    exit_early "Wrong value for uosys active mode: ${val}"
+  fi
+else
+  exit_early "Found uosys mode ${val}, not creating active mode symlinks"
+fi
+
+exit 0
