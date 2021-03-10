@@ -1,0 +1,36 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+pkgname=uosys-bootloader
+pkgver=2021.02.23.1
+pkgrel=1
+pkgdesc='uosys bootloader'
+arch=('x86_64')
+license=('GPL')
+url=''
+makedepends=('grub')
+source=('grub.cfg')
+sha256sums=('SKIP')
+
+prepare() {
+  mkdir -p build
+  # grub-mkstandalone fails following symlinks so we need to copy grub.cfg
+  cp grub.cfg build/
+}
+build() {
+  grub-mkstandalone \
+    --locales=uk \
+    --compress=gz \
+    -O x86_64-efi \
+    -o build/grub-standalone-x86_64.efi \
+    'boot/grub/grub.cfg=build/grub.cfg'
+
+  grub-editenv build/env create
+}
+
+package() {
+  cd "$pkgdir"
+  install -Dm644 -t usr/lib/os/bootloader/ \
+  "${srcdir}"/build/{env,grub.cfg,grub-standalone-x86_64.efi}
+}
+
+# vim:set ts=2 sw=2 et:
