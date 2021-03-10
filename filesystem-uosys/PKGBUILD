@@ -1,0 +1,186 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Contributor: Sébastien Luttringer
+# Contributor: Tom Gundersen <teg@jklm.no>
+
+# TODO: report bug: timedatectl doesn't follow /etc/adjtime symlink
+# TODO: report bug: timedatectl doesn't follow recursive /etc/localtime symlink
+# TODO: report bug: homectl create doesn't follow skel symlink
+# TODO: maybe install a default .updated to usr/etc so the systemd-update-done.service won't fail,
+#        also needs setting timestamp of /usr in the initramfs
+#        current workaround is to avoid the service by using a kernel parameter
+
+pkgname=filesystem-uosys
+pkgver=2021.02.22.1
+pkgrel=1
+pkgdesc='Base Linux distribution files'
+arch=('x86_64')
+license=('GPL')
+url=''
+provides=('filesystem')
+conflicts=('filesystem')
+# removed: 'etc/crypttab' 'etc/fstab' 'etc/host.conf' 'etc/hosts'
+#          'etc/issue' 'etc/ld.so.conf' 'etc/motd' 'etc/nsswitch.conf'
+#          'etc/profile'
+
+backup=('etc/shells' 'etc/group' 'etc/gshadow' 'etc/passwd' 'etc/shadow')
+depends=('iana-etc')
+source=(arch-release issue motd os-release
+        archlinux{,-logo}.{png,svg}
+        background-{black,solarized}-1920x1080.png
+        crypttab fstab
+        group gshadow passwd shadow
+        host.conf hosts nsswitch.conf resolv.conf
+        env-generator ld.so.conf locale.conf locale.sh profile shells vconsole.conf
+        limits sysctl sysusers tmpfiles)
+
+sha256sums=(SKIP SKIP SKIP SKIP
+            SKIP SKIP SKIP SKIP
+            SKIP SKIP
+            SKIP SKIP
+            SKIP SKIP SKIP SKIP
+            SKIP SKIP SKIP SKIP
+            SKIP SKIP SKIP SKIP SKIP SKIP SKIP
+            SKIP SKIP SKIP SKIP)
+
+package() {
+  depends+=('uosys-bootloader' 'uosys-rootfs')
+
+  ################################
+  #######  create hierarchy ######
+  ################################
+
+  # setup /usr hierarchy
+  install -dm755 ${pkgdir}/usr/{bin,include,lib,opt,share/{misc,pacman/db,pixmaps},src}
+  install -dm755 ${pkgdir}/usr/share/man/man{1..8}
+
+  # add lib symlinks
+  [[ $CARCH = 'x86_64' ]] && {
+    ln -s lib ${pkgdir}/usr/lib64
+  }
+
+  # add bin symlink
+  ln -s bin ${pkgdir}/usr/sbin
+
+  # setup etc hierarchy
+  install -dm755 ${pkgdir}/etc/{issue.d,ld.so.conf.d,skel,profile.d}
+
+  ################################
+  ########  install files ########
+  ################################
+
+  # wallpapers generated with archur:
+  #   $ archur -o black-1920x1080.png --text '' -r 1920x1080  -fg '#eeeeee' -bg '#101010'
+  #   $ archur -o solarized-1920x1080.png --text '' -r 1920x1080  -fg '#93a1a1' -bg '#002b36'
+
+  # TODO: install resolv.conf as a template? can somehow be used as a fallback?
+
+  install -Dm644 -t ${pkgdir}/etc/ \
+    arch-release issue motd \
+    fstab \
+    group passwd \
+    host.conf hosts nsswitch.conf \
+    ld.so.conf locale.conf profile shells vconsole.conf
+
+  install -Dm600 -t ${pkgdir}/etc/ \
+    crypttab \
+    gshadow shadow
+
+  install -Dm644 -t ${pkgdir}/etc/profile.d/ \
+    locale.sh
+
+  # os-release
+  install -Dm644 -t ${pkgdir}/usr/lib/ \
+    os-release
+  # relative symlinks breaking out of /etc are bad for compatibility between folder and symlink /etc
+  # this needs disabling the relevant line in systemd's tmpfiles.d/etc.conf to avoid a possible conflict
+  #ln -s -t ${pkgdir}/etc/ \
+  #  ../usr/lib/os-release
+  install -Dm644 -t ${pkgdir}/etc/ \
+    os-release
+
+  # setup pam_limits
+  install -Dm644 limits ${pkgdir}/etc/security/os.conf
+
+  # setup systemd-sysctl
+  install -Dm644 sysctl ${pkgdir}/usr/lib/sysctl.d/10-os.conf
+
+  # setup systemd-sysusers
+  install -Dm644 sysusers ${pkgdir}/usr/lib/sysusers.d/os.conf
+
+  # setup systemd-tmpfiles
+  install -Dm644 tmpfiles ${pkgdir}/usr/lib/tmpfiles.d/os.conf
+
+  # setup systemd.environment-generator
+  install -Dm755 env-generator ${pkgdir}/usr/lib/systemd/system-environment-generators/10-os
+
+  # add logo
+  install -Dm644 -t ${pkgdir}/usr/share/pixmaps/ \
+    archlinux{,-logo}.{svg,png}
+
+  # add backgrounds
+  for f in background-{black,solarized}-1920x1080.png; do
+    install -Dm644 $f ${pkgdir}/usr/share/backgrounds/os/${f#background-}
+  done
+
+  # /etc/mtab
+  # requirement: must be relative
+  # users in a booted-up system:
+  #   - fusermount/fuse, flatpak (had some code changes for systems where it doesn't exist)
+  # users on a container/chroot
+  #   - systemd-tmpfiles.d, systemd-nspawn
+  # workarounds:
+  #   - only bind usr/etc to etc, never use a symlink
+  #   - add a second level of symlink to point to the right location
+  ln -s ../proc/self/mounts ${pkgdir}/etc/mtab
+  # compat for etc symlink
+  # TODO: test this actually works with flatpak (fusermount was tested)
+  mkdir -p ${pkgdir}/usr/proc/self
+  echo 'compat symlink for systems where /etc is a symlink pointing to /usr/etc' \
+    > ${pkgdir}/usr/proc/self/README
+  ln -s ../../../proc/self/mounts  ${pkgdir}/usr/proc/self/mounts
+
+
+  ################################
+  ########  var symlinks #########
+  ################################
+
+  # TODO: maybe bring back X11/xorg.conf.d or move it into uosys-mods-xorg-server package
+
+  ln -s -t ${pkgdir}/etc/ \
+    /var/etc/{adjtime,resolv.conf}
+
+  # TODO: make timezone configurable
+  # workaround: hardcode locatime
+  ln -s /usr/share/zoneinfo/Asia/Jerusalem ${pkgdir}/etc/localtime
+
+  # machine specific identifiers
+  # TODO: better solution compatible with cli helpers? switch back to mount points?
+  # mount points for compatibility with systemd
+  #touch {,usr/}etc/{hostname,machine-id,machine-info}
+  ln -s -t ${pkgdir}/etc/ \
+    /var/etc/{hostname,machine-id,machine-info}
+
+
+  ################################
+  ########  var tmpfiles #########
+  ################################
+
+  # TODO: move into installation script, if even needed
+  # package these to avoid package installation issues on non booted system
+  #install -dm755 ${pkgdir}/var/{empty,local,srv}
+  ## var/{log/old,opt,lib/misc}
+  #install -dm1777 ${pkgdir}/var/{tmp,spool/mail}
+  #ln -s -t ${pkgdir}/var/ \
+  #  ../run/lock \
+  #  ../run \
+  #  spool/mail
+
+  #d /var/srv/ftp 555 - - - -
+  #d /var/srv/git 755 - - - -
+  #d /var/srv/http 755 - - - -
+  #d /var/srv/nfs 755 - - - -
+  #d /var/srv/smb 755 - - - -
+  #d /var/srv/tftp 755 - - - -
+}
+
+# vim:set ts=2 sw=2 et:
