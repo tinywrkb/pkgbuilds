@@ -1,0 +1,29 @@
+# TODO: switch to a more robust script
+# TODO: maybe copy password-less identity files and just request to set a password on first login?
+#       probably not possible with homed
+#       alternative change the password on 1st login, but this needs the private key
+# TODO: maybe read parameter (kernel cmdline?) to reset passwords
+# TODO: also handle vm/vps users here?
+# TODO: make this a generic users deployment service?
+# TODO: deploy nspawn user? maybe read container variable (strings /proc/1/environ)?
+[Unit]
+Description=Systemd-homed create user
+After=systemd-homed.service
+Before=getty@tty1.service plymouth-quit.service
+ConditionPathIsDirectory=/var/lib/systemd/home
+ConditionPathExistsGlob=!/var/lib/systemd/home/*.identity
+ConditionDirectoryNotEmpty=!/var/homes
+ConditionVirtualization=!lxc
+ConditionVirtualization=!systemd-nspawn
+ConditionKernelCommandLine=|!rd.uosys.live
+ConditionKernelCommandLine=|rd.uosys.live=0
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=-/usr/bin/plymouth hide-splash
+ExecStart=/usr/lib/os/uosys-create-user
+ExecStart=-/usr/bin/plymouth show-splash
+StandardOutput=tty
+StandardInput=tty
+StandardError=tty

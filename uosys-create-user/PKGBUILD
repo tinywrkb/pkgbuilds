@@ -1,0 +1,23 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+pkgname=uosys-create-user
+pkgver=2021.02.22.1
+pkgrel=1
+pkgdesc='Systemd service to create user on a clean system during boot'
+arch=('any')
+license=('GPL')
+url=''
+source=(uosys-create-user{,.service})
+sha256sums=('SKIP' 'SKIP')
+
+package() {
+  depends=(plymouth)
+
+  install -Dm755 -t ${pkgdir}/usr/lib/os/ \
+    uosys-create-user
+  install -Dm644 -t ${pkgdir}/usr/lib/systemd/system/ \
+    uosys-create-user.service
+  mkdir -p ${pkgdir}/usr/lib/systemd/system/multi-user.target.wants
+  ln -s -t ${pkgdir}/usr/lib/systemd/system/multi-user.target.wants/ \
+    ../uosys-create-user.service
+}
