@@ -1,0 +1,4 @@
+{
+  "external_crx": "/usr/lib/chromium/extensions/%extname%.crx",
+  "external_version": "%extver%"
+}

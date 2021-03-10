@@ -1,0 +1,10 @@
+*/*/**
+*-x86_64-build.log
+*-x86_64-build.log.[0-9]*
+*-x86_64-package.log
+*-x86_64-package.log.[0-9]*
+*.asc
+*.log
+*.sig
+*.tar.gz
+*.pkg.tar.zst

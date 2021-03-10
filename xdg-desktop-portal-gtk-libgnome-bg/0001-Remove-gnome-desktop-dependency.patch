@@ -1,0 +1,138 @@
+From b3794af1b8d6a8a2777fce0e08cf37fd23e4930e Mon Sep 17 00:00:00 2001
+From: Bastien Nocera <hadess@hadess.net>
+Date: Wed, 8 Apr 2020 17:49:27 +0200
+Subject: [PATCH] Remove gnome-desktop dependency
+
+And use the libgnome-bg submodule instead.
+---
+ .gitmodules            | 3 +++
+ Makefile.am            | 2 +-
+ configure.ac           | 8 +++++++-
+ src/Makefile.am.inc    | 3 ++-
+ src/wallpaperpreview.c | 7 +------
+ submodules/libgnome-bg | 1 +
+ 6 files changed, 15 insertions(+), 9 deletions(-)
+ create mode 100644 .gitmodules
+ create mode 160000 submodules/libgnome-bg
+
+diff --git a/.gitmodules b/.gitmodules
+new file mode 100644
+index 0000000..aaf55d2
+--- /dev/null
++++ b/.gitmodules
+@@ -0,0 +1,3 @@
++[submodule "libgnomebg"]
++	path = submodules/libgnome-bg
++	url = https://gitlab.gnome.org/hadess/libgnome-bg.git
+diff --git a/Makefile.am b/Makefile.am
+index 6fa8868..4400977 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1,4 +1,4 @@
+-SUBDIRS = po
++SUBDIRS = submodules/libgnome-bg po
+ 
+ BUILT_SOURCES =
+ CLEANFILES =
+diff --git a/configure.ac b/configure.ac
+index e1723e2..0150fa3 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -57,7 +57,7 @@ AC_SUBST([DBUS_INTERFACES_DIR], [`$PKG_CONFIG --variable=interfaces_dir dbus-1`]
+ AC_SUBST([GDBUS_CODEGEN], [`$PKG_CONFIG --variable gdbus_codegen gio-2.0`])
+ AC_SUBST([GLIB_COMPILE_RESOURCES], [`$PKG_CONFIG --variable glib_compile_resources gio-2.0`])
+ 
+-PKG_CHECK_MODULES(GTK, [xdg-desktop-portal >= 1.5 glib-2.0 >= 2.44 gio-unix-2.0 gtk+-3.0 >= 3.14 gtk+-unix-print-3.0 fontconfig gnome-desktop-3.0 gsettings-desktop-schemas])
++PKG_CHECK_MODULES(GTK, [xdg-desktop-portal >= 1.5 glib-2.0 >= 2.44 gio-unix-2.0 gtk+-3.0 >= 3.14 gtk+-unix-print-3.0 fontconfig gsettings-desktop-schemas])
+ AC_SUBST(GTK_CFLAGS)
+ AC_SUBST(GTK_LIBS)
+ 
+@@ -79,8 +79,14 @@ if test "$have_gtk_wayland" = "yes"; then
+ fi
+ AM_CONDITIONAL([HAVE_GTK_WAYLAND], [test "$have_gtk_wayland" = "yes"])
+ 
++AC_CHECK_LIBM
++AC_SUBST(LIBM)
++PKG_CHECK_MODULES([GNOME_BG], gtk+-3.0 gsettings-desktop-schemas)
++AM_CONDITIONAL(HAVE_INTROSPECTION, test "x$found_introspection" = "xyes")
++
+ AC_CONFIG_FILES([
+ Makefile
++submodules/libgnome-bg/Makefile
+ po/Makefile.in
+ ])
+ AC_OUTPUT
+diff --git a/src/Makefile.am.inc b/src/Makefile.am.inc
+index 4c212d2..c32e3da 100644
+--- a/src/Makefile.am.inc
++++ b/src/Makefile.am.inc
+@@ -165,11 +165,12 @@ xdg_desktop_portal_gtk_SOURCES += \
+ 	$(NULL)
+ endif
+ 
+-xdg_desktop_portal_gtk_LDADD = $(BASE_LIBS) $(GTK_LIBS) $(GTK_X11_LIBS)
++xdg_desktop_portal_gtk_LDADD = $(BASE_LIBS) $(GTK_LIBS) $(GTK_X11_LIBS) $(top_builddir)/submodules/libgnome-bg/libgnome-bg.la
+ xdg_desktop_portal_gtk_CFLAGS = $(BASE_CFLAGS) $(GTK_CFLAGS) $(GTK_X11_CFLAGS)
+ xdg_desktop_portal_gtk_CPPFLAGS = \
+ 	-DGETTEXT_PACKAGE=\"$(GETTEXT_PACKAGE)\"        \
+ 	-DLOCALEDIR=\"$(localedir)\"                    \
++	-I$(top_srcdir)/submodules/libgnome-bg		\
+ 	-I$(top_srcdir)/src				\
+ 	-I$(top_builddir)/src				\
+ 	$(NULL)
+diff --git a/src/wallpaperpreview.c b/src/wallpaperpreview.c
+index 5910c6a..d03c086 100644
+--- a/src/wallpaperpreview.c
++++ b/src/wallpaperpreview.c
+@@ -28,8 +28,7 @@
+ #include <gio/gio.h>
+ #include <glib/gi18n.h>
+ #include <gtk/gtk.h>
+-#define GNOME_DESKTOP_USE_UNSTABLE_API
+-#include <libgnome-desktop/gnome-bg.h>
++#include "gnome-bg.h"
+ 
+ #include "wallpaperpreview.h"
+ 
+@@ -42,7 +41,6 @@ struct _WallpaperPreview {
+   GtkLabel *desktop_clock_label;
+   GtkWidget *drawing_area;
+ 
+-  GnomeDesktopThumbnailFactory *thumbs;
+   GnomeBG *bg;
+ 
+   GSettings *desktop_settings;
+@@ -67,7 +65,6 @@ on_preview_draw_cb (GtkWidget *widget,
+ 
+   gtk_widget_get_allocation (GTK_WIDGET (self), &allocation);
+   pixbuf = gnome_bg_create_thumbnail (self->bg,
+-                                      self->thumbs,
+                                       gdk_screen_get_default (),
+                                       allocation.width,
+                                       allocation.height);
+@@ -136,7 +133,6 @@ wallpaper_preview_finalize (GObject *object)
+   WallpaperPreview *self = WALLPAPER_PREVIEW (object);
+ 
+   g_clear_object (&self->desktop_settings);
+-  g_clear_object (&self->thumbs);
+ 
+   g_clear_pointer (&self->previous_time, g_date_time_unref);
+ 
+@@ -167,7 +163,6 @@ wallpaper_preview_init (WallpaperPreview *self)
+ 
+   self->bg = gnome_bg_new ();
+   gnome_bg_set_placement (self->bg, G_DESKTOP_BACKGROUND_STYLE_ZOOM);
+-  self->thumbs = gnome_desktop_thumbnail_factory_new (GNOME_DESKTOP_THUMBNAIL_SIZE_LARGE);
+ }
+ 
+ static void
+diff --git a/submodules/libgnome-bg b/submodules/libgnome-bg
+new file mode 160000
+index 0000000..c9a1f71
+--- /dev/null
++++ b/submodules/libgnome-bg
+@@ -0,0 +1 @@
++Subproject commit c9a1f71148f8a56072c21f42f724653dee0496a8
+-- 
+2.29.2
+

@@ -1,0 +1,45 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Contributor: Dave Reisner <dreisner@archlinux.org>
+
+_pkgname=arch-install-scripts
+pkgname=${_pkgname}-fixed
+pkgver=23
+pkgrel=2
+pkgdesc="Scripts to aid in installing Arch Linux"
+arch=('any')
+url="https://projects.archlinux.org/arch-install-scripts.git"
+license=('GPL')
+depends=('awk' 'bash' 'coreutils' 'pacman' 'util-linux')
+makedepends=('asciidoc' 'git')
+conflicts=('arch-install-scripts')
+provides=('arch-install-scripts')
+source=("git+https://projects.archlinux.org/arch-install-scripts.git?signed#tag=v$pkgver"
+        '0001-no-more-run-bind-mount.patch')
+validpgpkeys=(
+  '487EACC08557AD082088DABA1EB2638FF56C0C53'  # Dave Reisner
+  'BD27B07A5EF45C2ADAF70E0484818A6819AF4A9B'  # Eli Schwartz
+)
+md5sums=('SKIP' 'SKIP')
+
+pkgver() {
+  cd "$_pkgname"
+
+  git describe | sed s,^v,,
+}
+
+prepare() {
+  cd "$_pkgname"
+  patch -Np1 -i ../0001-no-more-run-bind-mount.patch
+}
+
+build() {
+  make -C "$_pkgname"
+}
+
+check() {
+  make -C "$_pkgname" check
+}
+
+package() {
+  make -C "$_pkgname" PREFIX=/usr DESTDIR="$pkgdir" install
+}

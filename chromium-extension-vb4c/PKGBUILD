@@ -1,0 +1,101 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+#
+# if the extension was removed from chromium then it must be manually added by
+#   opening a file browser at location of extension, draging the .crx package
+#   and dropping it into a chromium tab set on the extension listing page
+#   at chrome://extensions
+
+_gitname='vb4c'
+pkgname="chromium-extension-${_gitname}"
+pkgver=0.0.2
+pkgrel=1
+pkgdesc='vim bindings for chrome'
+arch=('x86_64')
+url="https://github.com/dcchambers/${_gitname}"
+license=('GPL2')
+optdepends=('chromium')
+makedepends=('chromium' 'jq' 'npm' 'openssl')
+source=(
+  "git+${url}.git"
+  extension.json.in
+  )
+sha256sums=('SKIP' 'SKIP')
+
+prepare() {
+
+  # the extension id is generated from the signing key so in order to keep the same id
+  #   between updates and allow the extension to be auto-updated by chromium we need
+  #   to save the key file somewhere
+  #
+  # key file is expected to be supplied by the user, it can be generated with:
+  #   $ openssl genrsa 2048 | openssl pkcs8 -topk8 -nocrypt -out vb4c_key.pem
+  #
+  # copy to the package folder (where PKGBUILD is at)
+  # set the environment variable VB4C_KEY
+  # copy to ~/{$XDG_CONFIG_HOME,.config}/chromium-extensions/vb4c_key.pem
+  #
+  # if the package is not shared on aur then it might be better to add the private key
+  #   to the sources array
+
+  unset _extkey
+  if [ -n "$GENEXTKEY" ]; then
+    echo "generating ${_gitname}.pem signing key"
+    openssl genrsa 2048 | openssl pkcs8 -topk8 -nocrypt -out "${srcdir}"/${_gitname}_key.pem
+    _extkey="${srcdir}"/${_gitname}_key.pem
+  elif [ -f "${srcdir}"/${_gitname}_key.pem ]; then
+    _extkey="${srcdir}"/${_gitname}_key.pem
+  elif [ -n "$VB4C_KEY" ]; then
+    _extkey="$VB4C_KEY"
+  elif [ -f ${XDG_CONFIG_HOME:-~/.config}/chromium-extensions/${_gitname}_key.pem ]; then
+    _extkey=${XDG_CONFIG_HOME:-~/.config}/chromium-extensions/${_gitname}_key.pem
+  fi
+
+  if [ -n "$GENEXTKEY" ]; then
+    :
+  elif [ -f "$_extkey" ]; then
+    echo "Found singing key at $_extkey"
+  else
+   echo "Missing signing key, stoping build process..."
+   exit 1
+  fi
+
+  # get extension id from key file
+  unset extid
+  export extid=$(openssl rsa -in ${_extkey} -pubout -outform DER 2>/dev/null | shasum -a 256 | head -c32 | tr 0-9a-f a-p)
+
+  # get extension version
+  unset _extver
+  _extver=$(jq -r '.version' ${_gitname}/manifest.json)
+}
+
+build() {
+
+  # update extension path version in extension.json
+  sed -e "s/%extname%/"${_gitname}"/" \
+    -e "s/%extver%/"${_extver}"/" extension.json.in | \
+    tee extension.json > /dev/null
+
+  # build
+  export NPM_CONFIG_CACHE="${srcdir}"/npm-cache
+  export NPM_CONFIG_DEVDIR="${srcdir}"/node-gyp
+  export NPM_CONFIG_PREFIX="${srcdir}"/node
+  export PKG_CACHE_PATH="${srcdir}"/pkg-cache
+  export NODE_PATH="${srcdir}"/node/lib/node_modules:"${NODE_PATH}"
+  export PATH="${srcdir}"/node/bin:"${PATH}"
+
+  cd ${_gitname}
+  npm install
+  make
+
+  # pack the extension
+  cd ${srcdir}
+  echo 'Packaging extension with chromium...'
+  chromium --pack-extension=${_gitname} --pack-extension-key=${_extkey} 2>/dev/null
+}
+
+package() {
+
+  install -Dm644 extension.json ${pkgdir}/usr/share/chromium/extensions/${extid}.json
+
+  install -Dm644 ${_gitname}.crx ${pkgdir}/usr/lib/chromium/extensions/${_gitname}.crx
+}

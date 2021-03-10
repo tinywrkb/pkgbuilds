@@ -1,0 +1,19 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+# how to use:
+#   export PYTHONSTARTUP="/usr/lib/python-startup/python.startup"
+
+pkgname='python-startup'
+pkgver=2021.03.10.1
+pkgrel=1
+pkgdesc='python startup script with xdg base dirs compatibility'
+arch=('any')
+url=''
+license=('GPL')
+source=('python.startup')
+sha256sums=('SKIP')
+
+package() {
+  depends+=('python')
+  install -Dm755 python.startup -t ${pkgdir}/usr/lib/python-startup/
+}

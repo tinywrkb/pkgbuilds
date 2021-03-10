@@ -1,0 +1,51 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Contributor: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+# Contributor: Ionut Biru <ibiru@archlinux.org>
+
+_pkgname=gcr
+pkgname=$_pkgname-x11free
+pkgver=3.38.r55.g7fc7ade
+pkgrel=1
+pkgdesc="A library for bits of crypto UI and parsing"
+url="https://gitlab.gnome.org/GNOME/gcr"
+arch=(x86_64)
+license=(GPL2)
+depends=(gtk3-nonsensefree libgcrypt p11-kit)
+makedepends=(gobject-introspection vala libxslt git meson)
+conflicts=(gcr)
+provides=(gcr libgck-1.so libgcr-{base,ui}-3.so)
+_commit=7fc7adeb0d8f3be4cea8bcefdaf8159927661951  # 3.38.r55.g7fc7ade
+backup=(etc/security/limits.d/10-gcr.conf)
+source=("git+https://gitlab.gnome.org/GNOME/gcr.git#commit=$_commit")
+sha256sums=('SKIP')
+
+pkgver() {
+  cd $_pkgname
+  git describe --long 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+  # TODO: -D introspection=false
+  arch-meson $_pkgname build \
+    -D gtk_doc=false \
+
+  meson compile -C build
+}
+
+check() {
+  # Secure memory tests fail
+  dbus-run-session meson test -C build --print-errorlogs || :
+}
+
+package() {
+  DESTDIR="$pkgdir" meson install -C build
+
+  # gcr wants to lock some memory to prevent swapping out private keys
+  # https://bugs.archlinux.org/task/32616
+  # https://bugzilla.gnome.org/show_bug.cgi?id=688161
+  install -Dm644 /dev/stdin "$pkgdir/etc/security/limits.d/10-gcr.conf" <<END
+@users - memlock 1024
+END
+}
+
+# vim:set ts=2 sw=2 et:

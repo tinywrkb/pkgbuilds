@@ -1,0 +1,36 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Contributor: Tobias Powalowski <tpowa@archlinux.org>
+
+_pkgname=openexr
+pkgname=$_pkgname-minimal
+pkgver=2.5.5
+pkgrel=1
+pkgdesc="An high dynamic-range image file format library"
+url="https://www.openexr.com/"
+arch=('x86_64')
+license=('BSD')
+depends=('zlib')
+makedepends=('cmake' 'freeglut' 'chrpath')
+conflicts=('ilmbase' "$_pkgname")
+provides=("$_pkgname")
+replaces=('ilmbase')
+source=($_pkgname-$pkgver.tar.gz::"https://github.com/openexr/openexr/archive/v$pkgver.tar.gz")
+sha256sums=('59e98361cb31456a9634378d0f653a2b9554b8900f233450f2396ff495ea76b3')
+
+build() {
+  cmake -B build -S $_pkgname-$pkgver \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DBUILD_TESTING=OFF \
+    -DINSTALL_OPENEXR_DOCS=OFF \
+    -DINSTALL_OPENEXR_EXAMPLES=OFF \
+    -DOPENEXR_BUILD_UTILS=OFF \
+    -DPYILMBASE_ENABLE=OFF \
+
+  cmake --build build
+}
+
+package() {
+  DESTDIR="${pkgdir}" cmake --install build
+  install -D -m644 $_pkgname-$pkgver/LICENSE.md -t "${pkgdir}/usr/share/licenses/${pkgname}"
+}

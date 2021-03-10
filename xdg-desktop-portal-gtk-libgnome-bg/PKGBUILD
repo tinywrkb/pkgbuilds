@@ -1,0 +1,57 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Contributor:  Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+# Contributor: Patrick Griffis <tingping@tingping.se>
+
+_pkgname=xdg-desktop-portal-gtk
+pkgname=$_pkgname-libgnome-bg
+pkgver=1.8.0
+pkgrel=3
+pkgdesc="A GTK+ backend for xdg-desktop-portal"
+url="https://github.com/flatpak/xdg-desktop-portal-gtk"
+arch=(x86_64)
+license=(LGPL)
+depends=(gtk3-nonsensefree gnome-keyring)
+makedepends=(xdg-desktop-portal python git evince)
+optdepends=("evince: Print preview")
+conflicts=($_pkgname)
+provides=($_pkgname xdg-desktop-portal-impl)
+_commit=5e45e780eecacfe199ee9582cce4c54a27ce186f  # tags/1.8.0^0
+_libgnome_bg_commit=c9a1f71148f8a56072c21f42f724653dee0496a8
+source=("git+https://github.com/flatpak/xdg-desktop-portal-gtk#commit=$_commit"
+        "git+https://gitlab.gnome.org/hadess/libgnome-bg.git#commit=$_libgnome_bg_commit"
+        '0001-Remove-gnome-desktop-dependency.patch')
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP')
+
+pkgver() {
+  cd $_pkgname
+  git describe --tags | sed 's/^v//;s/-/+/g'
+}
+
+prepare() {
+  cd $_pkgname
+
+  # libgnome-bg
+  patch -Np1 -i ../0001-Remove-gnome-desktop-dependency.patch
+  rm -f submodules/libgnome-bg
+  cp -r ../libgnome-bg submodules/libgnome-bg
+
+  NOCONFIGURE=1 ./autogen.sh
+}
+
+build() {
+  cd $_pkgname
+  ./configure --prefix=/usr --libexecdir=/usr/lib
+  make
+}
+
+check() {
+  cd $_pkgname
+  make check
+}
+
+package() {
+  cd $_pkgname
+  DESTDIR="$pkgdir" make install
+}

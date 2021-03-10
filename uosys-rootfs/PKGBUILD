@@ -1,0 +1,46 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+pkgname=uosys-rootfs
+pkgver=2021.02.27.1
+pkgrel=1
+pkgdesc='uosys rootfs images'
+arch=('x86_64')
+license=('GPL')
+url=''
+makedepends=('squashfs-tools')
+
+build() {
+  # create rootfs{,-compat}.img
+  for rootfs in rootfs{,-compat}; do
+    mkdir -p ${rootfs}/{apps,data,dev,efi,proc,root,run,sys,tmp,usr,var}
+    ln -s run/mount ${rootfs}/mnt
+    ln -s usr/bin ${rootfs}/bin
+    ln -s usr/bin ${rootfs}/sbin
+    ln -s usr/lib ${rootfs}/lib
+    ln -s usr/lib ${rootfs}/lib64
+    ln -s var/homes ${rootfs}/home
+    ln -s var/srv ${rootfs}/srv
+    if [ ${rootfs} = 'rootfs-compat' ]; then
+      mkdir -p ${rootfs}/{boot,etc}
+      # systemd-nspawn compat
+      touch ${rootfs}/etc/os-release
+      # f*ck this sh*t
+      mkdir -p ${rootfs}/opt
+    else
+      ln -s -t ${rootfs}/ \
+        usr/{etc,lib/boot}
+      # systemd-nspawn compat
+      mkdir -p ${rootfs}/usr/etc
+      touch ${rootfs}/usr/etc/os-release
+    fi
+    mksquashfs ${rootfs}/ ${rootfs}.img -all-root -noappend
+  done
+}
+
+package() {
+  cd "$pkgdir"
+  install -Dm644 -t usr/lib/os/rootfs/ \
+    "${srcdir}"/rootfs{,-compat}.img
+}
+
+# vim:set ts=2 sw=2 et:

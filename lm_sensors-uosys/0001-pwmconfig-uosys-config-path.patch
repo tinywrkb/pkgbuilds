@@ -1,0 +1,31 @@
+From 94522f489bf70e661280bd65239301cc7d327f7d Mon Sep 17 00:00:00 2001
+From: tinywrkb <tinywrkb@gmail.com>
+Date: Mon, 5 Oct 2020 19:52:28 +0300
+Subject: [PATCH] pwmconfig: uosys config path
+
+---
+ prog/pwm/pwmconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/prog/pwm/pwmconfig b/prog/pwm/pwmconfig
+index edcbde9e..56da1ccb 100755
+--- a/prog/pwm/pwmconfig
++++ b/prog/pwm/pwmconfig
+@@ -607,12 +607,12 @@ function ValidateDevices()
+ 
+ function AskPath()
+ {
+-	echo -n 'What should be the path to your fancontrol config file (/etc/fancontrol)? '
++	echo -n 'What should be the path to your fancontrol config file (/var/etc/lm_sensors/fancontrol)? '
+ 
+ 	read FCCONFIG
+ 	if [ "$FCCONFIG" = "" ]
+ 	then
+-		FCCONFIG="/etc/fancontrol"
++		FCCONFIG="/var/etc/lm_sensors/fancontrol"
+ 	fi
+ }
+ 
+-- 
+2.28.0
+

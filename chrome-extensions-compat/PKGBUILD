@@ -1,0 +1,14 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+pkgname=chrome-extensions-compat
+pkgver=1
+pkgrel=1
+pkgdesc='symlink for adding local installed chromium extensions to google-chrome'
+arch=(any)
+license=(GPL)
+
+package() {
+  cd  ${pkgdir}
+  mkdir -p usr/share/google-chrome
+  ln -sr usr/share/chromium/extensions usr/share/google-chrome/extensions
+}

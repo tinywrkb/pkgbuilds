@@ -1,0 +1,30 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Contributor: Antonio Rojas <arojas@archlinux.org>
+# Contributor: Adam Fontenot <fontenot@ucla.edu>
+
+_pkgname=libheif
+pkgname=$_pkgname-minimal
+pkgver=1.11.0
+pkgrel=1
+pkgdesc="HEIF file format decoder and encoder"
+arch=(x86_64)
+url="https://github.com/strukturag/libheif"
+license=(GPL3)
+makedepends=(libjpeg libpng gdk-pixbuf2)
+depends=(libde265 aom)
+optdepends=('libjpeg: for heif-convert and heif-enc' 'libpng: for heif-convert and heif-enc')
+conflicts=("$_pkgname")
+provides=("$_pkgname")
+source=(https://github.com/strukturag/libheif/releases/download/v$pkgver/libheif-$pkgver.tar.gz)
+sha256sums=('c550938f56ff6dac83702251a143f87cb3a6c71a50d8723955290832d9960913')
+
+build() {
+  cd $_pkgname-$pkgver
+  ./configure --prefix=/usr --enable-static=no --disable-x265
+  make
+}
+
+package() {
+  cd $_pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}

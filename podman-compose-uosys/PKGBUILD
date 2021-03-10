@@ -1,0 +1,52 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Contributor: Filipe Laíns (FFY00) <lains@archlinux.org>
+
+_pkgname=podman-compose
+pkgname=$_pkgname-uosys
+pkgver=0.1.5.r78.g6289d25
+_commit=6289d25a42cfdb5dfcac863b1b1b4ace32ce31b7
+pkgrel=5
+pkgdesc='A script to run docker-compose.yml using podman'
+arch=('any')
+url='https://github.com/containers/podman-compose'
+license=('GPL2')
+backup=('etc/conf.d/podman-compose')
+depends=('python' 'python-yaml' 'podman')
+makedepends=('git' 'python-setuptools')
+conflicts=("$_pkgname")
+provides=("$_pkgname")
+source=("git+$url#commit=$_commit"
+        'podman-compose.conf.d'
+        'podman-compose@.service'
+        'tmpfiles.d.conf')
+sha512sums=('SKIP'
+            '99fd3d7518fbe0a7b3ac0a8ede7fc08783c7de0b219d98134afb8f183fdf5bc79d655a27891af0cfcfbab1fae2b667672fd4c78d83fc9467a2cd89c281751c1d'
+            'b3088ca3641ff0e5fa3d21ce32ed55394f3b851b58182149beeffb3471328a0920b41c6f4a1832b19811fcf095699a080ac5158edfd72f09da97661569d09900'
+            'SKIP')
+
+pkgver() {
+  cd $_pkgname
+  git describe --long | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+  cd $_pkgname
+
+  python setup.py build
+}
+
+package() {
+  cd $_pkgname
+
+  python setup.py install --root="$pkgdir" --optimize=1 --skip-build
+  install -Dm644 ../podman-compose@.service "$pkgdir"/usr/lib/systemd/system/podman-compose@.service
+  install -Dm644 ../podman-compose.conf.d "$pkgdir"/etc/conf.d/podman-compose
+
+  # uosys-mods
+  #install -dm755 "$pkgdir"/etc/podman/compose
+  install -dm755 "$pkgdir"/etc/podman
+  ln -s /var/etc/podman/compose "$pkgdir"/etc/podman/compose
+  install -Dm644 ../tmpfiles.d.conf "$pkgdir"/usr/lib/tmpfiles.d/uosys-mods-podman-compose.conf
+}
+
+# vim:set ts=2 sw=2 et:

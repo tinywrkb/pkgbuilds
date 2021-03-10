@@ -1,0 +1,77 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Contributor: Taijian <taijian@posteo.de>
+# Contributor: Sebastian Lau <lauseb644@gmail.com>
+# Contributor Damian01w <damian01w@gmail.com>
+# Contributor: Padfoot <padfoot@exemail.com.au>
+
+# TODO: add a noop service in between plymouth-quit to login managers startup services instead of the nonsense in aur/plymouth
+
+_pkgname=plymouth
+pkgname=${_pkgname}-fixed
+pkgver=0.9.5.r31.gc74b3ae
+pkgrel=1
+pkgdesc="A graphical boot splash screen with kernel mode-setting support"
+url="https://www.freedesktop.org/wiki/Software/Plymouth/"
+license=('GPL')
+_commit=c74b3aef9c34c1c51b2c9c14f10f2906925ed380
+source=("${_pkgname}::git+https://gitlab.freedesktop.org/plymouth/plymouth.git#commit=$_commit"
+        'arch-logo.png' 'plymouthd.defaults.patch')
+sha256sums=('SKIP'
+            'SKIP' 'SKIP')
+arch=('x86_64')
+depends=('libdrm' 'pango' 'systemd')
+makedepends=('git' 'docbook-xsl')
+optdepends=('cantarell-fonts: True Type support for BGRT theme'
+            'xf86-video-fbdev: Support special graphic cards on early startup'
+            'ttf-dejavu: For true type font support')
+conflicts=('plymouth')
+provides=('plymouth')
+options=('!emptydirs')
+
+pkgver() {
+  cd ${_pkgname}
+  git describe --long 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+prepare() {
+  cd ${_pkgname}
+  # set default distro theme as arch-charge-big
+  patch -Np1 -i ../plymouthd.defaults.patch
+}
+
+build() {
+  cd ${_pkgname}
+
+  LDFLAGS+=' -ludev' ./autogen.sh \
+    --exec-prefix=/usr \
+    --libdir=/usr/lib \
+    --libexecdir=/usr/lib \
+    --localstatedir=/var \
+    --prefix=/usr \
+    --sbindir=/usr/bin \
+    --sysconfdir=/etc \
+    --enable-drm \
+    --enable-gtk=no \
+    --enable-pango \
+    --enable-systemd-integration \
+    --enable-tracing \
+    --with-background-color=0x000000 \
+    --with-background-end-color-stop=0x4D4D4D \
+    --with-background-start-color-stop=0x000000 \
+    --with-logo=/usr/share/plymouth/arch-logo.png \
+    --with-release-file=/etc/os-release \
+    --with-runtimedir=/run \
+    --without-rhgb-compat-link \
+    --without-system-root-install \
+
+  make
+}
+
+package() {
+  # make sure arch-charge-big theme is installed as it's set as default
+  depends+=(plymouth-theme-arch-charge-big)
+  make -C ${_pkgname} DESTDIR=$pkgdir install
+
+  install -Dm644 -t $pkgdir/usr/share/plymouth/ \
+    arch-logo.png
+}
