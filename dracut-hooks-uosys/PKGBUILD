@@ -1,0 +1,30 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Contributor: Franklyn Tackitt <franklyn@tackitt.net>
+# Contributor: Kevin Del Castillo <quebin31@gmail.com>
+
+pkgname=dracut-hooks-uosys
+pkgver=2021.02.24.6
+pkgrel=1
+pkgdesc="dracut libalpm hooks for /usr only system"
+url=https://dracut.wiki.kernel.org/index.php/Main_Page
+arch=('any')
+license=('BSD')
+depends=('dracut')
+source=(
+  "60-dracut-remove.hook"
+  "90-dracut-install.hook"
+  "dracut-install"
+  "dracut-remove"
+  "dracut-rebuild")
+
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP')
+
+package() {
+  install -Dm644 -t "${pkgdir}"/usr/share/libalpm/hooks/ *-dracut-*.hook
+  install -Dm755 -t "${pkgdir}"/usr/share/libalpm/scripts/ dracut-{install,remove}
+  install -Dm755 -t "${pkgdir}"/usr/bin/ dracut-rebuild
+}

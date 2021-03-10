@@ -1,0 +1,12 @@
+#!/bin/bash -e
+
+while read -r line; do
+    if [[ "$line" == 'usr/lib/modules/'+([^/])'/pkgbase' ]]; then
+        read -r pkgbase < "/${line}"
+        [ "${pkgbase}" = linux ] && pkgbase=linux-latest
+        rm -f "/boot/vmlinuz-${pkgbase}" "/boot/initramfs-${pkgbase}.img"
+    fi
+    if [[ "$line" == 'usr/lib/firmware/'+([^/])'-ucode/'+([^/])'-ucode.img' ]]; then
+        rm -f /boot/$(basename $line)
+    fi
+done

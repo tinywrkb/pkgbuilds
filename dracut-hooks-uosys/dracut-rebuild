@@ -1,0 +1,3 @@
+#!/bin/bash
+
+/usr/share/libalpm/scripts/dracut-install < <( echo '(re)build all' )

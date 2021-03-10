@@ -1,0 +1,20 @@
+[Trigger]
+Type = Path
+Operation = Install
+Operation = Upgrade
+Target = usr/lib/modules/*/pkgbase
+Target = usr/lib/dracut/*
+Target = usr/lib/systemd/system/sysinit.target.wants/*
+Target = usr/lib/firmware/*-ucode/*-ucode.img
+
+[Trigger]
+Type = Package
+Operation = Install
+Operation = Upgrade
+Target = dracut-hooks-uosys
+
+[Action]
+Description = Updating linux initcpios...
+When = PostTransaction
+Exec = /usr/share/libalpm/scripts/dracut-install
+NeedsTargets
