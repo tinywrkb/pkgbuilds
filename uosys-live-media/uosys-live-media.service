@@ -1,0 +1,21 @@
+# TODO: maybe futher limit journal size, maybe in a different service after tmpfiles.d + restart journal
+# TODO: test: races, correct service precedence
+[Unit]
+Description=Live Media Service
+DefaultDependencies=no
+Conflicts=shutdown.target
+After=systemd-tmpfiles-setup.service systemd-sysusers.service systemd-remount-fs.service
+Before=systemd-homed.service sysinit.target shutdown.target
+#Before=systemd-networkd.service getty@.service
+ConditionKernelCommandLine=rd.uosys.live=1
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=mkdir -p /var/homes/ ; rsync -a /usr/lib/os/live/homes/archie.homedir /var/homes/
+ExecStart=install -Dm600 -t /var/lib/systemd/home/ /usr/lib/os/live/systemd-homed/archie.public
+#ExecStart=install -Dm644 -t /run/systemd/journald.conf.d/live.conf /usr/lib/os/live/run/systemd/journald.conf.d/live.conf
+#ExecStart=install -Dm644 -t /run/systemd/network/ usr/lib/os/live/run/systemd/network/20-{ethernet,wireless}.network
+#ExecStart=install -Dm644 -t /run/systemd/system/getty@tty1.service.d/ /usr/lib/os/live/run/systemd/system/getty@tty1.service.d/live.conf
+#ExecStart=install -dm755 /run/systemd/system/multi-user.target.wants/ && ln -s -t /run/systemd/system/multi-user.target.wants/ /usr/lib/systemd/system/iwd.service
+#ExecStart=install -Dm644 -t /run/issue.d/ /usr/lib/os/live/run/issue.d/live

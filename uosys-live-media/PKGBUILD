@@ -1,0 +1,64 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+# TODO: maybe add dracut module for early deployment before switch_root and journald restart
+
+pkgname=uosys-live-media
+pkgver=2021.02.22.1
+pkgrel=1
+pkgdesc='uosys-live-media'
+arch=('x86_64')
+license=('GPL')
+url=''
+makedepends=(git)
+_homedir_commit=74dc2af7f88540d53fb269ecdd9b4ea6bd429278
+source=(archie.homedir::git+https://github.com/tinywrkb/uosys-live-media-homedir.git#commit=${_homedir_commit}
+       getty issue journald
+       networkd-{ethernet,wireless}
+       uosys-live-media{-early,}.service)
+
+sha256sums=('SKIP'
+            'SKIP' 'SKIP' 'SKIP'
+            'SKIP' 'SKIP'
+            'SKIP' 'SKIP')
+
+package() {
+
+  # systemd-networkd configs
+  install -Dm644 networkd-ethernet \
+    ${pkgdir}/usr/lib/os/live/run/systemd/network/20-lan.network
+  install -Dm644 networkd-wireless \
+    ${pkgdir}/usr/lib/os/live/run/systemd/network/20-wlan.network
+
+  # journald config
+  install -Dm644 journald \
+    ${pkgdir}/usr/lib/os/live/run/systemd/journald.conf.d/live.conf
+
+  # getty config
+  # TODO: maybe can switch to getty@.service.d
+  install -Dm644 getty \
+    ${pkgdir}/usr/lib/os/live/run/systemd/system/getty@tty1.service.d/live.conf
+
+  # issue config
+  install -dm755 ${pkgdir}/etc/issue.d/
+  ln -s -t ${pkgdir}/etc/issue.d/ \
+    /run/issue.d/live.issue
+  install -Dm644 issue \
+    ${pkgdir}/usr/lib/os/live/run/issue.d/live.issue
+
+  # uosys-live-media service
+  install -Dm644 -t ${pkgdir}/usr/lib/systemd/system/ \
+    uosys-live-media{-early,}.service
+  mkdir -p ${pkgdir}/usr/lib/systemd/system/multi-user.target.wants
+  ln -s -t ${pkgdir}/usr/lib/systemd/system/multi-user.target.wants/ \
+    ../uosys-live-media{-early,}.service
+
+  # install live user homedir
+  # TODO: switch to rsync and filter out .git & keys
+  # TODO: maybe auto generate keys and .identity or sign .identity
+  # TODO: maybe package seperately
+  install -dm755 ${pkgdir}/usr/lib/os/live/homes
+  cp -a archie.homedir ${pkgdir}/usr/lib/os/live/homes/
+
+  install -Dm644 archie.homedir/.public \
+    ${pkgdir}/usr/lib/os/live/systemd-homed/archie.public
+}
