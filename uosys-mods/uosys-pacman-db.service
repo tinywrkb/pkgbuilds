@@ -1,0 +1,20 @@
+[Unit]
+Description=Sync Pacman DB from /usr to /var
+ConditionPathExists=/usr/bin/rsync
+ConditionDirectoryNotEmpty=/usr/share/pacman/db
+ConditionPathIsDirectory=/var/lib/pacman
+# TODO: is db is really needed?
+#       pacstrap need a wrapper to sync db own its own
+#       online system does not really need it, as db can be read only, if it's needed,
+#        wrappers can point to the right location
+#       really only needed when installing in an online container with overlayfs
+#       a special case would be if it would be possible to use filesystem-uosys with legacy system
+#ConditionVirtualization=systemd-nspawn
+After=systemd-tmpfiles-setup.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/rsync -a --delete /usr/share/pacman/db/ /var/lib/pacman/
+Nice=19
+IOSchedulingClass=idle
+IOSchedulingPriority=7

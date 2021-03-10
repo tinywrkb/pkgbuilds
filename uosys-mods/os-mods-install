@@ -1,0 +1,16 @@
+#!/bin/bash
+
+[ -f mods ] && \
+  install -Dm644 mods ${pkgdir}/usr/lib/os/mods/${_pkgname}.mods
+[ -f patch ] && \
+  install -Dm755 patch ${pkgdir}/usr/lib/os/patches/${_pkgname}.patch
+[ -f script.pre ] && \
+  install -Dm644 script.pre ${pkgdir}/usr/lib/os/scripts/${_pkgname}.pre
+[ -f script.post ] && \
+  install -Dm644 script.post ${pkgdir}/usr/lib/os/scripts/${_pkgname}.post
+[ -f services_cleanup ] && \
+  install -Dm644 services_cleanup ${pkgdir}/usr/lib/os/services_cleanup/${_pkgname}
+[ -f tmpfiles.d.conf ] && \
+  install -Dm644 tmpfiles.d.conf ${pkgdir}/usr/lib/tmpfiles.d/${pkgname}.conf
+
+return 0
