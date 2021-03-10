@@ -1,0 +1,24 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+pkgname='trxo'
+pkgver=2021.03.10.1
+pkgrel=1
+pkgdesc='trxo: trasmission-remote xdg-open'
+arch=('any')
+url=''
+license=('GPL2')
+source=('config' 'LICENSE.md' 'README.md'
+        'trxo' 'trxo.desktop' 'trxo.xml')
+sha256sums=('SKIP' 'SKIP' 'SKIP'
+            'SKIP' 'SKIP' 'SKIP')
+
+package() {
+  depends+=('transmission-cli')
+
+  install -Dm755 trxo -t ${pkgdir}g/usr/bin/
+  install -Dm644 trxo.desktop -t ${pkgdir}g/usr/share/applications/
+  install -Dm644 trxo.xml -t ${pkgdir}g/usr/share/mime/packages/
+  install -Dm644 config -t ${pkgdir}g/usr/share/doc/${pkgname}/
+  install -Dm644 README.md -t ${pkgdir}g/usr/share/doc/${pkgname}/
+  install -Dm644 LICENSE.md -t ${pkgdir}g/usr/share/licenses/${pkgname}/
+}
