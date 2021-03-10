@@ -102,7 +102,7 @@ elif [ "$mode" = virtiofs_system ]; then
 elif [ "$mode" = virtiofs_legacy ]; then
   # TODO: enable dax when its pr is merged into qemu
   #mount -t virtiofs -o dax liveos /sysroot
-  mount -t virtiofs -o liveos /sysroot
+  mount -t virtiofs liveos /sysroot
   if [ "$islive" = '1' ]; then
     mount -t tmpfs tmpfs /sysroot/var
   fi
