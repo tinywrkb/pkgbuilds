@@ -1,0 +1,33 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+pkgname=pipewire-jack-replacement
+pkgver=0.3
+pkgrel=1
+pkgdesc=''
+url=''
+license=('GPL')
+_headers_commit='ab27e5a59fe5294cf09d50ffa2414d1542cf245e'
+source=(headers::git+https://github.com/jackaudio/headers.git#commit=$_headers_commit
+        jack.pc)
+sha256sums=('SKIP'
+            'SKIP')
+arch=('any')
+makedepends=('git')
+conflicts=('jack')
+provides=('jack' 'libjack.so=0-64' 'libjacknet.so=0-64' 'libjackserver.so=0-64')
+
+package() {
+  depends+=('pipewire-jack')
+
+  install -Dm644 -t ${pkgdir}/usr/include/jack/ \
+    headers/*
+  install -dm755 ${pkgdir}/usr/lib
+  ln -s -t ${pkgdir}/usr/lib/ \
+    pipewire-0.3/jack/libjack{,net,server}.so
+#  for e in jack net server; do
+#    ln -s libjack${e}.so.${pkgver%.*} ${pkgdir}/usr/lib/libjack${e}.so.${pkgver}
+#    ln -s libjack${e}.so.${pkgver%.*.*} ${pkgdir}/usr/lib/libjack${e}.so.${pkgver%.*}
+#    ln -s libjack${e}.so ${pkgdir}/usr/lib/libjack${e}.so.${pkgver%.*.*}
+#  done
+  install -Dm644 jack.pc -t ${pkgdir}/usr/lib/pkgconfig/
+}
