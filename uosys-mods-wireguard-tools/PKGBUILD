@@ -1,0 +1,32 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+_pkgname=wireguard-tools
+pkgname=uosys-mods-${_pkgname}
+pkgver=2021.01.26.1
+pkgrel=1
+pkgdesc="$_pkgname uosys mods"
+arch=('any')
+licesne=('GPL')
+url=''
+
+build() {
+  cat << EOF > mods
+#target_list=()
+
+#mv_list=()
+
+rmdir_list=(wireguard,0700)
+
+link_list=(wireguard)
+EOF
+
+  cat << EOF > tmpfiles.d.conf
+# $_pkgname
+d /var/etc/wireguard 0700 - - - -
+EOF
+}
+
+package() {
+  depends+=('uosys-mods' $_pkgname)
+  source /usr/lib/os/os-mods-install
+}

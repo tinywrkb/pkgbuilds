@@ -1,0 +1,18 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+_pkgname=bash
+pkgname=uosys-mods-${_pkgname}
+pkgver=2021.01.26.1
+pkgrel=1
+pkgdesc="$_pkgname uosys mods"
+arch=('any')
+licesne=('GPL')
+url=''
+source=('patch' 'bash_xdg.sh')
+sha256sums=('SKIP' 'SKIP')
+
+package() {
+  depends+=('uosys-mods' $_pkgname)
+  source /usr/lib/os/os-mods-install
+  install -Dm644 bash_xdg.sh -t ${pkgdir}/etc/profile.d/
+}

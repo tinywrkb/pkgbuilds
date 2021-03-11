@@ -1,0 +1,26 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+_pkgname=xkeyboard-config
+pkgname=uosys-mods-${_pkgname}
+pkgver=2021.01.26.1
+pkgrel=1
+pkgdesc="$_pkgname uosys mods"
+arch=('any')
+licesne=('GPL')
+url=''
+
+build() {
+  cat << EOF > tmpfiles.d.conf
+# $_pkgname
+# xkeyboard-config xorg-server-common
+d /var/lib/xkb - - - - -
+
+# xorg-server-common
+#f /var/lib/xkb/README.compiled - - - - -
+EOF
+}
+
+package() {
+  depends+=('uosys-mods' $_pkgname)
+  source /usr/lib/os/os-mods-install
+}

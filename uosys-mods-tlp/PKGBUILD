@@ -1,0 +1,34 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+_pkgname=tlp
+pkgname=uosys-mods-${_pkgname}
+pkgver=2021.01.26.1
+pkgrel=1
+pkgdesc="$_pkgname uosys mods"
+arch=('any')
+licesne=('GPL')
+url=''
+
+build() {
+  cat << EOF > mods
+#target_list=()
+
+mv_list=(tlp.d)
+
+#rmdir_list=()
+
+link_list=(tlp.d)
+EOF
+
+  cat << EOF > tmpfiles.d.conf
+# $_pkgname
+d /var/etc/tlp.d - - - - -
+L /var/etc/tlp.d/README - - - - /usr/share/etc/tlp.d/README
+d /var/lib/tlp - - - - -
+EOF
+}
+
+package() {
+  depends+=('uosys-mods' $_pkgname)
+  source /usr/lib/os/os-mods-install
+}

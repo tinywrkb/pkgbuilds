@@ -1,0 +1,54 @@
+#!/bin/bash
+
+declare -A pkgs
+
+while read -r pkg; do
+
+  service_list=()
+  rmdir_list=()
+
+  # normalize package name
+  pkg=${pkg#uosys-mods-}
+
+  # provides/alias and multiple packages mods
+  case $pkg in
+    openssh-xdg)
+      pkg=openssh
+      ;;
+    pipewire-jack|pipewire-pulse|pipewire-media-session)
+      pkg=pipewire
+      ;;
+    pipewire-git|pipewire-jack-git|pipewire-media-session-git|pipewire-pulse-git)
+      pkg=pipewire
+      ;;
+  esac
+
+  # only process package once
+  [ "${pkgs[$pkg]}" = 1 ] && continue
+
+  # mark package so we won't process it again
+  pkgs+=([$pkg]=1)
+
+  [ -f /usr/lib/os/services_cleanup/${pkg} ] || \
+    { echo "Missing package uosys-mods-${pkg} skipping systemd-service-cleanup"; continue; }
+  source /usr/lib/os/services_cleanup/${pkg}
+
+  echo "systemd-service-cleanup: Cleaning ${pkg}..."
+
+  if [ ${#service_list[@]} -ne 0 ]; then
+    echo "Removing enabled services of ${pkg}..."
+    for f in ${service_list[@]}; do
+      /bin/rm -f /etc/systemd/$f
+    done
+  fi
+
+  if [ ${#rmdir_list[@]} -ne 0 ]; then
+    echo "Removing empty service folders of ${pkg}..."
+    for d in ${rmdir_list[@]}; do
+      /bin/rmdir --ignore-fail-on-non-empty /etc/systemd/$d
+    done
+  fi
+
+done
+
+exit 0

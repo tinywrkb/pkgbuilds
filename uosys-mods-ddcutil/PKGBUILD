@@ -1,0 +1,19 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+_pkgname=ddcutil
+pkgname=uosys-mods-${_pkgname}
+pkgver=2021.02.17.1
+pkgrel=1
+pkgdesc="$_pkgname uosys mods"
+arch=('any')
+licesne=('GPL')
+url=''
+source=('rules' 'modules-load.d')
+sha256sums=('SKIP' 'SKIP')
+
+package() {
+  depends+=('uosys-mods' $_pkgname)
+  source /usr/lib/os/os-mods-install
+  install -Dm644 rules ${pkgdir}/usr/lib/udev/rules.d/45-ddcutil-i2c.rules
+  install -Dm644 modules-load.d ${pkgdir}/usr/lib/modules-load.d/${_pkgname}.conf
+}

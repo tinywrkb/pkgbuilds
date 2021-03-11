@@ -1,0 +1,7 @@
+[Flatpak Repo]
+Title=Private
+Url=http://flatpak.net.private/
+Homepage=http://net.private/
+Comment=Private Flatpaks
+Description=Private Flatpaks
+GPGKey=

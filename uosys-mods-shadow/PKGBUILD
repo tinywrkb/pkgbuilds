@@ -1,0 +1,59 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+_pkgname=shadow
+pkgname=uosys-mods-${_pkgname}
+pkgver=2021.02.07.1
+pkgrel=1
+pkgdesc="$_pkgname uosys mods"
+arch=('any')
+licesne=('GPL')
+url=''
+source=('patch'
+        uosys-root-allow
+        etc-shadow-mount.service
+        etc-shadow{-premount-check.service,.mount}
+        module-setup.sh
+        sysroot-etc-shadow{-premount-check.service,.mount})
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP' 'SKIP'
+            'SKIP'
+            'SKIP' 'SKIP')
+
+package() {
+  depends+=('uosys-mods' $_pkgname)
+  source /usr/lib/os/os-mods-install
+
+  # install helper
+  install -Dm755 -t ${pkgdir}/usr/bin \
+    uosys-root-allow
+
+  # install initrd services and dracut module
+  #install -Dm644 -t ${pkgdir}/usr/lib/dracut/modules.d/95uosys-shadow/ \
+  #  module-setup.sh
+  #install -Dm644 -t ${pkgdir}/usr/lib/systemd/system/ \
+  #  sysroot-etc-shadow{-premount-check.service,.mount}
+  #install -dm755 ${pkgdir}/usr/lib/systemd/system/initrd-fs.target.wants
+  #ln -s -t ${pkgdir}/usr/lib/systemd/system/initrd-fs.target.wants/ \
+  #  ../sysroot-etc-shadow{-premount-check.service,.mount}
+
+  # multi-user.target seperate system services
+  # somehow ths creates a dependency cycle when using the basic target so this
+  #  is installed to the multi-user.target
+  #install -Dm644 -t ${pkgdir}/usr/lib/systemd/system/ \
+  #  etc-shadow{-premount-check.service,.mount}
+  #install -dm755 ${pkgdir}/usr/lib/systemd/system/multi-user.target.wants
+  #ln -s -t ${pkgdir}/usr/lib/systemd/system/multi-user.target.wants/ \
+  #  ../etc-shadow{-premount-check.service,.mount}
+
+  # unified system service
+  # needed because systemd tries to create source folder for bind mount with a .mount service
+  # TODO: maybe move into sysinit.target but not in the initrd so it will applied also to rescure.target
+  #       need to figure out if this is too early and tmpfiles needed before or maybe not if using unit condition
+  install -Dm644 -t ${pkgdir}/usr/lib/systemd/system/ \
+    etc-shadow-mount.service
+  install -dm755 ${pkgdir}/usr/lib/systemd/system/basic.target.wants
+  ln -s -t ${pkgdir}/usr/lib/systemd/system/basic.target.wants/ \
+    ../etc-shadow-mount.service
+}

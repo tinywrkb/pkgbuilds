@@ -1,0 +1,161 @@
+_pkgname=systemd
+pkgname=uosys-mods-${_pkgname}
+pkgver=2021.03.10.1
+pkgrel=1
+pkgdesc="$_pkgname uosys mods"
+arch=('any')
+licesne=('GPL')
+url=''
+source=('patch'
+        {journald,resolved,swap,timesyncd}.conf
+        systemd-services-cleanup{,.hook}
+        create-machine-id{,.service} module-setup.sh)
+sha256sums=('SKIP'
+            'SKIP' 'SKIP' 'SKIP' 'SKIP'
+            'SKIP' 'SKIP'
+            'SKIP' 'SKIP' 'SKIP')
+
+build() {
+  cat << EOF > mods
+#target_list=()
+
+mv_list=(systemd
+         udev)
+
+rmdir_list=(modules-load.d
+            sysctl.d
+            tmpfiles.d)
+
+# TODO: handle /etc/system
+link_list=(systemd
+           modules-load.d
+           sysctl.d
+           tmpfiles.d
+           udev)
+EOF
+
+  cat << EOF > tmpfiles.d.conf
+# $_pkgname
+
+# automatically created, comes from util-linux, here for documentation and avoiding a dangling link /mnt
+d /run/mount - - - - -
+
+d /var/etc/exports.d - - - - -
+d /var/etc/modules-load.d - - - - -
+d /var/etc/sysctl.d - - - - -
+
+d /var/etc/systemd - - - - -
+d /var/etc/systemd/network - - - - -
+d /var/etc/systemd/system - - - - -
+d /var/etc/systemd/user - - - - -
+
+L+ /var/etc/systemd/coredump.conf - - - - /usr/share/etc/systemd/coredump.conf
+L+ /var/etc/systemd/homed.conf - - - - /usr/share/etc/systemd/homed.conf
+L+ /var/etc/systemd/journal-remote.conf - - - - /usr/share/etc/systemd/journal-remote.conf
+L+ /var/etc/systemd/journal-upload.conf - - - - /usr/share/etc/systemd/journal-upload.conf
+L+ /var/etc/systemd/journald.conf - - - - /usr/share/etc/systemd/journald.conf
+L+ /var/etc/systemd/logind.conf - - - - /usr/share/etc/systemd/logind.conf
+L+ /var/etc/systemd/networkd.conf - - - - /usr/share/etc/systemd/networkd.conf
+L+ /var/etc/systemd/pstore.conf - - - - /usr/share/etc/systemd/pstore.conf
+L+ /var/etc/systemd/resolved.conf - - - - /usr/share/etc/systemd/resolved.conf
+L+ /var/etc/systemd/sleep.conf - - - - /usr/share/etc/systemd/sleep.conf
+L+ /var/etc/systemd/system.conf - - - - /usr/share/etc/systemd/system.conf
+L+ /var/etc/systemd/timesyncd.conf - - - - /usr/share/etc/systemd/timesyncd.conf
+L+ /var/etc/systemd/user.conf - - - - /usr/share/etc/systemd/user.conf
+
+# systemd-swap
+L+ /var/etc/systemd/swap.conf - - - - /usr/share/etc/systemd/swap.conf
+d /var/lib/systemd-swap - - - - -
+
+d /var/etc/tmpfiles.d - - - - -
+
+# udev
+d /var/etc/udev - - - - -
+d /var/etc/udev/hwdb.d - - - - -
+d /var/etc/udev/rules.d - - - - -
+L- /var/etc/udev/udev.conf - - - - /usr/share/etc/udev/udev.conf
+
+# TODO: open bug report in systemd about realpath vs readlink or just patch systemd
+# localtime need to be hardcoded due to a systemd limitaiton
+#L /var/etc/localtime - - - - /usr/share/zoneinfo/Asia/Jerusalem
+
+# TODO: re-evaluate this, need to take in consideation local dns and quick switch settings
+#       maybe create a helper script to do the switch when local dns is broken
+#       maybe reconsider using systemd-resolved caching capability with multiple dns servers,
+#        local and remote (google+smartdnsproxy)
+L- /var/etc/resolv.conf - - - - /run/systemd/resolve/stub-resolv.conf
+
+f /var/etc/hostname - - - - archlinux-%b
+f /var/etc/machine-id - - - - -
+f /var/etc/machine-info - - - - -
+
+f /var/etc/adjtime - - - - -
+
+d /var/log/journal - - - - -
+
+## base: systemd-homed
+d /var/homes 755 - - - -
+# already being created by systemd-homed and by initrd when needed early
+#d /var/lib/systemd/home 755 - - - -
+EOF
+
+  cat << EOF > services_cleanup
+service_list=(system/getty.target.wants/getty@tty1.service
+              system/multi-user.target.wants/remote-fs.target)
+
+rmdir_list=(system/getty.target.wants
+            system/multi-user.target.wants)
+EOF
+}
+
+package() {
+  depends+=('uosys-mods' $_pkgname systemd-swap)
+  source /usr/lib/os/os-mods-install
+
+  # services cleanup alpm hook
+  install -Dm644 systemd-services-cleanup.hook \
+    ${pkgdir}/usr/share/libalpm/hooks/zy-systemd-services-cleanup.hook
+  install -Dm755 systemd-services-cleanup -t ${pkgdir}/usr/share/libalpm/scripts/
+
+  # systemd services defaults
+  install -Dm644 journald.conf ${pkgdir}/usr/lib/systemd/journald.conf.d/0default.conf
+  install -Dm644 resolved.conf ${pkgdir}/usr/lib/systemd/resolved.conf.d/0default.conf
+  install -Dm644 timesyncd.conf ${pkgdir}/usr/lib/systemd/timesyncd.conf.d/0default.conf
+
+  # systemd-swap service defaults
+  install -Dm644 swap.conf ${pkgdir}/usr/lib/systemd/swap.conf.d/0default.conf
+
+  # services enabled by the install script
+  mkdir -p ${pkgdir}/usr/lib/systemd/system/getty.target.wants
+  ln -s ../getty@.service ${pkgdir}/usr/lib/systemd/system/getty.target.wants/getty@tty1.service
+  mkdir -p ${pkgdir}/usr/lib/systemd/system/multi-user.target.wants
+  ln -s -t ${pkgdir}/usr/lib/systemd/system/multi-user.target.wants/ \
+    ../remote-fs.target
+
+  # extra services to enable
+  mkdir -p ${pkgdir}/usr/lib/systemd/system/multi-user.target.wants
+  ln -s -t ${pkgdir}/usr/lib/systemd/system/multi-user.target.wants/ \
+    ../systemd-{homed,networkd,resolved,swap}.service
+  mkdir -p ${pkgdir}/usr/lib/systemd/system/network-online.target.wants
+  ln -s -t ${pkgdir}/usr/lib/systemd/system/network-online.target.wants/ \
+    ../systemd-networkd-wait-online.service
+  mkdir -p ${pkgdir}/usr/lib/systemd/system/sockets.target.wants
+  ln -s -t ${pkgdir}/usr/lib/systemd/system/sockets.target.wants/ \
+    ../systemd-networkd.socket
+  mkdir -p ${pkgdir}/usr/lib/systemd/system/sysinit.target.wants
+  ln -s -t ${pkgdir}/usr/lib/systemd/system/sysinit.target.wants/ \
+    ../systemd-timesyncd.service
+  # aliases
+  ln -s systemd-homed.service ${pkgdir}/usr/lib/systemd/system/dbus-org.freedesktop.home1.service
+  ln -s systemd-networkd.service ${pkgdir}/usr/lib/systemd/system/dbus-org.freedesktop.network1.service
+  ln -s systemd-resolved.service ${pkgdir}/usr/lib/systemd/system/dbus-org.freedesktop.resolve1.service
+
+  # create-machine-id service and dracut hook
+  install -Dm644 create-machine-id.service -t ${pkgdir}/usr/lib/systemd/system/
+  mkdir -p ${pkgdir}/usr/lib/systemd/system/initrd-fs.target.wants
+  ln -s -t ${pkgdir}/usr/lib/systemd/system/initrd-fs.target.wants \
+    ../create-machine-id.service
+  install -Dm644 module-setup.sh -t ${pkgdir}/usr/lib/dracut/modules.d/95create-machine-id/
+  mkdir -p ${pkgdir}/usr/lib/os
+  install -Dm755 create-machine-id -t ${pkgdir}/usr/lib/os/
+}

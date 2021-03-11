@@ -1,0 +1,101 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+_pkgname=libvirt
+pkgname=uosys-mods-${_pkgname}
+pkgver=2021.01.26.1
+pkgrel=1
+pkgdesc="$_pkgname uosys mods"
+arch=('any')
+licesne=('GPL')
+url=''
+
+build() {
+  cat << EOF > mods
+#target_list=()
+
+mv_list=(libvirt)
+
+#rmdir_list=()
+
+link_list=(libvirt)
+EOF
+
+# TODO: add a pre-transuction hook to remove config identical to distro so new ones will be deployed
+# TODO: add a post-transuction hook to compare config.org to new one and copy config.new if differs
+# TODO: use a post-transuction hook to copy config files instead of tmpfiles.d to be able to use globs
+# TODO: maybe use systemd service instead
+# TODO: maybe use use an alpm hook to create reports comparing config file list in /usr/etc to /var/etc
+  cat << EOF > tmpfiles.d.conf
+# $_pkgname
+d /var/cache/libvirt - - - - -
+# TODO: symlink all confs (there some in sub-folders)
+# TODO: add a script to check for new conf symlinks
+d /var/etc/libvirt - - - - -
+d /var/etc/libvirt/nwfilter - - - - -
+C /var/etc/libvirt/nwfilter/allow-arp.xml - - - - /usr/share/etc/libvirt/nwfilter/allow-arp.xml
+C /var/etc/libvirt/nwfilter/allow-dhcp-server.xml - - - - /usr/share/etc/libvirt/nwfilter/allow-dhcp-server.xml
+C /var/etc/libvirt/nwfilter/allow-dhcp.xml - - - - /usr/share/etc/libvirt/nwfilter/allow-dhcp.xml
+C /var/etc/libvirt/nwfilter/allow-incoming-ipv4.xml - - - - /usr/share/etc/libvirt/nwfilter/allow-incoming-ipv4.xml
+C /var/etc/libvirt/nwfilter/allow-ipv4.xml - - - - /usr/share/etc/libvirt/nwfilter/allow-ipv4.xml
+C /var/etc/libvirt/nwfilter/clean-traffic-gateway.xml - - - - /usr/share/etc/libvirt/nwfilter/clean-traffic-gateway.xml
+C /var/etc/libvirt/nwfilter/clean-traffic.xml - - - - /usr/share/etc/libvirt/nwfilter/clean-traffic.xml
+C /var/etc/libvirt/nwfilter/no-arp-ip-spoofing.xml - - - - /usr/share/etc/libvirt/nwfilter/no-arp-ip-spoofing.xml
+C /var/etc/libvirt/nwfilter/no-arp-mac-spoofing.xml - - - - /usr/share/etc/libvirt/nwfilter/no-arp-mac-spoofing.xml
+C /var/etc/libvirt/nwfilter/no-arp-spoofing.xml - - - - /usr/share/etc/libvirt/nwfilter/no-arp-spoofing.xml
+C /var/etc/libvirt/nwfilter/no-ip-multicast.xml - - - - /usr/share/etc/libvirt/nwfilter/no-ip-multicast.xml
+C /var/etc/libvirt/nwfilter/no-ip-spoofing.xml - - - - /usr/share/etc/libvirt/nwfilter/no-ip-spoofing.xml
+C /var/etc/libvirt/nwfilter/no-mac-broadcast.xml - - - - /usr/share/etc/libvirt/nwfilter/no-mac-broadcast.xml
+C /var/etc/libvirt/nwfilter/no-mac-spoofing.xml - - - - /usr/share/etc/libvirt/nwfilter/no-mac-spoofing.xml
+C /var/etc/libvirt/nwfilter/no-other-l2-traffic.xml - - - - /usr/share/etc/libvirt/nwfilter/no-other-l2-traffic.xml
+C /var/etc/libvirt/nwfilter/no-other-rarp-traffic.xml - - - - /usr/share/etc/libvirt/nwfilter/no-other-rarp-traffic.xml
+C /var/etc/libvirt/nwfilter/qemu-announce-self-rarp.xml - - - - /usr/share/etc/libvirt/nwfilter/qemu-announce-self-rarp.xml
+C /var/etc/libvirt/nwfilter/qemu-announce-self.xml - - - - /usr/share/etc/libvirt/nwfilter/qemu-announce-self.xml
+d /var/etc/libvirt/qemu - - - - -
+d /var/etc/libvirt/qemu/networks - - - - -
+d /var/etc/libvirt/qemu/networks/autostart - - - - -
+d /var/etc/libvirt/secrets 0700 - - - -
+d /var/etc/libvirt/storage - - - - -
+d /var/etc/libvirt/storage/autostart - - - - -
+C /var/etc/libvirt/libvirt-admin.conf - - - - /usr/share/etc/libvirt/libvirt-admin.conf
+C /var/etc/libvirt/libvirt.conf - - - - /usr/share/etc/libvirt/libvirt.conf
+C /var/etc/libvirt/libvirtd.conf - - - - /usr/share/etc/libvirt/libvirtd.conf
+C /var/etc/libvirt/lxc.conf - - - - /usr/share/etc/libvirt/lxc.conf
+C /var/etc/libvirt/qemu-lockd.conf - - - - /usr/share/etc/libvirt/qemu-lockd.conf
+C /var/etc/libvirt/qemu.conf - - - - /usr/share/etc/libvirt/qemu.conf
+C /var/etc/libvirt/qemu/networks/default.xml - - - - /usr/share/etc/libvirt/qemu/networks/default.xml
+C /var/etc/libvirt/virt-login-shell.conf - - - - /usr/share/etc/libvirt/virt-login-shell.conf
+C /var/etc/libvirt/virtinterfaced.conf - - - - /usr/share/etc/libvirt/virtinterfaced.conf
+C /var/etc/libvirt/virtlockd.conf - - - - /usr/share/etc/libvirt/virtlockd.conf
+C /var/etc/libvirt/virtlogd.conf - - - - /usr/share/etc/libvirt/virtlogd.conf
+C /var/etc/libvirt/virtlxcd.conf - - - - /usr/share/etc/libvirt/virtlxcd.conf
+C /var/etc/libvirt/virtnetworkd.conf - - - - /usr/share/etc/libvirt/virtnetworkd.conf
+C /var/etc/libvirt/virtnodedevd.conf - - - - /usr/share/etc/libvirt/virtnodedevd.conf
+C /var/etc/libvirt/virtnwfilterd.conf - - - - /usr/share/etc/libvirt/virtnwfilterd.conf
+C /var/etc/libvirt/virtproxyd.conf - - - - /usr/share/etc/libvirt/virtproxyd.conf
+C /var/etc/libvirt/virtqemud.conf - - - - /usr/share/etc/libvirt/virtqemud.conf
+C /var/etc/libvirt/virtsecretd.conf - - - - /usr/share/etc/libvirt/virtsecretd.conf
+C /var/etc/libvirt/virtstoraged.conf - - - - /usr/share/etc/libvirt/virtstoraged.conf
+C /var/etc/libvirt/virtvboxd.conf - - - - /usr/share/etc/libvirt/virtvboxd.conf
+d /var/lib/libvirt - - - - -
+d /var/lib/libvirt/boot - - - - -
+d /var/lib/libvirt/dnsmasq - - - - -
+d /var/lib/libvirt/filesystems - - - - -
+d /var/lib/libvirt/images - - - - -
+d /var/lib/libvirt/lockd - - - - -
+d /var/lib/libvirt/lockd/files - - - - -
+d /var/lib/libvirt/lxc - - - - -
+d /var/lib/libvirt/network - - - - -
+d /var/lib/libvirt/swtpm - - - - -
+d /var/log/libvirt - - - - -
+d /var/log/libvirt/lxc - - - - -
+d /var/log/libvirt/qemu - - - - -
+d /var/log/swtpm - - - - -
+d /var/log/swtpm/libvirt - - - - -
+d /var/log/swtpm/libvirt/qemu - - - - -
+EOF
+}
+
+package() {
+  depends+=('uosys-mods' $_pkgname)
+  source /usr/lib/os/os-mods-install
+}

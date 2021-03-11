@@ -1,0 +1,29 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+_pkgname=gnupg
+pkgname=uosys-mods-${_pkgname}
+pkgver=2021.01.26.1
+pkgrel=1
+pkgdesc="$_pkgname uosys mods"
+arch=('any')
+licesne=('GPL')
+url=''
+
+build() {
+  cat << EOF > services_cleanup
+service_list=(user/sockets.target.wants/dirmngr.socket
+              user/sockets.target.wants/gpg-agent{,-browser,-extra,-ssh}.socket)
+
+rmdir_list=(user/sockets.target.wants)
+EOF
+}
+
+package() {
+  depends+=('uosys-mods' $_pkgname)
+  source /usr/lib/os/os-mods-install
+
+  mkdir -p ${pkgdir}/usr/lib/systemd/user/sockets.target.wants
+  ln -s -t ${pkgdir}/usr/lib/systemd/user/sockets.target.wants/ \
+    ../dirmngr.socket \
+    ../gpg-agent{,-browser,-extra,-ssh}.socket
+}

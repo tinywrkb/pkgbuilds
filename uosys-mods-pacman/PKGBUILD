@@ -1,0 +1,49 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+_pkgname=pacman
+pkgname=uosys-mods-${_pkgname}
+pkgver=2021.03.10.1
+pkgrel=1
+pkgdesc="$_pkgname uosys mods"
+arch=('any')
+url=''
+licesne=('GPL')
+install=install
+source=('patch' 'excluded.conf' 'gpg.conf' 'miffe.gpg')
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP')
+
+build() {
+  cat << EOF > tmpfiles.d.conf
+# $_pkgname
+d /var/etc/pacman.d - - - - -
+d /var/etc/pacman.d/conf - - - - -
+L- /var/etc/pacman.d/conf/excluded.conf - - - - /etc/pacman.d/excluded.conf
+f /var/etc/pacman.d/conf/local.conf - - - - -
+d /var/etc/pacman.d/gnupg - - - - -
+L+ /var/etc/pacman.d/gnupg/gpg.conf - - - - /etc/pacman.d/gpg.conf
+d /var/etc/pacman.d/hooks - - - - -
+d /var/lib/pacman - - - - -
+# this is the previous workaround to keep db in /usr, now systemd service (rsync) creates these
+#d /var/lib/pacman/sync - - - - -
+#L /var/lib/pacman/local - - - - ../../../usr/share/pacman/db/local
+# TODO: maybe it will be better to move this cache to somewhere else, so it would be archived better
+#        and available to containers and vms
+d /var/cache/pacman - - - - -
+d /var/cache/pacman/pkg - - - - -
+EOF
+}
+
+package() {
+  depends+=('uosys-mods' $_pkgname)
+  source /usr/lib/os/os-mods-install
+
+  install -dm755 ${pkgdir}/etc/pacman.d
+  ln -s /var/etc/pacman.d/conf ${pkgdir}/etc/pacman.d/conf
+  ln -s /var/etc/pacman.d/gnupg ${pkgdir}/etc/pacman.d/gnupg
+  ln -s /var/etc/pacman.d/hooks ${pkgdir}/etc/pacman.d/hooks
+  install -Dm644 {excluded,gpg}.conf -t ${pkgdir}/etc/pacman.d/
+
+  # install public keys
+  install -Dm644 -t ${pkgdir}/usr/share/pacman/keyrings/ \
+    miffe.gpg
+}

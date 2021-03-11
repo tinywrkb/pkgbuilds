@@ -1,0 +1,21 @@
+[Trigger]
+Type = Package
+Operation = Install
+Target = gnupg
+Target = p11-kit
+Target = pipewire
+Target = pipewire-git
+Target = pipewire-jack
+Target = pipewire-jack-git
+Target = pipewire-media-session
+Target = pipewire-media-session-git
+Target = pipewire-pulse
+Target = pipewire-pulse-git
+Target = systemd
+Target = xdg-user-dirs
+
+[Action]
+Description = Removing enabled services from /etc...
+Exec = /usr/share/libalpm/scripts/systemd-services-cleanup
+When = PostTransaction
+NeedsTargets

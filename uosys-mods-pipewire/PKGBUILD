@@ -1,0 +1,34 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+_pkgname=pipewire
+pkgname=uosys-mods-${_pkgname}
+pkgver=2021.02.24.1
+pkgrel=1
+pkgdesc="$_pkgname uosys mods"
+arch=('any')
+licesne=('GPL')
+url=''
+
+build() {
+  cat << EOF > services_cleanup
+service_list=(user/pipewire.service.wants/pipewire-media-session.service
+              user/sockets.target.wants/pipewire.socket
+              user/sockets.target.wants/pipewire-pulse.socket)
+
+rmdir_list=(user/pipewire.service.wants
+            user/sockets.target.wants)
+EOF
+}
+
+package() {
+  depends+=('uosys-mods' $_pkgname pipewire-pulse)
+  source /usr/lib/os/os-mods-install
+
+  mkdir -p ${pkgdir}/usr/lib/systemd/user/pipewire.service.wants
+  ln -s -t ${pkgdir}/usr/lib/systemd/user/pipewire.service.wants/ \
+    ../pipewire-media-session.service
+
+  mkdir -p ${pkgdir}/usr/lib/systemd/user/sockets.target.wants
+  ln -s -t ${pkgdir}/usr/lib/systemd/user/sockets.target.wants/ \
+    ../{pipewire,pipewire-pulse}.socket
+}

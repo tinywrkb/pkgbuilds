@@ -1,0 +1,78 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+_pkgname=packagekit
+pkgname=uosys-mods-${_pkgname}
+pkgver=2021.01.29.1
+pkgrel=1
+pkgdesc="$_pkgname uosys mods"
+arch=('any')
+licesne=('GPL')
+url=''
+
+build() {
+  cat << EOF > tmpfiles.d.conf
+# $_pkgname
+C /var/lib/PackageKit/transactions.db 0644 - - - /usr/share/PackageKit/transactions.db
+EOF
+
+  cat << EOF > script.pre
+# workaround for having a packaged template in /var
+
+echo 'Restoring PackageKit default transactions.db...'
+
+# backup system's db
+[ -f /var/lib/PackageKit/transactions.db ] && \
+  /bin/mv -f /var/lib/PackageKit/transactions.db{,.bak}
+
+# copy installed default
+install -Dm644 -t  /var/lib/PackageKit/ \
+  /usr/share/PackageKit/transactions.db
+EOF
+
+  cat << "EOF" > script.post
+# workaround for having a packaged template in /var
+# instead of managing another package let's just move it with a hook
+# this runs before tmpfiles.d hook so we can safely remove the file
+
+# no new db? just return
+[ -f /var/lib/PackageKit/transactions.db ] || return 1
+
+# we have an old default db
+if [ -f /usr/share/PackageKit/transactions.db ]; then
+  oldsha=$(sha256sum /usr/share/PackageKit/transactions.db)
+  newsha=$(sha256sum /var/lib/PackageKit/transactions.db)
+
+  # if equal just restore the backup if exist
+  if [ "$newsha" = "$oldsha" ]; then
+    [ -f /var/lib/PackageKit/transactions.db.bak ] && \
+    /bin/mv -f /var/lib/PackageKit/transactions.db{.bak,}
+
+  # update the default and drop the backup
+  else
+    # remove old default
+    /bin/rm -f /usr/share/PackageKit/transactions.db
+
+    # install the new default
+    install -Dm644 -t /usr/share/PackageKit/ \
+      /var/lib/PackageKit/transactions.db
+
+    # remove the backup
+    /bin/rm -f /var/lib/PackageKit/transactions.db.bak
+  fi
+
+# we don't have an old db
+else
+  # install the default
+  install -Dm644 -t /usr/share/PackageKit/ \
+    /var/lib/PackageKit/transactions.db
+
+  # we know nothing about the backup version so remove it
+  /bin/rm -f /var/lib/PackageKit/transactions.db.bak
+fi
+EOF
+}
+
+package() {
+  depends+=('uosys-mods' $_pkgname)
+  source /usr/lib/os/os-mods-install
+}

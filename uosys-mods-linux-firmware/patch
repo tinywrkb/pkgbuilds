@@ -1,0 +1,5 @@
+--- a/usr/lib/tmpfiles.d/linux-firmware.conf
++++ b/usr/lib/tmpfiles.d/linux-firmware.conf
+@@ -1 +1 @@
+-w /sys/devices/system/cpu/microcode/reload - - - - 1
++w- /sys/devices/system/cpu/microcode/reload - - - - 1

@@ -1,0 +1,51 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+_pkgname=iwd
+pkgname=uosys-mods-${_pkgname}
+pkgver=2021.01.28.3
+pkgrel=1
+pkgdesc="$_pkgname uosys mods"
+arch=('any')
+licesne=('GPL')
+url=''
+
+build() {
+  cat << EOF > mods
+#target_list=()
+
+# prefer moving iwd, even if it's empty as it might not be empty in the future
+mv_list=(iwd)
+
+#rmdir_list=()
+
+link_list=(iwd)
+EOF
+
+  cat << EOF > tmpfiles.d.conf
+# $_pkgname
+d /var/etc/iwd 0755 - - - -
+L+ /var/etc/iwd/README - - - - /usr/share/etc/iwd/README
+
+# document these, they are not even packaged
+d /var/lib/iwd 0700 - - - -
+d /var/lib/iwd/ap 0700 - - - -
+d /var/lib/iwd/hotspot 0700 - - - -
+EOF
+}
+
+package() {
+  depends+=('uosys-mods' $_pkgname)
+  source /usr/lib/os/os-mods-install
+
+  # create /etc/iwd as it might be included in future releases
+  install -dm755 ${pkgdir}/etc/iwd
+  echo 'Location for iwd config file. See iwd.config(5) man page for more details.' \
+    > ${pkgdir}/etc/iwd/README
+
+  # enable service by default
+  # socket activated systemd-rfkill makes it possible to restore power state and avoid auto-connecting
+  # TODO: maybe disable until it will be possible to disable auto-connect globally
+  install -dm755 ${pkgdir}/usr/lib/systemd/system/multi-user.target.wants
+  ln -s -t ${pkgdir}/usr/lib/systemd/system/multi-user.target.wants/ \
+    ../iwd.service
+}

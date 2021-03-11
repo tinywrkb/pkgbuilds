@@ -1,0 +1,25 @@
+--- a/etc/pam.d/system-login
++++ b/etc/pam.d/system-login
+@@ -2,16 +2,22 @@
+ 
+ auth       required   pam_shells.so
+ auth       requisite  pam_nologin.so
++auth       optional   pam_mount.so
+ auth       include    system-auth
+ 
+ account    required   pam_access.so
+ account    required   pam_nologin.so
+ account    include    system-auth
+ 
++password   optional   pam_mount.so
+ password   include    system-auth
+ 
+ session    optional   pam_loginuid.so
+ session    optional   pam_keyinit.so       force revoke
++session [success=3 default=ignore]  pam_succeed_if.so  tty != tty1 quiet
++session [success=2 default=ignore]  pam_succeed_if.so  service = sshd quiet
++session [success=1 default=ignore]  pam_succeed_if.so  service = systemd-user quiet
++session    optional   pam_mount.so
+ session    include    system-auth
+ session    optional   pam_motd.so          motd=/etc/motd
+ session    optional   pam_mail.so          dir=/var/spool/mail standard quiet

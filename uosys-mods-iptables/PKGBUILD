@@ -1,0 +1,39 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+_pkgname=iptables
+pkgname=uosys-mods-${_pkgname}
+pkgver=2021.01.26.1
+pkgrel=1
+pkgdesc="$_pkgname uosys mods"
+arch=('any')
+licesne=('GPL')
+url=''
+
+build() {
+  cat << EOF > mods
+#target_list=()
+
+mv_list=(iptables)
+
+#rmdir_list=()
+
+link_list=(iptables)
+EOF
+
+  cat << EOF > tmpfiles.d.conf
+# $_pkgname
+#C /var/etc/iptables - - - - /usr/etc/compat/iptables
+d /var/etc/iptables - - - - -
+L- /var/etc/iptables/ip6tables.rules - - - - /usr/share/etc/iptables/ip6tables.rules
+L- /var/etc/iptables/iptables.rules - - - - /usr/share/etc/iptables/iptables.rules
+EOF
+}
+
+package() {
+  depends+=('uosys-mods' $_pkgname)
+  source /usr/lib/os/os-mods-install
+
+  mkdir -p ${pkgdir}/usr/lib/systemd/system/multi-user.target.wants
+  ln -s -t ${pkgdir}/usr/lib/systemd/system/multi-user.target.wants/ \
+    ../ip{,6}tables.service
+}

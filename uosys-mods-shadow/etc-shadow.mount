@@ -1,0 +1,13 @@
+[Unit]
+Description=Mount shadow file with root account password
+Requires=etc-shadow-premount-check.service
+After=sysinit.target etc-shadow-premount-check.service
+#BindsTo=etc-shadow-premount-check.service
+
+[Mount]
+What=/var/etc/shadow
+Where=/etc/shadow
+Options=bind
+
+[Install]
+WantedBy=multi-user.target

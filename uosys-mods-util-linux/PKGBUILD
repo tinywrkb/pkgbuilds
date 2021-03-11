@@ -1,0 +1,19 @@
+_pkgname=util-linux
+pkgname=uosys-mods-${_pkgname}
+pkgver=2021.01.26.1
+pkgrel=1
+pkgdesc="$_pkgname uosys mods"
+arch=('any')
+licesne=('GPL')
+url=''
+source=('patch')
+sha256sums=('SKIP')
+
+package() {
+  depends+=('uosys-mods' $_pkgname 'gnome-keyring')
+  source /usr/lib/os/os-mods-install
+
+  mkdir -p ${pkgdir}/usr/lib/systemd/system/timers.target.wants
+  ln -s -t ${pkgdir}/usr/lib/systemd/system/timers.target.wants/ \
+    ../fstrim.timer
+}
