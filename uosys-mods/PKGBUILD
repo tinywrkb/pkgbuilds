@@ -1,7 +1,7 @@
 # Maintainer: tinywrkb <tinywrkb@gmail.com>
 
 pkgname=uosys-mods
-pkgver=2021.03.10.1
+pkgver=2021.03.11.1
 pkgrel=1
 pkgdes='uosys mods'
 arch=('any')
@@ -12,11 +12,17 @@ source=(os-mods{,-install} {install,restore}.hook sync-pacman-db.hook uosys-pacm
 sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 
 package() {
+  # os-mod-install lib
+  install -Dm644 os-mods-install -t $pkgdir/usr/lib/os/
+
+  # directory tree structure
   install -dm755 $pkgdir/usr/lib/os/{mods,patches,scripts}
   install -dm755 $pkgdir/usr/share/etc
-  install -Dm755 os-mods{,-install} -t $pkgdir/usr/share/libalpm/scripts/
 
-  # os-mods hook
+  # os-mods alpm script
+  install -Dm755 os-mods -t $pkgdir/usr/share/libalpm/scripts/
+
+  # os-mods alpm hook
   install -Dm644 install.hook $pkgdir/usr/share/libalpm/hooks/00-${pkgname}-install.hook
   install -Dm644 restore.hook $pkgdir/usr/share/libalpm/hooks/00-${pkgname}-restore.hook
 
