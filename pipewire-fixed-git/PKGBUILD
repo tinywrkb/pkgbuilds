@@ -3,71 +3,41 @@
 # Contributor: Jan de Groot <jgc@archlinux.org>
 # Contributor: sl1pkn07 <sl1pkn07@gmail.com>
 
-pkgbase=pipewire-fixed-git
-pkgname=('pipewire-fixed-git'
-         'alsa-card-profiles-fixed-git'
-         'pipewire-docs-fixed-git'
-         'pipewire-media-session-fixed-git'
-         'pipewire-alsa-fixed-git'
-         'pipewire-jack-fixed-git'
-         'pipewire-pulse-fixed-git'
-         )
-pkgver=0.3.23.5.ge89e87ba
+_pkgbase=pipewire
+_pkgpostfix=fixed-git
+pkgbase=$_pkgbase-$_pkgpostfix
+pkgname=({pipewire,alsa-card-profiles,pipewire-docs,pipewire-media-session}-$_pkgpostfix
+         {pipewire-alsa,pipewire-jack,pipewire-pulse,gst-plugin-pipewire}-$_pkgpostfix)
+pkgver=0.3.23.r59.ga5922a9c
 pkgrel=1
-pkgdesc='Low-latency audio/video router and processor (GIT version)'
-arch=('x86_64')
-url='https://pipewire.org'
-license=('LGPL')
-makedepends=('git'
-             'meson'
-             'doxygen'
-             'graphviz'
-             'xmltoman'
-             'valgrind'
-             'libpulse'
-             'alsa-lib'
-             'sbc'
-             'rtkit'
-             'dbus'
-             'sdl2'
-             'ncurses'
-             'libsndfile'
-             'bluez-libs'
-             'libldac'
-             'libopenaptx'
-             'libfdk-aac'
-             )
-checkdepends=('desktop-file-utils')
-source=('git+https://gitlab.freedesktop.org/pipewire/pipewire.git')
+pkgdesc="Low-latency audio/video router and processor"
+pkgdesc+=" (GIT version)"
+url="https://pipewire.org"
+license=(LGPL)
+arch=(x86_64)
+makedepends=(git meson doxygen graphviz xmltoman valgrind libpulse alsa-lib
+             gst-plugins-base rtkit dbus sdl2 ncurses libsndfile bluez-libs sbc
+             libldac libopenaptx libfdk-aac)
+checkdepends=(desktop-file-utils)
+source=("git+https://gitlab.freedesktop.org/pipewire/pipewire.git")
 sha256sums=('SKIP')
 
 pkgver() {
-  cd pipewire
-  echo "$(git describe --long --tags | tr - .)"
+  cd $_pkgbase
+  git describe --long --tags 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
 }
 
 prepare() {
-  mkdir -p build
-
-  cd pipewire
-
-  # Reduce docs size
-  printf '%s\n' >> doc/Doxyfile.in \
-    HAVE_DOT=yes DOT_IMAGE_FORMAT=svg INTERACTIVE_SVG=yes
+  cd $_pkgbase
 }
 
 build() {
-  cd "${srcdir}/build"
-
-  CFLAGS+=" -Wformat"
-
-  arch-meson ../pipewire \
-    -D udevrulesdir=/usr/lib/udev/rules.d \
-    -D docs=true \
-    -D jack=false \
-    -D gstreamer=false \
-
-  ninja
+  arch-meson $_pkgbase build \
+    -D docs=enabled \
+    -D jack=disabled \
+    -D vulkan=disabled \
+    -D udevrulesdir=/usr/lib/udev/rules.d
+  meson compile -C build
 }
 
 check() {
@@ -75,47 +45,35 @@ check() {
 }
 
 _pick() {
-  local p="${1}" f d; shift
+  local p="$1" f d; shift
   for f; do
-    d="${srcdir}/${p}/${f#$pkgdir/}"
-    mkdir -p "$(dirname "${d}")"
-    mv "${f}" "${d}"
-    rmdir -p --ignore-fail-on-non-empty "$(dirname "${f}")"
+    d="$srcdir/$p/${f#$pkgdir/}"
+    mkdir -p "$(dirname "$d")"
+    mv "$f" "$d"
+    rmdir -p --ignore-fail-on-non-empty "$(dirname "$f")"
   done
 }
 
+_ver=${pkgver:0:3}
+
 package_pipewire-fixed-git() {
-  depends=('alsa-card-profiles-fixed-git'
-           'rtkit'
-           'libasound.so'
-           'libbluetooth.so'
-           'libdbus-1.so'
-           'libfdk-aac.so'
-           'libldacBT_enc.so'
-           'libncursesw.so'
-           'libopenaptx.so'
-           'libsbc.so'
-           'libsndfile.so'
-           'libsystemd.so'
-           'libudev.so'
-           )
+  depends=(rtkit alsa-card-profiles-fixed-git libdbus-1.so libncursesw.so libsndfile.so
+           libudev.so libasound.so libsystemd.so libbluetooth.so libsbc.so
+           libldacBT_enc.so libopenaptx.so libfdk-aac.so)
   optdepends=('pipewire-docs-fixed-git: Documentation'
               'pipewire-media-session-fixed-git: Default session manager'
               'pipewire-alsa-fixed-git: ALSA configuration'
               'pipewire-jack-fixed-git: JACK support'
               'pipewire-pulse-fixed-git: PulseAudio replacement'
-              'gst-plugin-pipewire-fixed-git: gstreamer support'
-              )
-  provides=('pipewire'
-            "libpipewire-${pkgver:0:3}.so"
-            )
-  conflicts=('pipewire')
+              'gst-plugin-pipewire-fixed-git: GStreamer support')
+  provides=(pipewire libpipewire-$_ver.so)
+  conflicts=(pipewire)
   backup=(etc/pipewire/{pipewire{,-pulse},client{,-rt}}.conf)
   install=pipewire.install
 
-  DESTDIR="${pkgdir}" meson install -C build
+  DESTDIR="$pkgdir" meson install -C build
 
-  cd "${pkgdir}"
+  cd "$pkgdir"
 
   _pick acp usr/lib/udev
   _pick acp usr/share/alsa-card-profile
@@ -127,35 +85,33 @@ package_pipewire-fixed-git() {
   _pick pms usr/lib/systemd/user/pipewire-media-session.service
 
   _pick jack etc/pipewire/{jack.conf,media-session.d/with-jack}
-  _pick jack usr/bin/pw-jack usr/lib/pipewire-${pkgver:0:3}/jack
+  _pick jack usr/bin/pw-jack usr/lib/pipewire-$_ver/jack
   _pick jack usr/share/man/man1/pw-jack.1
 
   _pick pulse etc/pipewire/media-session.d/with-pulseaudio
+
+  _pick gst usr/lib/gstreamer-1.0
 }
 
 package_alsa-card-profiles-fixed-git() {
-  pkgdesc+=" - ALSA card profiles (GIT version)"
-  provides=('alsa-card-profiles')
-  conflicts=('alsa-card-profiles')
-  arch=('any')
-
-  mv acp/* "${pkgdir}"
+  pkgdesc+=" - ALSA card profiles"
+  provides+=(${pkgname%-$_pkgpostfix})
+  conflicts+=(${pkgname%-$_pkgpostfix})
+  mv acp/* "$pkgdir"
 }
 
 package_pipewire-docs-fixed-git() {
-  pkgdesc+=" - documentation (GIT Version)"
-  provides=('pipewire-docs')
-  conflicts=('pipewire-docs')
-  arch=('any')
-
-  mv docs/* "${pkgdir}"
+  pkgdesc+=" - documentation"
+  provides+=(${pkgname%-$_pkgpostfix})
+  conflicts+=(${pkgname%-$_pkgpostfix})
+  mv docs/* "$pkgdir"
 }
 
 package_pipewire-media-session-fixed-git() {
   pkgdesc+=" - Session manager"
   depends=(pipewire libpipewire-$_ver.so)
-  provides=('pipewire-media-session')
-  conflicts=('pipewire-media-session')
+  provides+=(${pkgname%-$_pkgpostfix})
+  conflicts+=(${pkgname%-$_pkgpostfix})
   backup=(etc/pipewire/media-session.d/media-session.conf
           etc/pipewire/media-session.d/{alsa,bluez,v4l2}-monitor.conf)
   install=pipewire-media-session.install
@@ -163,46 +119,44 @@ package_pipewire-media-session-fixed-git() {
 }
 
 package_pipewire-alsa-fixed-git() {
-  pkgdesc+=" - ALSA configuration (GIT version)"
-  depends=('pipewire-media-session')
-  provides=('pipewire-alsa' 'pulseaudio-alsa')
-  conflicts=('pipewire-alsa')
-  arch=('any')
+  pkgdesc+=" - ALSA configuration"
+  depends=(pipewire-media-session)
+  provides=(pulseaudio-alsa)
+  provides+=(${pkgname%-$_pkgpostfix})
+  conflicts+=(${pkgname%-$_pkgpostfix})
 
-  mkdir -p "${pkgdir}/etc/alsa/conf.d"
-  ln -st "${pkgdir}/etc/alsa/conf.d" \
+  mkdir -p "$pkgdir/etc/alsa/conf.d"
+  ln -st "$pkgdir/etc/alsa/conf.d" \
     /usr/share/alsa/alsa.conf.d/{50-pipewire,99-pipewire-default}.conf
-
-  install -Dm644 /dev/null "${pkgdir}/etc/pipewire/media-session.d/with-alsa"
+  install -Dm644 /dev/null "$pkgdir/etc/pipewire/media-session.d/with-alsa"
 }
 
 package_pipewire-jack-fixed-git() {
-  pkgdesc+=" - JACK support (GIT version)"
-  depends=('pipewire-media-session'
-           "libpipewire-${pkgver:0:3}.so"
-           )
+  pkgdesc+=" - JACK support"
+  depends=(pipewire-media-session libpipewire-$_ver.so)
   backup=(etc/pipewire/jack.conf)
-  provides=('pipewire-jack')
-  conflicts=('pipewire-jack')
-
-  mv jack/* "${pkgdir}"
+  provides+=(${pkgname%-$_pkgpostfix})
+  conflicts+=(${pkgname%-$_pkgpostfix})
+  mv jack/* "$pkgdir"
 }
 
 package_pipewire-pulse-fixed-git() {
-  pkgdesc+=" - PulseAudio replacement (GIT version)"
-  depends=('pipewire-media-session'
-           'libpulse'
-           )
-  provides=('pipewire-pulse'
-            'pulseaudio'
-            'pulseaudio-bluetooth'
-            )
-  conflicts=('pipewire-pulse'
-             'pulseaudio'
-             'pulseaudio-bluetooth'
-             )
-  arch=('any')
+  pkgdesc+=" - PulseAudio replacement"
+  depends=(pipewire-media-session libpulse)
+  provides=(pulseaudio pulseaudio-bluetooth)
+  conflicts=(pulseaudio pulseaudio-bluetooth)
+  provides+=(${pkgname%-$_pkgpostfix})
+  conflicts+=(${pkgname%-$_pkgpostfix})
   install=pipewire-pulse.install
-
-  mv pulse/* "${pkgdir}"
+  mv pulse/* "$pkgdir"
 }
+
+package_gst-plugin-pipewire-fixed-git() {
+  pkgdesc="Multimedia graph framework - pipewire plugin (GIT version)"
+  depends=(pipewire-media-session libpipewire-$_ver.so gst-plugins-base-libs)
+  provides+=(${pkgname%-$_pkgpostfix})
+  conflicts+=(${pkgname%-$_pkgpostfix})
+  mv gst/* "$pkgdir"
+}
+
+# vim:set sw=2 et:
