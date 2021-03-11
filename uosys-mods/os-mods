@@ -233,6 +233,9 @@ while read -r pkg; do
     pipewire-jack|pipewire-media-session|pipewire-pulse)
       pkg=pipewire
       ;;
+    pipewire-fixed-git|pipewire-jack-fixed-git|pipewire-media-session-fixed-git|pipewire-pulse-fixed-git)
+      pkg=pipewire
+      ;;
     pipewire-git|pipewire-jack-git|pipewire-media-session-git|pipewire-pulse-git)
       pkg=pipewire
       ;;
