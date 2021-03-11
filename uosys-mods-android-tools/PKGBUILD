@@ -8,11 +8,12 @@ pkgdesc="$_pkgname uosys mods"
 arch=('any')
 licesne=('GPL')
 url=''
+depends=('uosys-mods')
 source=('rules')
 sha256sums=('SKIP')
 
 package() {
-  depends+=('uosys-mods' $_pkgname)
+  depends+=($_pkgname)
   source /usr/lib/os/os-mods-install
   install -Dm644 rules ${pkgdir}/usr/lib/udev/rules.d/51-android-extra.rules
 }

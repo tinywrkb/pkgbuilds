@@ -8,6 +8,7 @@ pkgdesc="$_pkgname uosys mods"
 arch=('any')
 licesne=('GPL')
 url=''
+depends=('uosys-mods')
 source=('sudoers.d')
 sha256sums=('SKIP')
 
@@ -20,7 +21,7 @@ EOF
 }
 
 package() {
-  depends+=('uosys-mods' $_pkgname)
+  depends+=($_pkgname)
   source /usr/lib/os/os-mods-install
 
   install -dm750 ${pkgdir}/etc/sudoers.d

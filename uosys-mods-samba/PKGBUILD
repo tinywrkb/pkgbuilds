@@ -8,6 +8,7 @@ pkgdesc="$_pkgname uosys mods"
 arch=('any')
 licesne=('GPL')
 url='https://github.com/uosys/pkgbuilds'
+depends=('uosys-mods')
 source=(patch smb.conf)
 sha256sums=('SKIP' 'SKIP')
 
@@ -43,7 +44,7 @@ EOF
 }
 
 package() {
-  depends+=('uosys-mods' $_pkgname)
+  depends+=($_pkgname)
   source /usr/lib/os/os-mods-install
   install -Dm644 smb.conf ${pkgdir}/etc/samba/smb.conf
 }

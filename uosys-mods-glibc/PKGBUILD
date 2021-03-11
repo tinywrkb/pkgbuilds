@@ -8,6 +8,7 @@ pkgdesc="$_pkgname uosys mods"
 arch=('any')
 licesne=('GPL')
 url=''
+depends=('uosys-mods')
 source=('patch' '12-glibc-initial-locale-gen.hook')
 sha256sums=('SKIP' 'SKIP')
 
@@ -22,7 +23,7 @@ EOF
 }
 
 package() {
-  depends+=('uosys-mods' $_pkgname)
+  depends+=($_pkgname)
   source /usr/lib/os/os-mods-install
   install -Dm644 12-glibc-initial-locale-gen.hook -t ${pkgdir}/usr/share/libalpm/hooks/
 }

@@ -6,6 +6,7 @@ pkgdesc="$_pkgname uosys mods"
 arch=('any')
 licesne=('GPL')
 url=''
+depends=('uosys-mods')
 source=('patch'
         {journald,resolved,swap,timesyncd}.conf
         systemd-services-cleanup{,.hook}
@@ -109,7 +110,7 @@ EOF
 }
 
 package() {
-  depends+=('uosys-mods' $_pkgname systemd-swap)
+  depends+=($_pkgname systemd-swap)
   source /usr/lib/os/os-mods-install
 
   # services cleanup alpm hook

@@ -8,6 +8,7 @@ pkgdesc="$_pkgname uosys mods"
 arch=('any')
 licesne=('GPL')
 url=''
+depends=('uosys-mods')
 source=('flatpak-uosys.sh'
         'os-store.conf'
         {flathub-beta,kdeapps,private}.flatpakrepo
@@ -45,7 +46,7 @@ EOF
 }
 
 package() {
-  depends+=('uosys-mods' $_pkgname)
+  depends+=($_pkgname)
   source /usr/lib/os/os-mods-install
 
   install -Dm644 flatpak-uosys.sh -t ${pkgdir}/etc/profile.d/

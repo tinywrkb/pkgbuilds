@@ -8,6 +8,7 @@ pkgdesc="$_pkgname uosys mods"
 arch=('any')
 licesne=('GPL')
 url=''
+depends=('uosys-mods')
 source=('patch'
         uosys-root-allow
         etc-shadow-mount.service
@@ -22,7 +23,7 @@ sha256sums=('SKIP'
             'SKIP' 'SKIP')
 
 package() {
-  depends+=('uosys-mods' $_pkgname)
+  depends+=($_pkgname)
   source /usr/lib/os/os-mods-install
 
   # install helper

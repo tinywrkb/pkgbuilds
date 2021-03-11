@@ -8,11 +8,12 @@ pkgdesc="$_pkgname uosys mods"
 arch=('any')
 licesne=('GPL')
 url=''
+depends=('uosys-mods')
 source=('patch' 'bash_xdg.sh')
 sha256sums=('SKIP' 'SKIP')
 
 package() {
-  depends+=('uosys-mods' $_pkgname)
+  depends+=($_pkgname)
   source /usr/lib/os/os-mods-install
   install -Dm644 bash_xdg.sh -t ${pkgdir}/etc/profile.d/
 }

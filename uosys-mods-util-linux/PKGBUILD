@@ -6,11 +6,12 @@ pkgdesc="$_pkgname uosys mods"
 arch=('any')
 licesne=('GPL')
 url=''
+depends=('uosys-mods')
 source=('patch')
 sha256sums=('SKIP')
 
 package() {
-  depends+=('uosys-mods' $_pkgname 'gnome-keyring')
+  depends+=($_pkgname 'gnome-keyring')
   source /usr/lib/os/os-mods-install
 
   mkdir -p ${pkgdir}/usr/lib/systemd/system/timers.target.wants

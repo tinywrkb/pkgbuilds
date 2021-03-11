@@ -7,6 +7,7 @@ pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
 url=''
+depends=('uosys-mods')
 licesne=('GPL')
 install=install
 source=('patch' 'excluded.conf' 'gpg.conf' 'miffe.gpg')
@@ -34,7 +35,7 @@ EOF
 }
 
 package() {
-  depends+=('uosys-mods' $_pkgname)
+  depends+=($_pkgname)
   source /usr/lib/os/os-mods-install
 
   install -dm755 ${pkgdir}/etc/pacman.d

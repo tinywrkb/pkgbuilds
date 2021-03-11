@@ -8,6 +8,7 @@ pkgdesc="$_pkgname uosys mods"
 arch=('any')
 licesne=('GPL')
 url=''
+depends=('uosys-mods')
 
 build() {
   cat << EOF > services_cleanup
@@ -18,7 +19,7 @@ EOF
 }
 
 package() {
-  depends+=('uosys-mods' $_pkgname)
+  depends+=($_pkgname)
   source /usr/lib/os/os-mods-install
 
   mkdir -p ${pkgdir}/usr/lib/systemd/user/sockets.target.wants

@@ -8,6 +8,7 @@ pkgdesc="$_pkgname uosys mods"
 arch=('any')
 licesne=('GPL')
 url=''
+depends=('uosys-mods')
 
 build() {
   cat << EOF > mods
@@ -47,7 +48,7 @@ EOF
 }
 
 package() {
-  depends+=('uosys-mods' $_pkgname cups-filters)
+  depends+=($_pkgname cups-filters)
   source /usr/lib/os/os-mods-install
 
   # printcap symlink might break

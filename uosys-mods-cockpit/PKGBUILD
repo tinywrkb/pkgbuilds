@@ -8,6 +8,7 @@ pkgdesc="$_pkgname uosys mods"
 arch=('any')
 licesne=('GPL')
 url=''
+depends=('uosys-mods')
 source=('cockpit.conf')
 sha256sums=('SKIP')
 
@@ -40,7 +41,7 @@ EOF
 }
 
 package() {
-  depends+=('uosys-mods' $_pkgname)
+  depends+=($_pkgname)
   source /usr/lib/os/os-mods-install
 
   install -Dm644 cockpit.conf -t ${pkgdir}/etc/cockpit/

@@ -8,10 +8,11 @@ pkgdesc="$_pkgname uosys mods"
 arch=('any')
 licesne=('GPL')
 url=''
+depends=('uosys-mods')
 source=('patch')
 sha256sums=('SKIP')
 
 package() {
-  depends+=('uosys-mods' $_pkgname pam_mount)
+  depends+=($_pkgname pam_mount)
   source /usr/lib/os/os-mods-install
 }
