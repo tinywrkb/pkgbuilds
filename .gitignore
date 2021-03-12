@@ -4,7 +4,8 @@
 *-x86_64-package.log
 *-x86_64-package.log.[0-9]*
 *.asc
+*.deb
 *.log
+*.pkg.tar.zst
 *.sig
 *.tar.gz
-*.pkg.tar.zst
