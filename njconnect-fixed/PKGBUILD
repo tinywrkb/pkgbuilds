@@ -1,0 +1,28 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Bug report: https://bugs.archlinux.org/task/69913
+#
+# Contributor: David Runge <dave@sleepmap.de>
+# Contributor: Lieven Moors <lievenmoors@gmail.com>
+_pkgname=njconnect
+pkgname=$_pkgname-fixed
+pkgver=1.6
+pkgrel=3
+pkgdesc="Curses JACK connection manager"
+arch=('x86_64')
+url="https://sourceforge.net/projects/njconnect/"
+license=('GPL2')
+groups=('pro-audio')
+depends=('libjack.so')
+source=("https://sourceforge.net/projects/${_pkgname}/files/${_pkgname}-${pkgver}.tar.xz")
+sha512sums=('2210c7ff9382da37b2348942ca30788514dbae3450191ff37de9dcc33d62c68977ced3fdc4bd73c4d3bfb07b4aee9f59653a726baa63970607698af4753fc98d')
+
+build() {
+  cd "$_pkgname-$pkgver"
+  make
+}
+
+package() {
+  cd "$_pkgname-$pkgver"
+  make DESTDIR="$pkgdir/" install
+  install -vDm 644 README -t "${pkgdir}/usr/share/doc/${pkgname}/"
+}
