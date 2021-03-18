@@ -8,7 +8,7 @@ _pkgpostfix=fixed-git
 pkgbase=$_pkgbase-$_pkgpostfix
 pkgname=({pipewire,alsa-card-profiles,pipewire-docs,pipewire-media-session}-$_pkgpostfix
          {pipewire-alsa,pipewire-jack,pipewire-pulse,gst-plugin-pipewire}-$_pkgpostfix)
-pkgver=0.3.23.r66.g90b04102
+pkgver=0.3.24.r3.g972cf8d6
 pkgrel=1
 pkgdesc="Low-latency audio/video router and processor"
 pkgdesc+=" (GIT version)"
@@ -38,7 +38,6 @@ build() {
     -D docs=enabled \
     -D jack=disabled \
     -D libcamera=disabled \
-    -D vulkan=disabled \
     -D udevrulesdir=/usr/lib/udev/rules.d
   meson compile -C build
 }
