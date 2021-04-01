@@ -4,7 +4,7 @@
 
 _pkgname=gcr
 pkgname=$_pkgname-gtkfree
-pkgver=3.38.1
+pkgver=3.40.0
 pkgrel=1
 pkgdesc="A library for bits of crypto UI and parsing"
 url="https://gitlab.gnome.org/GNOME/gcr"
@@ -14,7 +14,7 @@ depends=(libgcrypt p11-kit)
 makedepends=(gobject-introspection vala libxslt git meson)
 conflicts=(gcr)
 provides=(gcr libgck-1.so libgcr-{base,ui}-3.so)
-_commit=e00d135f04ca0ebc9416044bd74027f21d079066  # tags/3.38.1^0
+_commit=dbde3e131180bcee7c930e21170da05ec0494a3d  # tags/3.40.0^0
 backup=(etc/security/limits.d/10-gcr.conf)
 source=("git+https://gitlab.gnome.org/GNOME/gcr.git#commit=$_commit")
 sha256sums=('SKIP')
