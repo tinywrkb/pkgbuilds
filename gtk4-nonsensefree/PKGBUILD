@@ -2,8 +2,8 @@
 # Contributor: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
 
 pkgname=gtk4-nonsensefree
-pkgver=4.0.3
-pkgrel=1
+pkgver=4.2.0
+pkgrel=2
 epoch=1
 pkgdesc="GObject-based multi-platform GUI toolkit"
 arch=(x86_64)
@@ -17,7 +17,7 @@ depends=(glib2 json-glib rest
 makedepends=(git meson docbook-xsl wayland-protocols sysprof python
              shaderc sassc gobject-introspection vulkan-headers)
 license=(LGPL)
-_commit=463794e9395a7e5701559a67a2072e18bbfacf06  # tags/4.0.3^0
+_commit=ccbbc2f2babcfaee88d8d8040938ca6bf39d05b6  # tags/4.2.0^0
 source=("git+https://gitlab.gnome.org/GNOME/gtk.git#commit=$_commit"
         gtk4-querymodules.hook)
 sha256sums=('SKIP'
@@ -33,7 +33,8 @@ prepare() {
 }
 
 build() {
-  CFLAGS+=" -DG_ENABLE_DEBUG -DG_DISABLE_CAST_CHECKS"
+  # https://gitlab.gnome.org/GNOME/gtk/-/commit/df4b564d69cc7d2e751537eff61259b36f37e9e5
+  CFLAGS+=" -DG_ENABLE_DEBUG -DG_DISABLE_CAST_CHECKS -DG_DISABLE_ASSERT"
   arch-meson gtk build \
     -D x11-backend=false \
     -D broadway_backend=false \
