@@ -2,7 +2,7 @@
 
 _pkgname=shadow
 pkgname=uosys-mods-${_pkgname}
-pkgver=2021.02.07.1
+pkgver=2021.04.05.1
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
@@ -14,11 +14,13 @@ source=('patch'
         etc-shadow-mount.service
         etc-shadow{-premount-check.service,.mount}
         module-setup.sh
+        subid
         sysroot-etc-shadow{-premount-check.service,.mount})
 sha256sums=('SKIP'
             'SKIP'
             'SKIP'
             'SKIP' 'SKIP'
+            'SKIP'
             'SKIP'
             'SKIP' 'SKIP')
 
@@ -57,4 +59,9 @@ package() {
   install -dm755 ${pkgdir}/usr/lib/systemd/system/basic.target.wants
   ln -s -t ${pkgdir}/usr/lib/systemd/system/basic.target.wants/ \
     ../etc-shadow-mount.service
+
+  # install pre-defined subuid and subgid lists
+  #   required by lxc and rootless podman
+  install -Dm644 subid ${pkgdir}/etc/subuid
+  install -Dm644 subid ${pkgdir}/etc/subgid
 }
