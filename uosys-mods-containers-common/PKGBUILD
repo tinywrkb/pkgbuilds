@@ -1,0 +1,46 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+_pkgname=containers-common
+pkgname=uosys-mods-${_pkgname}
+pkgver=2021.04.05.1
+pkgrel=1
+pkgdesc="$_pkgname uosys mods"
+arch=('any')
+licesne=('GPL')
+url=''
+depends=('uosys-mods')
+source=('patch')
+sha256sums=('SKIP')
+
+#build() {
+#  cat << EOF > mods
+##target_list=()
+#
+##mv_list=()
+#
+##rmdir_list=()
+#
+##link_list=()
+#EOF
+#
+#  cat << EOF > tmpfiles.d.conf
+## $_pkgname
+#EOF
+#
+#  cat << EOF > script.pre
+#EOF
+#
+#  cat << EOF > script.post
+#EOF
+#
+#  cat << EOF > services_cleanup
+#service_list=()
+#
+#rmdir_list=()
+#EOF
+#}
+
+package() {
+  depends+=($_pkgname)
+  source /usr/lib/os/os-mods-install
+}
