@@ -13,6 +13,7 @@ Target = avahi
 Target = bash
 Target = bluez
 Target = cockpit
+Target = containers-common
 Target = cups
 Target = cups-filters
 Target = dracut

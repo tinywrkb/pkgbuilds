@@ -1,7 +1,7 @@
 # Maintainer: tinywrkb <tinywrkb@gmail.com>
 
 pkgname=uosys-mods
-pkgver=2021.03.11.2
+pkgver=2021.04.05.1
 pkgrel=1
 pkgdes='uosys mods'
 arch=('any')
