@@ -3,7 +3,7 @@
 
 pkgname=gtk4-nonsensefree
 pkgver=4.2.0
-pkgrel=2
+pkgrel=3
 epoch=1
 pkgdesc="GObject-based multi-platform GUI toolkit"
 arch=(x86_64)
@@ -16,6 +16,8 @@ depends=(glib2 json-glib rest
          adwaita-icon-theme cantarell-fonts iso-codes shared-mime-info)
 makedepends=(git meson docbook-xsl wayland-protocols sysprof python
              shaderc sassc gobject-introspection vulkan-headers)
+provides=(gtk4)
+conflicts=(gtk4)
 license=(LGPL)
 _commit=ccbbc2f2babcfaee88d8d8040938ca6bf39d05b6  # tags/4.2.0^0
 source=("git+https://gitlab.gnome.org/GNOME/gtk.git#commit=$_commit"
@@ -37,20 +39,26 @@ build() {
   CFLAGS+=" -DG_ENABLE_DEBUG -DG_DISABLE_CAST_CHECKS -DG_DISABLE_ASSERT"
   arch-meson gtk build \
     -D x11-backend=false \
+    -D wayland-backend=true \
     -D broadway_backend=false \
     -D media-ffmpeg=disabled \
     -D media-gstreamer=disabled \
+    -D print-cups=auto \
     -D print-cloudprint=disabled \
+    -D vulkan=auto \
     -D xinerama=disabled \
     -D cloudproviders=disabled \
     -D sysprof=enabled \
     -D tracker=disabled \
     -D colord=enabled \
+    -D sassc=auto \
     -D gtk_doc=false \
     -D man-pages=true \
+    -D introspection=auto \
     -D demos=false \
     -D build-examples=false \
-    -D build-tests=false
+    -D build-tests=false \
+
   meson compile -C build
   ninja -C build
 }
@@ -70,10 +78,11 @@ END
 
   install -Dt "$pkgdir/usr/share/libalpm/hooks" -m644 gtk4-querymodules.hook
 
-  # gtk-update-icon-cache is also used by other toolkits
-  rm \
-    $pkgdir/usr/bin/gtk4-update-icon-cache \
-    $pkgdir/usr/share/man/man1/gtk4-update-icon-cache.1
+  cd "$pkgdir"
+  rm usr/bin/gtk4-update-icon-cache
+  rm usr/share/man/man1/gtk4-update-icon-cache.1
+  rm usr/share/man/man1/gtk4-broadwayd.1
+  rm usr/share/man/man1/gtk4-{demo,demo-application,icon-browser,widget-factory}.1
 }
 
 # vim:set ts=2 sw=2 et:
