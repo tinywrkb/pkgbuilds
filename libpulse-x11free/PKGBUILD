@@ -1,0 +1,84 @@
+# Maintainer: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+
+_pkgname=libpulse
+pkgname=${_pkgname}-x11free
+pkgdesc="PulseAudio client library"
+pkgver=14.2
+pkgrel=3
+arch=(x86_64)
+url="https://www.freedesktop.org/wiki/Software/PulseAudio/"
+license=(LGPL)
+depends=(dbus libasyncns libcap libsndfile systemd)
+optdepends=('glib2: mainloop integration')
+makedepends=(git meson xmltoman)
+conflicts=($_pkgname)
+provides=(libpulse{,-simple,-mainloop-glib}.so)
+provides+=($_pkgname)
+backup=(etc/pulse/client.conf)
+_commit=6a487c5244563f49a025088de3510c80824fc99e  # tags/v14.2^0
+source=("git+https://gitlab.freedesktop.org/pulseaudio/pulseaudio.git#commit=$_commit")
+sha256sums=('SKIP')
+
+pkgver() {
+  cd pulseaudio
+  git describe --tags | sed 's/^v//;s/-/+/g'
+}
+
+prepare() {
+  cd pulseaudio
+
+  sed -i "/subdir('pulsecore')/d;/subdir('daemon')/d;/subdir('modules')/d" src/meson.build
+  sed -i "/subdir('doxygen')/d" meson.build
+  sed -i "/^if not speex_dep.found/,/endif/d" meson.build
+}
+
+build() {
+  arch-meson pulseaudio build \
+    -D pulsedsp-location='/usr/\$LIB/pulseaudio' \
+    -D stream-restore-clear-old-devices=true \
+    -D udevrulesdir=/usr/lib/udev/rules.d \
+    -D tests=false \
+    -D database=simple \
+    -D zshcompletiondir=no \
+    -D alsa=disabled \
+    -D asyncns=disabled \
+    -D avahi=disabled \
+    -D bluez5=false \
+    -D fftw=disabled \
+    -D glib=enabled \
+    -D gsettings=disabled \
+    -D gstreamer=disabled \
+    -D gtk=disabled \
+    -D ipv6=false \
+    -D jack=disabled \
+    -D lirc=disabled \
+    -D openssl=disabled \
+    -D orc=disabled \
+    -D oss-output=disabled \
+    -D samplerate=disabled \
+    -D soxr=disabled \
+    -D speex=disabled \
+    -D tcpwrap=disabled \
+    -D valgrind=disabled \
+    -D x11=disabled \
+    -D adrian-aec=false \
+    -D webrtc-aec=disabled \
+
+  meson compile -C build
+}
+
+package() {
+  DESTDIR="$pkgdir" meson install -C build
+
+  cd "$pkgdir"/usr
+  rm bin/{pa-info,pacmd,pasuspender}
+  rm share/bash-completion/completions/{pacmd,pasuspender,pulseaudio}
+  rm share/locale/*/LC_MESSAGES/pulseaudio.mo
+  rmdir share/locale/*/LC_MESSAGES
+  rmdir share/locale/*
+  rmdir share/locale
+  rm share/man/man1/{pacmd,pasuspender,pax11publish,pulseaudio,start-pulseaudio-x11}.1
+  rm share/man/man5/{default.pa,pulse-{cli-syntax,daemon.conf}}.5
+}
+
+# vim:set sw=2 et:
