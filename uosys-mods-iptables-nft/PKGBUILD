@@ -1,14 +1,15 @@
 # Maintainer: tinywrkb <tinywrkb@gmail.com>
 
-_pkgname=iptables
+_pkgname=iptables-nft
 pkgname=uosys-mods-${_pkgname}
-pkgver=2021.01.26.1
+pkgver=2021.04.16.1
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
 licesne=('GPL')
 url=''
 depends=('uosys-mods')
+conflicts=('uosys-mods-iptables')
 
 build() {
   cat << EOF > mods
