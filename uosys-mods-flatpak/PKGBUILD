@@ -2,7 +2,7 @@
 
 _pkgname=flatpak
 pkgname=uosys-mods-${_pkgname}
-pkgver=2021.03.11.1
+pkgver=2021.04.19.1
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
