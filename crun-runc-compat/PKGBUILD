@@ -1,0 +1,17 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+pkgname=crun-runc-compat
+pkgver=0.0.1
+pkgrel=1
+pkgdesc='dummy package to avoid podman pulling in runc as dependency'
+url='https://github.com/containers/crun'
+arch=('any')
+license=('GPL2')
+provides=('runc')
+#conflicts=('runc')
+
+package() {
+  depends+=('crun')
+}
+
+# vim: ft=sh ts=2 sw=2 et
