@@ -1,9 +1,10 @@
-# Maintainer: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Contributor: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
 
 _pkgname=libpulse
 pkgname=${_pkgname}-x11free
 pkgdesc="PulseAudio client library"
-pkgver=14.0+274+gfec9eb178
+pkgver=14.0+280+gf760143c2
 pkgrel=1
 arch=(x86_64)
 url="https://www.freedesktop.org/wiki/Software/PulseAudio/"
@@ -15,9 +16,9 @@ conflicts=($_pkgname)
 provides=(libpulse{,-simple,-mainloop-glib}.so)
 provides+=($_pkgname)
 backup=(etc/pulse/client.conf)
-_commit=fec9eb178d5fee5b39cd49d5d55a7ac202bb9894  # 14.0+274+gfec9eb178
-source=("git+https://gitlab.freedesktop.org/pulseaudio/pulseaudio.git#commit=$_commit" build-sys-meson-allow-building-client-libraries-only.patch)
-sha256sums=('SKIP' 'SKIP')
+_commit=f760143c2238cc6d0efbc76ab64786d7bf481645  # 14.0+280+gf760143c2
+source=("git+https://gitlab.freedesktop.org/pulseaudio/pulseaudio.git#commit=$_commit")
+sha256sums=('SKIP')
 
 pkgver() {
   cd pulseaudio
@@ -27,7 +28,6 @@ pkgver() {
 prepare() {
   cd pulseaudio
 
-  patch -Np1 -i ../build-sys-meson-allow-building-client-libraries-only.patch
   sed -i "/subdir('doxygen')/d" meson.build
 }
 
@@ -73,25 +73,6 @@ build() {
 
 package() {
   DESTDIR="$pkgdir" meson install -C build
-
-  cd "$pkgdir"/usr
-  rm bin/pa-info
-
-  # not sure this is working, so disable for now
-  # keeping  the default means conflicting with pulseaudio but it's not declared
-  #  to avoid unneeded conflict with pipewire-pulse
-
-  #mv share/bash-completion/completions/{pulseaudio,libpulse}
-  #for f in pacat pactl padsp paplay parec parecord; do
-  #  rm share/bash-completion/completions/${f}
-  #  ln -s libpulse share/bash-completion/completions/${f}
-  #done
-
-  rm share/locale/*/LC_MESSAGES/pulseaudio.mo
-  rmdir share/locale/*/LC_MESSAGES
-  rmdir share/locale/*
-  rmdir share/locale
-  rm share/man/man1/pax11publish.1
 }
 
 # vim:set sw=2 et:
