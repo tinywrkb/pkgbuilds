@@ -4,7 +4,7 @@
 _pkgname=libpulse
 pkgname=${_pkgname}-x11free
 pkgdesc="PulseAudio client library"
-pkgver=14.0+280+gf760143c2
+pkgver=14.99+280+gf760143c2
 pkgrel=1
 arch=(x86_64)
 url="https://www.freedesktop.org/wiki/Software/PulseAudio/"
@@ -16,13 +16,13 @@ conflicts=($_pkgname)
 provides=(libpulse{,-simple,-mainloop-glib}.so)
 provides+=($_pkgname)
 backup=(etc/pulse/client.conf)
-_commit=f760143c2238cc6d0efbc76ab64786d7bf481645  # 14.0+280+gf760143c2
+_commit=f760143c2238cc6d0efbc76ab64786d7bf481645  # 14.99+280+gf760143c2
 source=("git+https://gitlab.freedesktop.org/pulseaudio/pulseaudio.git#commit=$_commit")
 sha256sums=('SKIP')
 
 pkgver() {
   cd pulseaudio
-  git describe --tags | sed 's/^v//;s/-/+/g'
+  git describe --tags | sed 's/^v//;s/-/+/g' | sed 's/^14\..+/14.99+/'
 }
 
 prepare() {
