@@ -1,0 +1,176 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Contributor: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+# Contributor: Jan de Groot <jgc@archlinux.org>
+
+_pkgbase=pipewire
+_pkgpostfix=fixed
+pkgbase=$_pkgbase-$_pkgpostfix
+pkgname=({pipewire,alsa-card-profiles,pipewire-docs,pipewire-media-session}-$_pkgpostfix
+         {pipewire-alsa,pipewire-jack,pipewire-pulse,gst-plugin-pipewire}-$_pkgpostfix)
+pkgver=0.3.26
+pkgrel=1
+epoch=1
+pkgdesc="Low-latency audio/video router and processor"
+url="https://pipewire.org"
+license=(LGPL)
+arch=(x86_64)
+makedepends=(git meson doxygen graphviz xmltoman valgrind libpulse alsa-lib
+             gst-plugins-base rtkit dbus sdl2 ncurses libsndfile bluez-libs sbc
+             libldac libopenaptx libfdk-aac vulkan-headers vulkan-icd-loader)
+checkdepends=(desktop-file-utils)
+_commit=f0fc4f7fc644c29762fa34e57e60d4b5cbcefb47  # tags/0.3.26
+source=("git+https://gitlab.freedesktop.org/pipewire/pipewire.git#commit=$_commit")
+sha256sums=('SKIP')
+
+pkgver() {
+  cd $_pkgbase
+  git describe --tags | sed 's/-/+/g'
+}
+
+prepare() {
+  cd $_pkgbase
+}
+
+build() {
+  arch-meson $_pkgbase build \
+    -D bluez5-backend-hsphfpd=disabled \
+    -D bluez5-backend-ofono=disabled \
+    -D jack-devel=enabled \
+    -D libjack-path=/usr/lib \
+    -D docs=enabled \
+    -D jack=disabled \
+    -D libcamera=disabled \
+    -D udevrulesdir=/usr/lib/udev/rules.d
+  meson compile -C build
+}
+
+check() {
+  meson test -C build --print-errorlogs
+}
+
+_pick() {
+  local p="$1" f d; shift
+  for f; do
+    d="$srcdir/$p/${f#$pkgdir/}"
+    mkdir -p "$(dirname "$d")"
+    mv "$f" "$d"
+    rmdir -p --ignore-fail-on-non-empty "$(dirname "$f")"
+  done
+}
+
+_ver=${pkgver:0:3}
+
+package_pipewire-fixed() {
+  depends=(rtkit alsa-card-profiles libdbus-1.so libncursesw.so libsndfile.so
+           libudev.so libasound.so libsystemd.so libbluetooth.so libsbc.so
+           libldacBT_enc.so libopenaptx.so libfdk-aac.so libvulkan.so)
+  optdepends=('pipewire-docs: Documentation'
+              'pipewire-media-session: Default session manager'
+              'pipewire-alsa: ALSA configuration'
+              'pipewire-jack: JACK support'
+              'pipewire-pulse: PulseAudio replacement'
+              'gst-plugin-pipewire: GStreamer support')
+  provides=(libpipewire-$_ver.so)
+  conflicts+=(${pkgname%-$_pkgpostfix})
+  provides+=(${pkgname%-$_pkgpostfix})
+
+  backup=(etc/pipewire/{pipewire{,-pulse},client{,-rt}}.conf)
+  install=pipewire.install
+
+  DESTDIR="$pkgdir" meson install -C build
+
+  cd "$pkgdir"
+
+  _pick acp usr/lib/udev
+  _pick acp usr/share/alsa-card-profile
+
+  _pick docs usr/share/doc
+
+  _pick pms etc/pipewire/media-session.d/*.conf
+  _pick pms usr/bin/pipewire-media-session
+  _pick pms usr/lib/systemd/user/pipewire-media-session.service
+
+  _pick jack etc/pipewire/{jack.conf,media-session.d/with-jack}
+  _pick jack usr/bin/pw-jack
+  _pick jack usr/include/jack
+  _pick jack usr/lib/libjack*
+  _pick jack usr/lib/pkgconfig/jack.pc
+  _pick jack usr/share/man/man1/pw-jack.1
+
+
+  _pick pulse etc/pipewire/media-session.d/with-pulseaudio
+
+  _pick gst usr/lib/gstreamer-1.0
+}
+
+package_alsa-card-profiles-fixed() {
+  pkgdesc+=" - ALSA card profiles"
+  conflicts+=(${pkgname%-$_pkgpostfix})
+  provides+=(${pkgname%-$_pkgpostfix})
+  mv acp/* "$pkgdir"
+}
+
+package_pipewire-docs-fixed() {
+  pkgdesc+=" - documentation"
+  conflicts+=(${pkgname%-$_pkgpostfix})
+  provides+=(${pkgname%-$_pkgpostfix})
+  mv docs/* "$pkgdir"
+}
+
+package_pipewire-media-session-fixed() {
+  pkgdesc+=" - Session manager"
+  depends=(pipewire libpipewire-$_ver.so)
+  conflicts+=(${pkgname%-$_pkgpostfix})
+  provides+=(${pkgname%-$_pkgpostfix})
+  backup=(etc/pipewire/media-session.d/media-session.conf
+          etc/pipewire/media-session.d/{alsa,bluez,v4l2}-monitor.conf)
+  install=pipewire-media-session.install
+  mv pms/* "$pkgdir"
+}
+
+package_pipewire-alsa-fixed() {
+  pkgdesc+=" - ALSA configuration"
+  depends=(pipewire-media-session)
+  provides=(pulseaudio-alsa)
+  conflicts+=(${pkgname%-$_pkgpostfix})
+  provides+=(${pkgname%-$_pkgpostfix})
+
+  mkdir -p "$pkgdir/etc/alsa/conf.d"
+  ln -st "$pkgdir/etc/alsa/conf.d" \
+    /usr/share/alsa/alsa.conf.d/{50-pipewire,99-pipewire-default}.conf 
+  install -Dm644 /dev/null "$pkgdir/etc/pipewire/media-session.d/with-alsa"
+}
+
+package_pipewire-jack-fixed() {
+  pkgdesc+=" - JACK support"
+  depends=(pipewire-media-session libpipewire-$_ver.so)
+  conflicts+=(${pkgname%-$_pkgpostfix})
+  provides+=(${pkgname%-$_pkgpostfix})
+  # TODO: drop jack provides and conflicts, this is a workaround for bad packaging and
+  #       a pacman annoyance, it should be avoided
+  conflicts+=('jack')
+  provides+=('jack' 'libjack.so=0-64' 'libjacknet.so=0-64' 'libjackserver.so=0-64')
+  backup=(etc/pipewire/jack.conf)
+  mv jack/* "$pkgdir"
+}
+
+package_pipewire-pulse-fixed() {
+  pkgdesc+=" - PulseAudio replacement"
+  depends=(pipewire-media-session libpulse)
+  provides=(pulseaudio pulseaudio-bluetooth)
+  conflicts=(pulseaudio pulseaudio-bluetooth)
+  conflicts+=(${pkgname%-$_pkgpostfix})
+  provides+=(${pkgname%-$_pkgpostfix})
+  install=pipewire-pulse.install
+  mv pulse/* "$pkgdir"
+}
+
+package_gst-plugin-pipewire-fixed() {
+  pkgdesc="Multimedia graph framework - pipewire plugin"
+  depends=(pipewire-media-session libpipewire-$_ver.so gst-plugins-base-libs)
+  conflicts+=(${pkgname%-$_pkgpostfix})
+  provides+=(${pkgname%-$_pkgpostfix})
+  mv gst/* "$pkgdir"
+}
+
+# vim:set sw=2 et:
