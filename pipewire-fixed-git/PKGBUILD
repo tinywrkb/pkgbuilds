@@ -8,7 +8,7 @@ _pkgpostfix=fixed-git
 pkgbase=$_pkgbase-$_pkgpostfix
 pkgname=({pipewire,alsa-card-profiles,pipewire-docs,pipewire-media-session}-$_pkgpostfix
          {pipewire-alsa,pipewire-jack,pipewire-pulse,gst-plugin-pipewire}-$_pkgpostfix)
-pkgver=0.3.24.r3.g972cf8d6
+pkgver=0.3.26.r3.g3b021cc4
 pkgrel=1
 pkgdesc="Low-latency audio/video router and processor"
 pkgdesc+=" (GIT version)"
@@ -35,6 +35,8 @@ build() {
   arch-meson $_pkgbase build \
     -D bluez5-backend-hsphfpd=disabled \
     -D bluez5-backend-ofono=disabled \
+    -D jack-devel=enabled \
+    -D libjack-path=/usr/lib \
     -D docs=enabled \
     -D jack=disabled \
     -D libcamera=disabled \
@@ -68,8 +70,9 @@ package_pipewire-fixed-git() {
               'pipewire-jack-fixed-git: JACK support'
               'pipewire-pulse-fixed-git: PulseAudio replacement'
               'gst-plugin-pipewire-fixed-git: GStreamer support')
-  provides=(pipewire libpipewire-$_ver.so)
-  conflicts=(pipewire)
+  provides=(libpipewire-$_ver.so)
+  conflicts+=(${pkgname%-$_pkgpostfix})
+  provides+=(${pkgname%-$_pkgpostfix})
   backup=(etc/pipewire/{pipewire{,-pulse},client{,-rt}}.conf)
   install=pipewire.install
 
@@ -87,7 +90,10 @@ package_pipewire-fixed-git() {
   _pick pms usr/lib/systemd/user/pipewire-media-session.service
 
   _pick jack etc/pipewire/{jack.conf,media-session.d/with-jack}
-  _pick jack usr/bin/pw-jack usr/lib/pipewire-$_ver/jack
+  _pick jack usr/bin/pw-jack
+  _pick jack usr/include/jack
+  _pick jack usr/lib/libjack*
+  _pick jack usr/lib/pkgconfig/jack.pc
   _pick jack usr/share/man/man1/pw-jack.1
 
   _pick pulse etc/pipewire/media-session.d/with-pulseaudio
@@ -97,23 +103,23 @@ package_pipewire-fixed-git() {
 
 package_alsa-card-profiles-fixed-git() {
   pkgdesc+=" - ALSA card profiles"
-  provides+=(${pkgname%-$_pkgpostfix})
   conflicts+=(${pkgname%-$_pkgpostfix})
+  provides+=(${pkgname%-$_pkgpostfix})
   mv acp/* "$pkgdir"
 }
 
 package_pipewire-docs-fixed-git() {
   pkgdesc+=" - documentation"
-  provides+=(${pkgname%-$_pkgpostfix})
   conflicts+=(${pkgname%-$_pkgpostfix})
+  provides+=(${pkgname%-$_pkgpostfix})
   mv docs/* "$pkgdir"
 }
 
 package_pipewire-media-session-fixed-git() {
   pkgdesc+=" - Session manager"
   depends=(pipewire libpipewire-$_ver.so)
-  provides+=(${pkgname%-$_pkgpostfix})
   conflicts+=(${pkgname%-$_pkgpostfix})
+  provides+=(${pkgname%-$_pkgpostfix})
   backup=(etc/pipewire/media-session.d/media-session.conf
           etc/pipewire/media-session.d/{alsa,bluez,v4l2}-monitor.conf)
   install=pipewire-media-session.install
@@ -124,8 +130,8 @@ package_pipewire-alsa-fixed-git() {
   pkgdesc+=" - ALSA configuration"
   depends=(pipewire-media-session)
   provides=(pulseaudio-alsa)
-  provides+=(${pkgname%-$_pkgpostfix})
   conflicts+=(${pkgname%-$_pkgpostfix})
+  provides+=(${pkgname%-$_pkgpostfix})
 
   mkdir -p "$pkgdir/etc/alsa/conf.d"
   ln -st "$pkgdir/etc/alsa/conf.d" \
@@ -137,8 +143,12 @@ package_pipewire-jack-fixed-git() {
   pkgdesc+=" - JACK support"
   depends=(pipewire-media-session libpipewire-$_ver.so)
   backup=(etc/pipewire/jack.conf)
-  provides+=(${pkgname%-$_pkgpostfix})
   conflicts+=(${pkgname%-$_pkgpostfix})
+  provides+=(${pkgname%-$_pkgpostfix})
+  # TODO: drop jack provides and conflicts, this is a workaround for bad packaging and
+  #       a pacman annoyance, it should be avoided
+  conflicts+=('jack')
+  provides+=('jack' 'libjack.so=0-64' 'libjacknet.so=0-64' 'libjackserver.so=0-64')
   mv jack/* "$pkgdir"
 }
 
@@ -147,8 +157,8 @@ package_pipewire-pulse-fixed-git() {
   depends=(pipewire-media-session libpulse)
   provides=(pulseaudio pulseaudio-bluetooth)
   conflicts=(pulseaudio pulseaudio-bluetooth)
-  provides+=(${pkgname%-$_pkgpostfix})
   conflicts+=(${pkgname%-$_pkgpostfix})
+  provides+=(${pkgname%-$_pkgpostfix})
   install=pipewire-pulse.install
   mv pulse/* "$pkgdir"
 }
@@ -156,8 +166,8 @@ package_pipewire-pulse-fixed-git() {
 package_gst-plugin-pipewire-fixed-git() {
   pkgdesc="Multimedia graph framework - pipewire plugin (GIT version)"
   depends=(pipewire-media-session libpipewire-$_ver.so gst-plugins-base-libs)
-  provides+=(${pkgname%-$_pkgpostfix})
   conflicts+=(${pkgname%-$_pkgpostfix})
+  provides+=(${pkgname%-$_pkgpostfix})
   mv gst/* "$pkgdir"
 }
 
