@@ -3,8 +3,8 @@
 # Contributor: Ionut Biru <ibiru@archlinux.org>
 
 pkgname=gtk3-nonsensefree
-pkgver=3.24.28
-pkgrel=3
+pkgver=3.24.29
+pkgrel=1
 epoch=1
 pkgdesc="GTK3 without X11, Tracker, and Cloudproviders"
 arch=(x86_64)
@@ -19,7 +19,7 @@ provides=(gtk3)
 conflicts=(gtk3)
 license=(LGPL)
 install=gtk3.install
-_commit=23db3508899f8304482b68e04a181bb081549081  # tags/3.24.28^0
+_commit=77f32a69c0a35ffd3a1a542a6057c1c6d13c793d  # tags/3.24.29^0
 source=("git+https://gitlab.gnome.org/GNOME/gtk.git#commit=$_commit"
         gtk-query-immodules-3.0.hook)
 sha256sums=('SKIP'
@@ -35,8 +35,7 @@ prepare() {
 }
 
 build() {
-  # https://gitlab.gnome.org/GNOME/gtk/-/commit/df4b564d69cc7d2e751537eff61259b36f37e9e5
-  CFLAGS+=" -DG_ENABLE_DEBUG -DG_DISABLE_CAST_CHECKS -DG_DISABLE_ASSERT"
+  CFLAGS+=" -DG_ENABLE_DEBUG -DG_DISABLE_CAST_CHECKS"
 
   arch-meson gtk build \
     -D x11_backend=false \
@@ -75,9 +74,9 @@ END
 
   cd "$pkgdir"
 
-  rm usr/bin/gtk-update-icon-cache
+  # TODO: remove this?
+  rm -f usr/bin/gtk-update-icon-cache
   rm usr/share/man/man1/gtk-update-icon-cache.1
-  rm usr/share/man/man1/gtk3-{demo,demo-application,icon-browser,widget-factory}.1
 }
 
 # vim:set ts=2 sw=2 et:
