@@ -4,8 +4,8 @@
 
 _pkgname=ddcutil
 pkgname=${_pkgname}-x11free
-pkgver=1.0.1
-pkgrel=2
+pkgver=1.1.0
+pkgrel=1
 pkgdesc='Query and change Linux monitor settings using DDC/CI and USB.'
 url='http://ddcutil.com/'
 arch=('x86_64')
@@ -15,7 +15,7 @@ makedepends=('systemd')
 provides=($_pkgname)
 conflicts=($_pkgname)
 source=(https://github.com/rockowitz/ddcutil/archive/v$pkgver/$_pkgname-$pkgver.tar.gz)
-sha512sums=('38e8a81ef6012a3576643c21c2007f53ac525c1232e19cc77914548205674f51da3ea2c129b827da25e048d6b8205e41a71016ddde971abb224b3ac4329a936f')
+sha512sums=('a6c07e12689a01fc716f071d87b42f680967390cb49f02501985f8362dd25176ac50cf4cf4a65e9a430d2088fab83cad19093c9078ae7d19b45fedc12f529607')
 
 prepare() {
   cd $_pkgname-$pkgver
