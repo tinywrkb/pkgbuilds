@@ -5,7 +5,7 @@
 _pkgname=imv
 pkgname=${_pkgname}-x11free
 pkgver=4.2.0
-pkgrel=2
+pkgrel=3
 pkgdesc='Image viewer for Wayland'
 url='https://github.com/eXeC64/imv'
 arch=(x86_64)
