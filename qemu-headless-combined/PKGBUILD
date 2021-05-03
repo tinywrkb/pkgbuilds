@@ -4,15 +4,15 @@
 
 pkgname=qemu-headless-combined
 pkgdesc="A generic and open source machine emulator and virtualizer"
-pkgver=5.2.0
-pkgrel=5
+pkgver=6.0.0
+pkgrel=1
 arch=(x86_64)
 url="https://wiki.qemu.org/"
 license=(GPL2 LGPL2.1)
 install=qemu-headless-combined.install
 depends=(seabios gnutls libpng libaio numactl libnfs
                lzo snappy curl vde2 libcap-ng spice libcacard usbredir libslirp
-               libssh zstd liburing virglrenderer ndctl dtc)
+               libssh zstd liburing virglrenderer ndctl dtc fuse3)
 makedepends=(spice-protocol python python-sphinx ninja)
 optdepends=('samba: SMB/CIFS server support')
 conflicts=(qemu qemu-headless qemu-arch-extra qemu-headless-arch-extra)
@@ -20,7 +20,7 @@ provides=(qemu qemu-headless qemu-arch-extra qemu-headless-arch-extra)
 options=(!strip !emptydirs)
 source=(https://download.qemu.org/qemu-$pkgver.tar.xz
         65-kvm.rules)
-sha512sums=('bddd633ce111471ebc651e03080251515178808556b49a308a724909e55dac0be0cc0c79c536ac12d239678ae94c60100dc124be9b9d9538340c03a2f27177f3'
+sha512sums=('ee3ff00aebec4d8891d2ff6dabe4e667e510b2a4fe3f6190aa34673a91ea32dcd2db2e9bf94c2f1bf05aa79788f17cfbbedc6027c0988ea08a92587b79ee05e4'
             'bdf05f99407491e27a03aaf845b7cc8acfa2e0e59968236f10ffc905e5e3d5e8569df496fd71c887da2b5b8d1902494520c7da2d3a8258f7fd93a881dd610c99')
 
 prepare() {
@@ -37,7 +37,6 @@ build() (
     --sysconfdir=/etc \
     --localstatedir=/var \
     --libexecdir=/usr/lib/qemu \
-    --extra-ldflags="$LDFLAGS" \
     --smbd=/usr/bin/smbd \
     --enable-modules \
     --enable-slirp=system \
