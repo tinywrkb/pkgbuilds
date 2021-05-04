@@ -2,8 +2,8 @@
 # Contributor: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
 
 pkgname=gtk4-nonsensefree
-pkgver=4.2.0
-pkgrel=5
+pkgver=4.2.1
+pkgrel=1
 epoch=1
 pkgdesc="GObject-based multi-platform GUI toolkit"
 arch=(x86_64)
@@ -19,7 +19,7 @@ makedepends=(git meson docbook-xsl wayland-protocols sysprof python
 provides=(gtk4)
 conflicts=(gtk4)
 license=(LGPL)
-_commit=ccbbc2f2babcfaee88d8d8040938ca6bf39d05b6  # tags/4.2.0^0
+_commit=ba44668478b7184bec02609f292691b85a2c6cdd  # tags/4.2.1^0
 source=("git+https://gitlab.gnome.org/GNOME/gtk.git#commit=$_commit"
         gtk4-querymodules.hook)
 sha256sums=('SKIP'
@@ -83,7 +83,6 @@ END
   rm usr/bin/gtk4-update-icon-cache
   rm usr/share/man/man1/gtk4-update-icon-cache.1
   rm usr/share/man/man1/gtk4-broadwayd.1
-  rm usr/share/man/man1/gtk4-{demo,demo-application,icon-browser,widget-factory}.1
 }
 
 # vim:set ts=2 sw=2 et:
