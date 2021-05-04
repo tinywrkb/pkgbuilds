@@ -5,7 +5,7 @@
 _pkgname=devtools
 pkgname=$_pkgname-minimal
 pkgver=20210202
-pkgrel=1
+pkgrel=2
 pkgdesc='Tools for Arch Linux package maintainers'
 arch=('any')
 license=('GPL')
@@ -14,7 +14,7 @@ depends=('bash' 'openssh' 'rsync' 'arch-install-scripts'
          'git' 'diffutils' 'util-linux' 'awk')
 makedepends=('asciidoc')
 optdepends=('btrfs-progs: btrfs support')
-conflicts=('devtools')
+conflicts=('devtools' 'binutils')
 source=(https://sources.archlinux.org/other/${_pkgname}/${_pkgname}-${pkgver}.tar.gz{,.sig}
         devtools-minimal.patch)
 validpgpkeys=('487EACC08557AD082088DABA1EB2638FF56C0C53'
@@ -42,11 +42,23 @@ prepare() {
 build() {
   cd ${_pkgname}-${pkgver}
   make PREFIX=/usr
+
+  # workaround for missing binutils
+  cat << 'EOF' > exec_script
+#!/bin/sh
+
+echo "${0}: doing nothing!"
+EOF
 }
 
 package() {
   cd ${_pkgname}-${pkgver}
   make PREFIX=/usr DESTDIR="${pkgdir}" install
+
+
+  # workaround for missing binutils
+  install -Dm755 exec_script "${pkgdir}"/usr/bin/strip
+  install -Dm755 exec_script "${pkgdir}"/usr/bin/ccache
 }
 
 # vim: ts=2 sw=2 et:
