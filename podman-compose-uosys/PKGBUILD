@@ -3,9 +3,9 @@
 
 _pkgname=podman-compose
 pkgname=$_pkgname-uosys
-pkgver=0.1.5.r78.g6289d25
-_commit=6289d25a42cfdb5dfcac863b1b1b4ace32ce31b7
-pkgrel=5
+pkgver=0.1.5.r90.g080b8a3
+_commit=080b8a369ec068a4dfe8b96ab422dc77de1f0ae5
+pkgrel=1
 pkgdesc='A script to run docker-compose.yml using podman'
 arch=('any')
 url='https://github.com/containers/podman-compose'
