@@ -6,7 +6,7 @@
 
 _pkgname=kitty
 pkgname=$_pkgname-x11free
-pkgver=0.20.2
+pkgver=0.20.3
 pkgrel=1
 pkgdesc="A modern, hackable, featureful, OpenGL-based terminal emulator"
 arch=('x86_64')
@@ -18,7 +18,7 @@ makedepends=('wayland-protocols' 'python-sphinx')
 conflicts=($_pkgname)
 provides=($_pkgname)
 source=("${_pkgname}-${pkgver}.tar.gz::https://github.com/kovidgoyal/$_pkgname/archive/v$pkgver.tar.gz")
-sha512sums=('3cee1501c2787283654e0c48a6dd40a969d570003722dc0558d278b29a22df51d4e215d66cd74a417a08bff9beaf8cf69f594f34dab23647d9abdba831c9fb65')
+sha512sums=('98f8aab36ffb957df5136e6d86a172dede1d1e1b75c8f21d58bc6a527c1f46bc39f18c134e1432f068db619266c67fb3cb79fe06389df04d47d0cd48e4453ee5')
 
 prepare() {
   cd "$srcdir/$_pkgname-$pkgver"
