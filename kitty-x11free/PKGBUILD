@@ -14,11 +14,15 @@ url="https://github.com/kovidgoyal/kitty"
 license=('GPL3')
 depends=('python' 'freetype2'  'fontconfig' 'wayland' 'libxkbcommon'
          'hicolor-icon-theme' 'libgl' 'dbus' 'lcms2')
-makedepends=('wayland-protocols' 'python-sphinx')
+makedepends=('wayland-protocols')
 conflicts=($_pkgname)
 provides=($_pkgname)
-source=("${_pkgname}-${pkgver}.tar.gz::https://github.com/kovidgoyal/$_pkgname/archive/v$pkgver.tar.gz")
-sha512sums=('98f8aab36ffb957df5136e6d86a172dede1d1e1b75c8f21d58bc6a527c1f46bc39f18c134e1432f068db619266c67fb3cb79fe06389df04d47d0cd48e4453ee5')
+source=("${_pkgname}-${pkgver}.tar.xz::https://github.com/kovidgoyal/${_pkgname}/releases/download/v${pkgver}/${_pkgname}-${pkgver}.tar.xz"
+        "${_pkgname}-${pkgver}.tar.xz.sig::https://github.com/kovidgoyal/${_pkgname}/releases/download/v${pkgver}/${_pkgname}-${pkgver}.tar.xz.sig")
+sha512sums=('9e9d81696bcb0d3894c04b08bc52ccf7aaf533125b3ecfb4c894b8d42dbf8511239c49f1c977d81872ce49fc6b3aa8e8c92b9c944bd31fe59fce6e3750295e58'
+            'SKIP')
+validpgpkeys=('3CE1780F78DD88DF45194FD706BC317B515ACE7C') # Kovid Goyal
+
 
 prepare() {
   cd "$srcdir/$_pkgname-$pkgver"
@@ -52,5 +56,5 @@ package() {
 
   rm -r "$pkgdir"/usr/share/terminfo
 
-  install -Dm644 docs/generated/conf/kitty.conf "${pkgdir}"/usr/share/doc/${pkgname}/kitty.conf
+  install -Dm644 docs/_build/html/_downloads/*/kitty.conf "${pkgdir}"/usr/share/doc/${pkgname}/kitty.conf
 }
