@@ -1,0 +1,42 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Contributor: Felix Yan <felixonmars@archlinux.org>
+
+_pkgname=libblockdev
+pkgname=$_pkgname-minimal
+pkgver=2.25
+pkgrel=2
+pkgdesc="A library for manipulating block devices"
+arch=('x86_64')
+url="https://github.com/rhinstaller/libblockdev"
+license=('LGPL')
+depends=('btrfs-progs' 'dosfstools' 'gptfdisk' 'libbytesize' 'mdadm' 'ndctl'
+         'parted' 'volume_key' 'kmod' 'libyaml')
+makedepends=('autoconf-archive' 'gobject-introspection' 'systemd' 'python')
+source=("$_pkgname-$pkgver.tar.gz::https://github.com/rhinstaller/libblockdev/archive/$pkgver-1.tar.gz")
+sha512sums=('d78a5a506b2d1c12dc218987ccf422e25ea06b2f71cc4ea39b86d1e23842b29b49832f1dfe6da318a14de94f7e66c0070f3e34443c4feb89e4e8f04c1971aa9e')
+
+build() {
+  cd "$srcdir"/$_pkgname-$pkgver-1
+  ./autogen.sh
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --without-dmraid \
+    --without-lvm \
+    --without-lvm_dbus \
+    --without-vdo \
+
+  make
+}
+
+check() {
+  cd "$srcdir"/$_pkgname-$pkgver-1
+  make check
+}
+
+package() {
+  conflicts+=($_pkgname)
+  provides+=($_pkgname)
+  cd "$srcdir"/$_pkgname-$pkgver-1
+  make DESTDIR="$pkgdir" install
+}
