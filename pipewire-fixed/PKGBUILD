@@ -67,13 +67,13 @@ package_pipewire-fixed() {
   depends=(rtkit alsa-card-profiles libdbus-1.so libncursesw.so libsndfile.so
            libudev.so libasound.so libsystemd.so libbluetooth.so libsbc.so
            libldacBT_enc.so libopenaptx.so libfdk-aac.so libvulkan.so)
-  optdepends=('pipewire-docs: Documentation'
-              'pipewire-media-session: Default session manager'
-              'pipewire-alsa: ALSA configuration'
-              'pipewire-jack: JACK support'
-              'pipewire-pulse: PulseAudio replacement'
-              'gst-plugin-pipewire: GStreamer support'
-              'pipewire-zeroconf: Zeroconf support')
+  optdepends=('pipewire-docs-fixed: Documentation'
+              'pipewire-media-session-fixed: Default session manager'
+              'pipewire-alsa-fixed: ALSA configuration'
+              'pipewire-jack-fixed: JACK support'
+              'pipewire-pulse-fixed: PulseAudio replacement'
+              'gst-plugin-pipewire-fixed: GStreamer support'
+              'pipewire-zeroconf-fixed: Zeroconf support')
   provides=(libpipewire-$_ver.so)
   conflicts+=(${pkgname%-$_pkgpostfix})
   provides+=(${pkgname%-$_pkgpostfix})
