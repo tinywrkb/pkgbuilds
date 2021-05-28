@@ -1,8 +1,8 @@
 # Maintainer: tinywrkb <tinywrkb@gmail.com>
 
-_pkgname=android-tools
+_pkgname=android-udev
 pkgname=uosys-mods-${_pkgname}
-pkgver=2021.01.26.1
+pkgver=2021.05.28.1
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
