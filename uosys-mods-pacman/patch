@@ -9,35 +9,29 @@
  #CacheDir    = /var/cache/pacman/pkg/
  #LogFile     = /var/log/pacman.log
  #GPGDir      = /etc/pacman.d/gnupg/
-@@ -30,10 +30,10 @@
+@@ -30,11 +30,18 @@
  
  # Misc options
  #UseSyslog
 -#Color
--#TotalDownload
 +Color
-+TotalDownload
+ #NoProgressBar
  CheckSpace
 -#VerbosePkgLists
+-#ParallelDownloads = 5
 +VerbosePkgLists
- 
- # By default, pacman accepts packages signed by keys that its local keyring
- # trusts (see pacman-key and its man page), as well as unsigned packages.
-@@ -45,6 +45,13 @@
- # keyring can then be populated with the keys of all official Arch Linux
- # packagers with `pacman-key --populate archlinux`.
- 
++ParallelDownloads = 10
++
 +# Imported configs
 +#
 +# generic list of files to be excluded
 +Include = /etc/pacman.d/conf/excluded.conf
 +# local machine specific config
 +Include = /etc/pacman.d/conf/local.conf
-+
- #
- # REPOSITORIES
- #   - can be defined here or included from another file
-@@ -72,16 +79,19 @@
+ 
+ # By default, pacman accepts packages signed by keys that its local keyring
+ # trusts (see pacman-key and its man page), as well as unsigned packages.
+@@ -73,16 +80,19 @@
  #Include = /etc/pacman.d/mirrorlist
  
  [core]
@@ -60,7 +54,7 @@
  
  # If you want to run 32 bit applications on your x86_64 system,
  # enable the multilib repositories as required here.
-@@ -89,7 +99,8 @@
+@@ -90,7 +100,8 @@
  #[multilib-testing]
  #Include = /etc/pacman.d/mirrorlist
  
@@ -70,7 +64,7 @@
  #Include = /etc/pacman.d/mirrorlist
  
  # An example of a custom package repository.  See the pacman manpage for
-@@ -97,3 +108,13 @@
+@@ -98,3 +109,13 @@
  #[custom]
  #SigLevel = Optional TrustAll
  #Server = file:///home/custompkgs
