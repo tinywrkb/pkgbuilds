@@ -1,14 +1,14 @@
 # Maintainer: tinywrkb <tinywrkb@gmail.com>
 
 pkgname=grub-editenv
-pkgver=2.04
+pkgver=2.06
 pkgrel=1
 pkgdesc='edit grub env'
 arch=('x86_64')
 url='https://www.gnu.org/software/grub/'
 license=('GPL3')
 source=("https://ftp.gnu.org/gnu/grub/grub-${pkgver}.tar.gz")
-sha256sums=('f10c85ae3e204dbaec39ae22fa3c5e99f0665417e91c2cb49b7e5031658ba6ea')
+sha256sums=('23b64b4c741569f9426ed2e3d0e6780796fca081bee4c99f62aa3f53ae803f5f')
 depends=('glibc')
 makedepends=('help2man' 'python' 'texinfo')
 conflicts=('grub')
