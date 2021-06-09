@@ -5,14 +5,14 @@
 _pkgname=gnome-desktop
 pkgname=$_pkgname-x11free
 pkgver=40.1
-pkgrel=1
+pkgrel=2
 epoch=1
 pkgdesc="Library with common API for various GNOME modules"
 url="https://gitlab.gnome.org/GNOME/gnome-desktop"
 arch=(x86_64)
 license=(GPL LGPL)
 depends=(gsettings-desktop-schemas gtk3-nonsensefree xkeyboard-config iso-codes libseccomp
-         bubblewrap systemd-libs libxkbcommon)
+         bubblewrap systemd libxkbcommon)
 makedepends=(gobject-introspection git meson gtk-doc yelp-tools)
 checkdepends=(xorg-server-xvfb)
 conflicts=($_pkgname)
@@ -46,5 +46,5 @@ check() {
 }
 
 package() {
-  DESTDIR="$pkgdir" meson install -C build
+  meson install -C build --destdir "$pkgdir"
 }
