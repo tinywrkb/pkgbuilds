@@ -10,14 +10,12 @@ pkgdesc="A GTK+ backend for xdg-desktop-portal"
 url="https://github.com/flatpak/xdg-desktop-portal-gtk"
 arch=(x86_64)
 license=(LGPL)
-# TODO: gnome-keyring dependency is wrong
+# TODO: gnome-keyring dependency is wrong, need to be removed
 #       https://bugs.archlinux.org/task/66561?project=1&string=xdg-desktop-portal-gtk
 depends=(gtk3-nonsensefree gnome-keyring)
 makedepends=(xdg-desktop-portal python git)
-# TODO: package a minimal evince-previewer and update optdepends
-optdepends=("evince: Print preview")
-# TODO: drop libgnome-bg conflict after base os update
-conflicts=($_pkgname $_pkgname-libgnome-bg)
+optdepends=("evince-previewer: Print preview")
+conflicts=($_pkgname)
 provides=($_pkgname xdg-desktop-portal-impl)
 _commit=5e45e780eecacfe199ee9582cce4c54a27ce186f  # tags/1.8.0^0
 source=("git+https://github.com/flatpak/xdg-desktop-portal-gtk#commit=$_commit"
