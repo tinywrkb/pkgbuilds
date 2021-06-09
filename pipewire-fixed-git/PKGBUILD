@@ -34,15 +34,17 @@ prepare() {
 }
 
 build() {
-  arch-meson pipewire build \
-    -D bluez5-backend-hsphfpd=disabled \
-    -D bluez5-backend-ofono=disabled \
-    -D jack-devel=enabled \
-    -D libjack-path=/usr/lib \
-    -D docs=enabled \
-    -D jack=disabled \
-    -D libcamera=disabled \
+  local meson_options=(
+    -D bluez5-backend-hsphfpd=disabled
+    -D bluez5-backend-ofono=disabled
+    -D jack-devel=enabled
+    -D libjack-path=/usr/lib
+    -D docs=enabled
+    -D jack=disabled
+    -D libcamera=disabled
     -D udevrulesdir=/usr/lib/udev/rules.d
+  )
+  arch-meson pipewire build "${meson_options[@]}"
   meson compile -C build
 }
 
@@ -66,7 +68,8 @@ package_pipewire-fixed-git() {
   license+=(LGPL)  # libspa-alsa
   depends=(rtkit alsa-card-profiles-fixed-git libdbus-1.so libncursesw.so libsndfile.so
            libudev.so libasound.so libsystemd.so libbluetooth.so libsbc.so
-           libldacBT_enc.so libopenaptx.so libfdk-aac.so libvulkan.so libwebrtc_audio_processing.so)
+           libldacBT_enc.so libopenaptx.so libfdk-aac.so libvulkan.so
+           libwebrtc_audio_processing.so)
   optdepends=('pipewire-docs-fixed-git: Documentation'
               'pipewire-media-session-fixed-git: Default session manager'
               'pipewire-alsa-fixed-git: ALSA configuration'
