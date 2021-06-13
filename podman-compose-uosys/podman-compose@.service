@@ -5,7 +5,6 @@ Wants=network-online.target
 
 [Service]
 Type=oneshot
-Environment=HOME=/var/lib/podman
 Environment=PODMAN_COMPOSE_FILE=podman-compose.yml
 EnvironmentFile=-/etc/conf.d/podman-compose
 RemainAfterExit=true
