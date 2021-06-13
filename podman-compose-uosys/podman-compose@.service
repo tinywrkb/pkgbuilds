@@ -5,12 +5,11 @@ Wants=network-online.target
 
 [Service]
 Type=oneshot
-Environment=PODMAN_COMPOSE_FILE=podman-compose.yml
 EnvironmentFile=-/etc/conf.d/podman-compose
 RemainAfterExit=true
 WorkingDirectory=/etc/podman/compose/%i
-ExecStart=/usr/bin/podman-compose -f $PODMAN_COMPOSE_FILE up -d --remove-orphans
-ExecStop=/usr/bin/podman-compose -f $PODMAN_COMPOSE_FILE down
+ExecStart=/usr/bin/podman-compose $PODMAN_COMPOSE_FILE up -d --remove-orphans
+ExecStop=/usr/bin/podman-compose $PODMAN_COMPOSE_FILE down
 
 [Install]
 WantedBy=multi-user.target

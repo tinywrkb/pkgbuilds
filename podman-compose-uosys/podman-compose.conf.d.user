@@ -3,7 +3,7 @@
 #
 
 # set the name of the compose file
-#PODMAN_COMPOSE_FILE=podman-compose.yml
+#PODMAN_COMPOSE_FILE="-f podman-compose.yml"
 #XDG_CACHE_HOME=
 #XDG_CONFIG_HOME=
 #XDG_DATA_HOME=
