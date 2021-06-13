@@ -1,11 +1,12 @@
 # Maintainer: tinywrkb <tinywrkb@gmail.com>
 # Contributor: Filipe Laíns (FFY00) <lains@archlinux.org>
 
+# TODO: add unprivleged service with podman:podman user
 _pkgname=podman-compose
 pkgname=$_pkgname-uosys
 pkgver=0.1.5.r99.g039fe30
 _commit=039fe30a7096e622ddbc109778d9e60a8c8ba6b0
-pkgrel=1
+pkgrel=2
 pkgdesc='A script to run docker-compose.yml using podman'
 arch=('any')
 url='https://github.com/containers/podman-compose'
@@ -22,11 +23,11 @@ source=("git+$url#commit=$_commit"
         'podman-compose@.service.user'
         'tmpfiles.d.conf')
 sha256sums=('SKIP'
-            'c7da97c64b8f7f592b1be6f932c8106a71bbfaaae433f085f3f269fa26d4777a'
-            '2da066ddf626a4d60ad44e044837b9316382ffba263c42c117ce03de3f4451dc'
-            '0ef8c1fcc440db3953818e2cc7e20fcfaffdc2f06c4a0651d3874259a844327f'
-            '661af0aa83a5f6056e44d355b30807209aa641b58ee07dfb0f836e35e3b4b650'
-            '1bfdcb90ba5d93f1db2ad77561e9f3b57522528083283c3aabc2aa8ff2ee551d')
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP')
 
 pkgver() {
   cd $_pkgname
