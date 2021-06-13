@@ -6,7 +6,7 @@ Type=oneshot
 Environment=XDG_CACHE_HOME=%h/.cache
 Environment=XDG_CONFIG_HOME=%h/.config
 Environment=XDG_DATA_HOME=%h/.local/share
-# TODO: might need to also set XDG_RUNTIME_DIR as XDG_RUNTIME_DIR/containers is used by podman
+Environment=XDG_RUNTIME_DIR=/run/user/%U
 EnvironmentFile=-%h/.config/conf.d/podman-compose
 RemainAfterExit=true
 WorkingDirectory=%h/.config/podman/compose/%i
