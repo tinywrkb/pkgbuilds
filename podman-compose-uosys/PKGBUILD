@@ -6,7 +6,7 @@ _pkgname=podman-compose
 pkgname=$_pkgname-uosys
 pkgver=0.1.5.r99.g039fe30
 _commit=039fe30a7096e622ddbc109778d9e60a8c8ba6b0
-pkgrel=2
+pkgrel=3
 pkgdesc='A script to run docker-compose.yml using podman'
 arch=('any')
 url='https://github.com/containers/podman-compose'
@@ -47,7 +47,7 @@ package() {
   install -Dm644 ../podman-compose@.service "$pkgdir"/usr/lib/systemd/system/podman-compose@.service
   install -Dm644 ../podman-compose.conf.d "$pkgdir"/etc/conf.d/podman-compose
   install -Dm644 ../podman-compose@.service.user "$pkgdir"/usr/lib/systemd/user/podman-compose@.service
-  install -Dm644 ../podman-compose.conf.d.user "$pkgdir"/usr/doc/podman-compose/user/podman-compose.conf.d
+  install -Dm644 ../podman-compose.conf.d.user "$pkgdir"/usr/share/doc/podman-compose/user/podman-compose.conf.d
 
   # uosys-mods
   #install -dm755 "$pkgdir"/etc/podman/compose
