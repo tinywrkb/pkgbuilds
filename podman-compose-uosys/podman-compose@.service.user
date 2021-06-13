@@ -1,0 +1,19 @@
+[Unit]
+Description=%i user service with podman compose
+
+[Service]
+Type=oneshot
+Environment=PODMAN_COMPOSE_FILE=podman-compose.yml
+Environment=XDG_CACHE_HOME=%h/.cache
+Environment=XDG_CONFIG_HOME=%h/.config
+Environment=XDG_DATA_HOME=%h/.local/share
+# TODO: might need to also set XDG_RUNTIME_DIR as XDG_RUNTIME_DIR/containers is used by podman
+EnvironmentFile=-%h/.config/conf.d/podman-compose
+RemainAfterExit=true
+WorkingDirectory=%h/.config/podman/compose/%i
+# TODO: add support for setting `--group-add keep-groups` or document `annotations: - "run.oci.keep_original_groups=1"`
+ExecStart=/usr/bin/podman-compose -f $PODMAN_COMPOSE_FILE up -d --remove-orphans
+ExecStop=/usr/bin/podman-compose -f $PODMAN_COMPOSE_FILE down
+
+[Install]
+WantedBy=default.target

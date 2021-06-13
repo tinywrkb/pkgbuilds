@@ -17,12 +17,16 @@ conflicts=("$_pkgname")
 provides=("$_pkgname")
 source=("git+$url#commit=$_commit"
         'podman-compose.conf.d'
+        'podman-compose.conf.d.user'
         'podman-compose@.service'
+        'podman-compose@.service.user'
         'tmpfiles.d.conf')
-sha512sums=('SKIP'
-            '99fd3d7518fbe0a7b3ac0a8ede7fc08783c7de0b219d98134afb8f183fdf5bc79d655a27891af0cfcfbab1fae2b667672fd4c78d83fc9467a2cd89c281751c1d'
-            'b3088ca3641ff0e5fa3d21ce32ed55394f3b851b58182149beeffb3471328a0920b41c6f4a1832b19811fcf095699a080ac5158edfd72f09da97661569d09900'
-            'SKIP')
+sha256sums=('SKIP'
+            'c7da97c64b8f7f592b1be6f932c8106a71bbfaaae433f085f3f269fa26d4777a'
+            '2da066ddf626a4d60ad44e044837b9316382ffba263c42c117ce03de3f4451dc'
+            '0ef8c1fcc440db3953818e2cc7e20fcfaffdc2f06c4a0651d3874259a844327f'
+            '661af0aa83a5f6056e44d355b30807209aa641b58ee07dfb0f836e35e3b4b650'
+            '1bfdcb90ba5d93f1db2ad77561e9f3b57522528083283c3aabc2aa8ff2ee551d')
 
 pkgver() {
   cd $_pkgname
@@ -41,6 +45,8 @@ package() {
   python setup.py install --root="$pkgdir" --optimize=1 --skip-build
   install -Dm644 ../podman-compose@.service "$pkgdir"/usr/lib/systemd/system/podman-compose@.service
   install -Dm644 ../podman-compose.conf.d "$pkgdir"/etc/conf.d/podman-compose
+  install -Dm644 ../podman-compose@.service.user "$pkgdir"/usr/lib/systemd/user/podman-compose@.service
+  install -Dm644 ../podman-compose.conf.d.user "$pkgdir"/usr/doc/podman-compose/user/podman-compose.conf.d
 
   # uosys-mods
   #install -dm755 "$pkgdir"/etc/podman/compose
