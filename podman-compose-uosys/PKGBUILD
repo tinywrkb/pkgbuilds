@@ -2,51 +2,45 @@
 # Contributor: Filipe Laíns (FFY00) <lains@archlinux.org>
 
 # TODO: add unprivleged service with podman:podman user
-_pkgname=podman-compose
-pkgname=$_pkgname-uosys
+pkgname=podman-compose-uosys
 pkgver=0.1.5.r99.g039fe30
 _commit=039fe30a7096e622ddbc109778d9e60a8c8ba6b0
-pkgrel=4
+pkgrel=5
 pkgdesc='A script to run docker-compose.yml using podman'
 arch=('any')
 url='https://github.com/containers/podman-compose'
 license=('GPL2')
-depends=('python' 'python-yaml' 'podman')
+depends=('python-yaml' 'podman')
 makedepends=('git' 'python-setuptools')
-conflicts=("$_pkgname")
-provides=("$_pkgname")
+conflicts=('podman-compose')
+provides=('podman-compose')
 source=("git+$url#commit=$_commit"
         'podman-compose@.service'
-        'podman-compose@.service.user'
-        'tmpfiles.d.conf')
+        'podman-compose@.service.user')
 sha256sums=('SKIP'
-            'SKIP'
             'SKIP'
             'SKIP')
 
 pkgver() {
-  cd $_pkgname
+  cd podman-compose
   git describe --long | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
 }
 
 build() {
-  cd $_pkgname
-
+  cd podman-compose
   python setup.py build
 }
 
 package() {
-  cd $_pkgname
-
+  cd podman-compose
   python setup.py install --root="$pkgdir" --optimize=1 --skip-build
+
+  # create pods folder
+  install -dm755 "$pkgdir"/etc/containers/compose
+
+  # install systemd services
   install -Dm644 ../podman-compose@.service "$pkgdir"/usr/lib/systemd/system/podman-compose@.service
   install -Dm644 ../podman-compose@.service.user "$pkgdir"/usr/lib/systemd/user/podman-compose@.service
-
-  # uosys-mods
-  #install -dm755 "$pkgdir"/etc/containers/compose
-  install -dm755 "$pkgdir"/etc/containers
-  ln -s /var/etc/containers/compose "$pkgdir"/etc/containers/compose
-  install -Dm644 ../tmpfiles.d.conf "$pkgdir"/usr/lib/tmpfiles.d/uosys-mods-podman-compose.conf
 }
 
 # vim:set ts=2 sw=2 et:
