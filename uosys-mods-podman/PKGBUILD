@@ -4,7 +4,7 @@
 
 _pkgname=podman
 pkgname=uosys-mods-${_pkgname}
-pkgver=2021.01.26.1
+pkgver=2021.06.14.1
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
@@ -13,14 +13,26 @@ url=''
 depends=('uosys-mods')
 
 build() {
+  cat << EOF > mods
+#target_list=()
+
+#mv_list=()
+
+rmdir_list=(containers/compose)
+
+link_list=(containers/compose)
+EOF
+
   cat << EOF > tmpfiles.d.conf
 # $_pkgname
-# not actually used, already being create by podman-compose
-d /var/etc/podman - - - - -
+d /var/etc/containers - - - - -
 
 # containers-common
 # TODO: maybe by default bind-mount from or symlink to /containers or /data/containers or /data/var/lib/containers
 d /var/lib/containers - - - - -
+
+# podman-compose
+d /var/etc/containers/compose - - - - -
 EOF
 }
 
