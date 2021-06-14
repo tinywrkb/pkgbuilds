@@ -9,7 +9,7 @@ Environment=XDG_DATA_HOME=%h/.local/share
 Environment=XDG_RUNTIME_DIR=/run/user/%U
 EnvironmentFile=-%h/.config/conf.d/podman-compose
 RemainAfterExit=true
-WorkingDirectory=%h/.config/podman/compose/%i
+WorkingDirectory=%h/.config/containers/compose/%i
 # TODO: add support for setting `--group-add keep-groups` or document `annotations: - "run.oci.keep_original_groups=1"`
 ExecStart=/usr/bin/podman-compose $PODMAN_COMPOSE_FILE up -d --remove-orphans
 ExecStop=/usr/bin/podman-compose -PODMAN_COMPOSE_FILE down

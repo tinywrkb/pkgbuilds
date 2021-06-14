@@ -7,7 +7,7 @@ Wants=network-online.target
 Type=oneshot
 EnvironmentFile=-/etc/conf.d/podman-compose
 RemainAfterExit=true
-WorkingDirectory=/etc/podman/compose/%i
+WorkingDirectory=/etc/containers/compose/%i
 ExecStart=/usr/bin/podman-compose $PODMAN_COMPOSE_FILE up -d --remove-orphans
 ExecStop=/usr/bin/podman-compose $PODMAN_COMPOSE_FILE down
 

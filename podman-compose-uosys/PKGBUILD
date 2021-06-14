@@ -50,9 +50,9 @@ package() {
   install -Dm644 ../podman-compose.conf.d.user "$pkgdir"/usr/share/doc/podman-compose/user/podman-compose.conf.d
 
   # uosys-mods
-  #install -dm755 "$pkgdir"/etc/podman/compose
-  install -dm755 "$pkgdir"/etc/podman
-  ln -s /var/etc/podman/compose "$pkgdir"/etc/podman/compose
+  #install -dm755 "$pkgdir"/etc/containers/compose
+  install -dm755 "$pkgdir"/etc/containers
+  ln -s /var/etc/containers/compose "$pkgdir"/etc/containers/compose
   install -Dm644 ../tmpfiles.d.conf "$pkgdir"/usr/lib/tmpfiles.d/uosys-mods-podman-compose.conf
 }
 
