@@ -2,17 +2,17 @@
 # Contributor: Filipe Laíns (FFY00) <lains@archlinux.org>
 
 # TODO: add unprivleged service with podman:podman user
-pkgname=podman-compose-uosys
+pkgname=podman-compose-fixed
 pkgver=0.1.5.r99.g039fe30
 _commit=039fe30a7096e622ddbc109778d9e60a8c8ba6b0
-pkgrel=5
+pkgrel=1
 pkgdesc='A script to run docker-compose.yml using podman'
 arch=('any')
 url='https://github.com/containers/podman-compose'
 license=('GPL2')
 depends=('python-yaml' 'podman')
 makedepends=('git' 'python-setuptools')
-conflicts=('podman-compose')
+conflicts=('podman-compose' 'podman-compose-uosys')
 provides=('podman-compose')
 source=("git+$url#commit=$_commit"
         'podman-compose@.service'
