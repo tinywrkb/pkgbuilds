@@ -11,20 +11,15 @@ pkgdesc='A script to run docker-compose.yml using podman'
 arch=('any')
 url='https://github.com/containers/podman-compose'
 license=('GPL2')
-backup=('etc/conf.d/podman-compose')
 depends=('python' 'python-yaml' 'podman')
 makedepends=('git' 'python-setuptools')
 conflicts=("$_pkgname")
 provides=("$_pkgname")
 source=("git+$url#commit=$_commit"
-        'podman-compose.conf.d'
-        'podman-compose.conf.d.user'
         'podman-compose@.service'
         'podman-compose@.service.user'
         'tmpfiles.d.conf')
 sha256sums=('SKIP'
-            'SKIP'
-            'SKIP'
             'SKIP'
             'SKIP'
             'SKIP')
@@ -45,9 +40,7 @@ package() {
 
   python setup.py install --root="$pkgdir" --optimize=1 --skip-build
   install -Dm644 ../podman-compose@.service "$pkgdir"/usr/lib/systemd/system/podman-compose@.service
-  install -Dm644 ../podman-compose.conf.d "$pkgdir"/etc/conf.d/podman-compose
   install -Dm644 ../podman-compose@.service.user "$pkgdir"/usr/lib/systemd/user/podman-compose@.service
-  install -Dm644 ../podman-compose.conf.d.user "$pkgdir"/usr/share/doc/podman-compose/user/podman-compose.conf.d
 
   # uosys-mods
   #install -dm755 "$pkgdir"/etc/containers/compose
