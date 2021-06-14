@@ -2,7 +2,7 @@
 
 _pkgname=bluez
 pkgname=uosys-mods-${_pkgname}
-pkgver=2021.02.24.1
+pkgver=2021.06.14.2
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
