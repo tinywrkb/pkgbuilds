@@ -3,11 +3,6 @@ Description=%i user service with podman compose
 
 [Service]
 Type=oneshot
-# TODO: better solution for setting xdg-dirs that doesn't hardcode them here, see systemd.unit(5), systemd.environment-generator(7)
-Environment=XDG_CACHE_HOME=%h/.cache
-Environment=XDG_CONFIG_HOME=%h/.config
-Environment=XDG_DATA_HOME=%h/.local/share
-Environment=XDG_RUNTIME_DIR=/run/user/%U
 RemainAfterExit=true
 WorkingDirectory=%h/.config/containers/compose/%i
 ExecStart=/usr/bin/podman-compose up -d --remove-orphans
