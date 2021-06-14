@@ -242,7 +242,7 @@ while read -r pkg; do
     pipewire-git|pipewire-jack-git|pipewire-media-session-git|pipewire-pulse-git)
       pkg=pipewire
       ;;
-    podman-compose|podman-compose-git|podman-compose-uosys|podman-compose-fixed)
+    podman-compose|podman-compose-git|podman-compose-fixed)
       pkg=podman
       ;;
     samba-cephfree)

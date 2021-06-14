@@ -63,7 +63,6 @@ Target = plymouth
 Target = podman
 Target = podman-compose
 Target = podman-compose-git
-Target = podman-compose-uosys
 Target = podman-compose-fixed
 Target = samba
 Target = samba-cephfree
