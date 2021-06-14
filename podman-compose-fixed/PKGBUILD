@@ -12,7 +12,7 @@ url='https://github.com/containers/podman-compose'
 license=('GPL2')
 depends=('python-yaml' 'podman')
 makedepends=('git' 'python-setuptools')
-conflicts=('podman-compose' 'podman-compose-uosys')
+conflicts=('podman-compose')
 provides=('podman-compose')
 source=("git+$url#commit=$_commit"
         'podman-compose@.service'
