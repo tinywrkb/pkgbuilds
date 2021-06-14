@@ -1,6 +1,6 @@
 [Trigger]
 Type = Package
-Operation = Install
+Operation = $$ALPM_OP$$
 Operation = Upgrade
 Target = uosys-mods-*
 Target = alsa-utils
@@ -80,9 +80,9 @@ Target = xkeyboard-config
 Target = zsh
 
 [Action]
-Description = OS mods in progress...
-Exec = /usr/share/libalpm/scripts/os-mods post
-When = PostTransaction
+Description = $$ALPM_DESC$$
+Exec = /usr/share/libalpm/scripts/os-mods $$MOD_TYPE$$
+When = $$ALPM_TRANS$$
 Depends = uosys-mods
 Depends = patch
 NeedsTargets

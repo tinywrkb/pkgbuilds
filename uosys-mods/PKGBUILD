@@ -8,8 +8,28 @@ arch=('any')
 depends=('patch' 'rsync')
 licesne=('GPL')
 url=''
-source=(os-mods{,-install} {install,restore}.hook sync-pacman-db.hook uosys-pacman-db.service)
-sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+source=(os-mods{,-install} hook.in sync-pacman-db.hook uosys-pacman-db.service)
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+
+build() {
+  mkdir build
+
+  # install.hook
+  sed \
+    -e 's/\$\$ALPM_OP\$\$/Install/' \
+    -e 's/\$\$ALPM_DESC\$\$/OS mods in progress.../' \
+    -e 's/\$\$ALPM_TRANS\$\$/PostTransaction/' \
+    -e 's/\$\$MOD_TYPE\$\$/post/' \
+    hook.in > build/install.hook
+
+  # restore.hook
+  sed \
+    -e 's/\$\$ALPM_OP\$\$/Remove/' \
+    -e 's/\$\$ALPM_DESC\$\$/Reverting OS mods.../' \
+    -e 's/\$\$ALPM_TRANS\$\$/PreTransaction/' \
+    -e 's/\$\$MOD_TYPE\$\$/pre/' \
+    hook.in > build/restore.hook
+}
 
 package() {
   # os-mod-install lib
@@ -23,8 +43,8 @@ package() {
   install -Dm755 os-mods -t $pkgdir/usr/share/libalpm/scripts/
 
   # os-mods alpm hook
-  install -Dm644 install.hook $pkgdir/usr/share/libalpm/hooks/00-${pkgname}-install.hook
-  install -Dm644 restore.hook $pkgdir/usr/share/libalpm/hooks/00-${pkgname}-restore.hook
+  install -Dm644 build/install.hook $pkgdir/usr/share/libalpm/hooks/00-${pkgname}-install.hook
+  install -Dm644 build/restore.hook $pkgdir/usr/share/libalpm/hooks/00-${pkgname}-restore.hook
 
   # pacman db sync hook
   install -Dm644 sync-pacman-db.hook $pkgdir/usr/share/libalpm/hooks/zz-sync-pacman-db.hook
