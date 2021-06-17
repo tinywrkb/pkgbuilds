@@ -1,5 +1,5 @@
 [Unit]
-Description=%i service with podman compose
+Description=%i privileged pod (podman-compose)
 After=network-online.target
 Wants=network-online.target
 

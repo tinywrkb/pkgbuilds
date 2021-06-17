@@ -1,5 +1,5 @@
 [Unit]
-Description=%i user service with podman compose
+Description=%i rootless pod (podman-compose)
 
 [Service]
 Type=oneshot
