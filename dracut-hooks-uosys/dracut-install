@@ -170,4 +170,29 @@ for kernel in "${kernels[@]}"; do
   # copy into /boot, legacy os compatibility
   # TODO: drop this legacy stuff, maybe move into separate packaged hook, also kernel and ucode should be dropped
   [ -d /boot ] && install -Dm644 "${path%'/pkgbase'}/initrd" "/boot/initramfs-${pkgbase}.img"
+
+  # update symlinks for not breaking libvirt machine config on every kernel update
+  # only when os is not legacy
+  if [ ! -d /boot ]; then
+    # create lib/boot if not exist
+    mkdir -p /usr/lib/boot
+
+    # update kernel symlink
+    # if symlink doesn't exist or broken
+    if [ ! -e /usr/lib/boot/vmlinuz-${pkgbase} ]; then
+      # symlink exist so it's broken
+      [ -L /usr/lib/boot/vmlinuz-${pkgbase} ] &&
+        rm -f /usr/lib/boot/vmlinuz-${pkgbase}
+      ln -s ../modules/${version}/vmlinuz /usr/lib/boot/vmlinuz-${pkgbase}
+    fi
+
+    # update initramfs symlink
+    # if symlink doesn't exist or broken
+    if [ ! -e /usr/lib/boot/initramfs-${pkgbase}.img ]; then
+      # symlink exist so it's broken
+      [ -L /usr/lib/boot/initramfs-${pkgbase}.img ] &&
+        rm -f /usr/lib/boot/initramfs-${pkgbase}.img
+      ln -s ../modules/${version}/initrd /usr/lib/boot/initramfs-${pkgbase}.img
+    fi
+  fi
 done
