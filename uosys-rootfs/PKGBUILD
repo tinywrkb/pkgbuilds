@@ -1,7 +1,7 @@
 # Maintainer: tinywrkb <tinywrkb@gmail.com>
 
 pkgname=uosys-rootfs
-pkgver=2021.02.27.1
+pkgver=2021.06.19.1
 pkgrel=1
 pkgdesc='uosys rootfs images'
 arch=('x86_64')
@@ -21,14 +21,19 @@ build() {
     ln -s var/homes ${rootfs}/home
     ln -s var/srv ${rootfs}/srv
     if [ ${rootfs} = 'rootfs-compat' ]; then
-      mkdir -p ${rootfs}/{boot,etc}
+      # no need for /boot
+      #mkdir -p ${rootfs}/{boot,etc}
+      mkdir -p ${rootfs}/etc
       # systemd-nspawn compat
       touch ${rootfs}/etc/os-release
       # f*ck this sh*t
       mkdir -p ${rootfs}/opt
     else
+      # no need for /boot
+      #ln -s -t ${rootfs}/ \
+      #  usr/{etc,lib/boot}
       ln -s -t ${rootfs}/ \
-        usr/{etc,lib/boot}
+        usr/etc
       # systemd-nspawn compat
       mkdir -p ${rootfs}/usr/etc
       touch ${rootfs}/usr/etc/os-release
