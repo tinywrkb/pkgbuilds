@@ -2,7 +2,7 @@
 # TODO: move uuid function to its own service that adds it to the system environment as a variable
 
 pkgname=dracut-module-uosys
-pkgver=2021.03.10.1
+pkgver=2021.06.19.1
 pkgrel=1
 pkgdesc='dracut uosys mount module'
 url=''

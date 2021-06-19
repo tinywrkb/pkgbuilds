@@ -22,7 +22,8 @@ set_rootfs() {
   ln -s usr/etc /sysroot/etc
   ln -s usr/lib /sysroot/lib
   ln -s usr/lib /sysroot/lib64
-  ln -s usr/lib/boot /sysroot/boot
+  # not needed with dracut 054
+  #ln -s usr/lib/boot /sysroot/boot
   ln -s var/homes /sysroot/home
   ln -s var/srv /sysroot/srv
   mount -t tmpfs -o remount,ro,size=1m tmpfs /sysroot
