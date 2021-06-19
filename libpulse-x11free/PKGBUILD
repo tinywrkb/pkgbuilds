@@ -9,7 +9,7 @@ pkgrel=1
 arch=(x86_64)
 url="https://www.freedesktop.org/wiki/Software/PulseAudio/"
 license=(LGPL)
-depends=(dbus libasyncns libcap libsndfile systemd)
+depends=(libasyncns libsndfile systemd)
 optdepends=('glib2: mainloop integration')
 makedepends=(git meson xmltoman)
 conflicts=($_pkgname)
@@ -26,54 +26,61 @@ pkgver() {
   #git describe --tags | sed 's/^v//;s/-/+/g' | sed 's/^14\..+/14.99+/'
 }
 
-prepare() {
-  cd pulseaudio
-
-  sed -i "/subdir('doxygen')/d" meson.build
-}
-
 build() {
-  arch-meson pulseaudio build \
-    -D pulsedsp-location='/usr/\$LIB/pulseaudio' \
-    -D stream-restore-clear-old-devices=true \
-    -D udevrulesdir=/usr/lib/udev/rules.d \
-    -D daemon=false \
-    -D tests=false \
-    -D database=simple \
-    -D zshcompletiondir=no \
-    -D alsa=disabled \
-    -D asyncns=disabled \
-    -D avahi=disabled \
-    -D bluez5=false \
-    -D bluez5-gstreamer=disabled \
-    -D bluez5-native-headset=false \
-    -D bluez5-ofono-headset=false \
-    -D fftw=disabled \
-    -D elogind=disabled \
-    -D glib=enabled \
-    -D gsettings=disabled \
-    -D gstreamer=disabled \
-    -D gtk=disabled \
-    -D ipv6=false \
-    -D jack=disabled \
-    -D lirc=disabled \
-    -D openssl=disabled \
-    -D orc=disabled \
-    -D oss-output=auto \
-    -D samplerate=disabled \
-    -D soxr=disabled \
-    -D speex=enabled \
-    -D tcpwrap=disabled \
-    -D valgrind=disabled \
-    -D x11=disabled \
-    -D adrian-aec=false \
-    -D webrtc-aec=disabled \
+  local meson_options=(
+    -D daemon=false
+    -D doxygen=false
+    -D tests=false
 
+    -D database=simple
+    -D stream-restore-clear-old-devices=true
+
+    # paths
+    -D pulsedsp-location='/usr/\$LIB/pulseaudio'
+    -D udevrulesdir=/usr/lib/udev/rules.d
+    -D zshcompletiondir=no
+
+    # optional features
+    -D alsa=disabled
+    -D asyncns=disabled
+    -D avahi=disabled
+    -D bluez5=false
+    -D bluez5-gstreamer=disabled
+    -D bluez5-native-headset=false
+    -D bluez5-ofono-headset=false
+    -D dbus=enabled
+    -D elogind=disabled
+    -D fftw=disabled
+    -D glib=enabled
+    -D gsettings=disabled
+    -D gstreamer=disabled
+    -D gtk=disabled
+    -D ipv6=false
+    -D jack=disabled
+    -D lirc=disabled
+    -D openssl=disabled
+    -D orc=disabled
+    -D oss-output=disabled
+    -D samplerate=disabled
+    -D soxr=disabled
+    # speex is enabled as at least one echo impl is needed, that's unless meson.build is patched
+    # doesn't change the depends list as speex is a dependency of libsndfile
+    -D speex=enabled
+    -D tcpwrap=disabled
+    -D valgrind=disabled
+    -D x11=disabled
+
+    # echo cancellation
+    -D adrian-aec=false
+    -D webrtc-aec=disabled
+  )
+
+  arch-meson pulseaudio build  "${meson_options[@]}"
   meson compile -C build
 }
 
 package() {
-  DESTDIR="$pkgdir" meson install -C build
+  meson install -C build --destdir "$pkgdir"
 }
 
 # vim:set sw=2 et:
