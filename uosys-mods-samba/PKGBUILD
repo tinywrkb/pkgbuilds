@@ -2,7 +2,7 @@
 
 _pkgname=samba
 pkgname=uosys-mods-${_pkgname}
-pkgver=2021.01.26.1
+pkgver=2021.06.19.1
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
@@ -37,9 +37,9 @@ d /var/lib/ctdb/persistent - - - - -
 d /var/lib/ctdb/state - - - - -
 d /var/lib/ctdb/volatile - - - - -
 d /var/lib/samba - - - - -
-d /var/lib/samba/bind-dns - - - - -
-d /var/lib/samba/private - - - - -
-d /var/spool/samba - - - - -
+d /var/lib/samba/bind-dns 0770 - - - -
+d /var/lib/samba/private 0700 - - - -
+d /var/spool/samba 1777 - - - -
 EOF
 }
 
