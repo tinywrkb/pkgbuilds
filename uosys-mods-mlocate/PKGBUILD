@@ -2,7 +2,7 @@
 
 _pkgname=mlocate
 pkgname=uosys-mods-${_pkgname}
-pkgver=2021.01.26.1
+pkgver=2021.06.19.1
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
@@ -13,8 +13,8 @@ depends=('uosys-mods')
 build() {
   cat << EOF > tmpfiles.d.conf
 # $_pkgname
-d /var/lib/locate - - - - -
-d /var/lib/mlocate - - - - -
+d /var/lib/locate 0750 - - - -
+d /var/lib/mlocate 0750 - - - -
 EOF
 }
 
