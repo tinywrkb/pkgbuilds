@@ -9,17 +9,16 @@ pkgbase=$_pkgbase-$_pkgpostfix
 pkgname=({pipewire,alsa-card-profiles,pipewire-docs,pipewire-media-session}-$_pkgpostfix
          {pipewire-alsa,pipewire-jack,pipewire-pulse,gst-plugin-pipewire}-$_pkgpostfix
          pipewire-zeroconf-$_pkgpostfix)
-pkgver=0.3.28.r106.ge953bb32
+pkgver=0.3.31.r2.g5497d2d90
 pkgrel=1
 pkgdesc="Low-latency audio/video router and processor"
 pkgdesc+=" (GIT version)"
 url="https://pipewire.org"
 license=(MIT)
 arch=(x86_64)
-makedepends=(git meson doxygen xmltoman valgrind libpulse alsa-lib
+makedepends=(git meson doxygen xmltoman valgrind libpulse alsa-lib libusb
              gst-plugins-base rtkit dbus sdl2 ncurses libsndfile bluez-libs sbc
-             libldac libopenaptx libfdk-aac vulkan-headers vulkan-icd-loader
-             avahi webrtc-audio-processing)
+             libldac libopenaptx libfdk-aac avahi webrtc-audio-processing)
 checkdepends=(desktop-file-utils)
 source=("git+https://gitlab.freedesktop.org/pipewire/pipewire.git")
 sha256sums=('SKIP')
@@ -43,6 +42,7 @@ build() {
     -D jack=disabled
     -D libcamera=disabled
     -D udevrulesdir=/usr/lib/udev/rules.d
+    -D roc=disabled
   )
   arch-meson pipewire build "${meson_options[@]}"
   meson compile -C build
@@ -67,8 +67,8 @@ _ver=${pkgver:0:3}
 package_pipewire-fixed-git() {
   license+=(LGPL)  # libspa-alsa
   depends=(rtkit alsa-card-profiles-fixed-git libdbus-1.so libncursesw.so libsndfile.so
-           libudev.so libasound.so libsystemd.so libbluetooth.so libsbc.so
-           libldacBT_enc.so libopenaptx.so libfdk-aac.so libvulkan.so
+           libudev.so libusb-1.0.so libasound.so libsystemd.so libbluetooth.so
+           libsbc.so libldacBT_enc.so libopenaptx.so libfdk-aac.so
            libwebrtc_audio_processing.so)
   optdepends=('pipewire-docs-fixed-git: Documentation'
               'pipewire-media-session-fixed-git: Default session manager'
@@ -102,7 +102,10 @@ package_pipewire-fixed-git() {
     _pick jack usr/share/man/man1/pw-jack.1
     _pick jack usr/share/pipewire/{jack.conf,media-session.d/with-jack}
 
+    _pick pulse usr/bin/pipewire-pulse
+    _pick pulse usr/lib/pipewire-$_ver/libpipewire-module-protocol-pulse.so
     _pick pulse usr/lib/pipewire-$_ver/libpipewire-module-pulse-tunnel.so
+    _pick pulse usr/lib/systemd/user/pipewire-pulse.*
     _pick pulse usr/share/pipewire/media-session.d/with-pulseaudio
 
     _pick gst usr/lib/gstreamer-1.0
@@ -171,7 +174,8 @@ package_pipewire-jack-fixed-git() {
 
 package_pipewire-pulse-fixed-git() {
   pkgdesc+=" - PulseAudio replacement"
-  depends=(pipewire-media-session libpulse)
+  depends=(pipewire-media-session libpipewire-$_ver.so libpulse.so
+           libavahi-{client,common}.so)
   provides=(pulseaudio pulseaudio-bluetooth)
   conflicts=(pulseaudio pulseaudio-bluetooth)
   conflicts+=(${pkgname%-$_pkgpostfix})
