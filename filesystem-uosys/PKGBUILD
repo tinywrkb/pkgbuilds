@@ -10,7 +10,7 @@
 #        current workaround is to avoid the service by using a kernel parameter
 
 pkgname=filesystem-uosys
-pkgver=2021.04.01.1
+pkgver=2021.06.30.1
 pkgrel=1
 pkgdesc='Base Linux distribution files'
 arch=('x86_64')
@@ -151,7 +151,8 @@ package() {
 
   # TODO: make timezone configurable
   # workaround: hardcode locatime
-  ln -s /usr/share/zoneinfo/Asia/Jerusalem ${pkgdir}/etc/localtime
+  #ln -s /usr/share/zoneinfo/Asia/Jerusalem ${pkgdir}/etc/localtime
+  ln -s /var/etc/localtime ${pkgdir}/etc/localtime
 
   # machine specific identifiers
   # TODO: better solution compatible with cli helpers? switch back to mount points?
