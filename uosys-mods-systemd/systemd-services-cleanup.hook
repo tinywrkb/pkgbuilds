@@ -20,6 +20,7 @@ Target = pipewire-pulse-fixed
 Target = pipewire-pulse-fixed-git
 Target = pipewire-pulse-git
 Target = systemd
+Target = systemd-uosys
 Target = xdg-user-dirs
 
 [Action]

@@ -27,6 +27,9 @@ while read -r pkg; do
     pipewire-git|pipewire-jack-git|pipewire-media-session-git|pipewire-pulse-git)
       pkg=pipewire
       ;;
+    systemd-uosys)
+      pkg=systemd
+      ;;
   esac
 
   # only process package once
