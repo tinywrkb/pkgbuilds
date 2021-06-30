@@ -251,7 +251,7 @@ while read -r pkg; do
     smartmontools-uosys)
       pkg=smartmontools
       ;;
-    systemd-swap)
+    systemd-swap|systemd-uosys)
       pkg=systemd
       ;;
   esac

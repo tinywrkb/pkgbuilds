@@ -72,6 +72,7 @@ Target = smartmontools-uosys
 Target = sudo
 Target = systemd
 Target = systemd-swap
+Target = systemd-uosys
 Target = tlp
 Target = udisks2
 Target = upower
