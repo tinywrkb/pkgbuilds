@@ -9,7 +9,7 @@ pkgrel=2
 pkgdesc='Tools for Arch Linux package maintainers'
 arch=('any')
 license=('GPL')
-url='https://git.archlinux.org/devtools.git/'
+url='https://github.com/archlinux/devtools'
 depends=('bash' 'openssh' 'rsync' 'arch-install-scripts'
          'git' 'diffutils' 'util-linux' 'awk')
 makedepends=('asciidoc')
