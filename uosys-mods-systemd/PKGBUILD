@@ -1,6 +1,6 @@
 _pkgname=systemd
 pkgname=uosys-mods-${_pkgname}
-pkgver=2021.06.30.1
+pkgver=2021.07.16.1
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
@@ -32,7 +32,8 @@ link_list=(systemd
            modules-load.d
            sysctl.d
            tmpfiles.d
-           udev)
+           udev
+           userdb)
 EOF
 
   cat << EOF > tmpfiles.d.conf
@@ -44,6 +45,7 @@ d /run/mount - - - - -
 d /var/etc/exports.d - - - - -
 d /var/etc/modules-load.d - - - - -
 d /var/etc/sysctl.d - - - - -
+d /var/etc/userdb - - - - -
 
 d /var/etc/systemd - - - - -
 d /var/etc/systemd/network - - - - -
