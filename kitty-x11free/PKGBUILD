@@ -7,7 +7,7 @@
 _pkgname=kitty
 pkgname=$_pkgname-x11free
 pkgver=0.21.2
-pkgrel=1
+pkgrel=2
 pkgdesc="A modern, hackable, featureful, OpenGL-based terminal emulator"
 arch=('x86_64')
 url="https://github.com/kovidgoyal/kitty"
@@ -36,7 +36,8 @@ build() {
 
 package() {
   depends+=('kitty-terminfo')
-  optdepends=('imagemagick: viewing images with icat')
+  optdepends=('imagemagick: viewing images with icat'
+              'libcanberra: playing "bell" sound on terminal bell')
 
   cd "$srcdir/$_pkgname-$pkgver"
 
