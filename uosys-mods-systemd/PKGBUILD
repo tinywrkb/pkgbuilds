@@ -1,6 +1,6 @@
 _pkgname=systemd
 pkgname=uosys-mods-${_pkgname}
-pkgver=2021.07.16.1
+pkgver=2021.07.20.1
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
@@ -79,9 +79,10 @@ d /var/etc/udev/hwdb.d - - - - -
 d /var/etc/udev/rules.d - - - - -
 L- /var/etc/udev/udev.conf - - - - /usr/share/etc/udev/udev.conf
 
-# TODO: open bug report in systemd about realpath vs readlink or just patch systemd
-# localtime need to be hardcoded due to a systemd limitaiton
-#L /var/etc/localtime - - - - /usr/share/zoneinfo/Asia/Jerusalem
+# localtime
+# two layers of symlinks, needs the proper change in systemd
+# TODO: drop this after implementing TZ support in time-util
+L /var/etc/localtime - - - - /usr/share/zoneinfo/UTC
 
 # TODO: re-evaluate this, need to take in consideation local dns and quick switch settings
 #       maybe create a helper script to do the switch when local dns is broken
