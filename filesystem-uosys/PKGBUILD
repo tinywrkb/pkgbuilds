@@ -3,7 +3,9 @@
 # Contributor: Tom Gundersen <teg@jklm.no>
 
 # TODO: report bug: timedatectl doesn't follow /etc/adjtime symlink
-# TODO: report bug: timedatectl doesn't follow recursive /etc/localtime symlink
+# TODO: report bug: timedatectl doesn't follow recursive /etc/localtime symlink,
+#                   changing the code to recursively is propbably not the proper solution as it will break
+#                   apps and libs that expect a single level of symlink, e.g. flatpak.
 # TODO: report bug: homectl create doesn't follow skel symlink
 # TODO: maybe install a default .updated to usr/etc so the systemd-update-done.service won't fail,
 #        also needs setting timestamp of /usr in the initramfs
@@ -18,10 +20,9 @@ license=('GPL')
 url=''
 provides=('filesystem')
 conflicts=('filesystem')
-# removed: 'etc/crypttab' 'etc/fstab' 'etc/host.conf' 'etc/hosts'
+# removed from backup: 'etc/crypttab' 'etc/fstab' 'etc/host.conf' 'etc/hosts'
 #          'etc/issue' 'etc/ld.so.conf' 'etc/motd' 'etc/nsswitch.conf'
 #          'etc/profile'
-
 backup=('etc/shells' 'etc/group' 'etc/gshadow' 'etc/passwd' 'etc/shadow')
 depends=('iana-etc')
 source=(arch-release issue motd os-release
@@ -133,7 +134,6 @@ package() {
   #   - add a second level of symlink to point to the right location
   ln -s ../proc/self/mounts ${pkgdir}/etc/mtab
   # compat for etc symlink
-  # TODO: test this actually works with flatpak (fusermount was tested)
   mkdir -p ${pkgdir}/usr/proc/self
   echo 'compat symlink for systems where /etc is a symlink pointing to /usr/etc' \
     > ${pkgdir}/usr/proc/self/README
@@ -149,9 +149,7 @@ package() {
   ln -s -t ${pkgdir}/etc/ \
     /var/etc/{adjtime,resolv.conf}
 
-  # TODO: make timezone configurable
-  # workaround: hardcode locatime
-  #ln -s /usr/share/zoneinfo/Asia/Jerusalem ${pkgdir}/etc/localtime
+  # timezone, two levels of symlinks, needs a proper patch in systemd to recursively expand and resolve the real path
   ln -s /var/etc/localtime ${pkgdir}/etc/localtime
 
   # machine specific identifiers
