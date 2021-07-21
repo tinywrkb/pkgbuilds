@@ -48,6 +48,10 @@ fi
 if (( dracut_update )) || (( systemd_update )) || (( ucode_update )) ; then
     kernels=()
     for file in /lib/modules/*/pkgbase; do
+
+        # ignore pkgbase name symlinks
+        [ -L $(dirname $file) ] && continue
+
         if read -r pkgbase &> /dev/null < "$file"; then
             kernels+=("${pkgbase}")
         fi
@@ -171,28 +175,47 @@ for kernel in "${kernels[@]}"; do
   # TODO: drop this legacy stuff, maybe move into separate packaged hook, also kernel and ucode should be dropped
   [ -d /boot ] && install -Dm644 "${path%'/pkgbase'}/initrd" "/boot/initramfs-${pkgbase}.img"
 
-  # update symlinks for not breaking libvirt machine config on every kernel update
+
+  # create symlinks for kernel and initramfs to have paths that won't change on every kernel update,
+  #  and won't break libvirt configs
+
+  # solution 1: /usr/lib/boot
+
+# # only when os is not legacy
+# if [ ! -d /boot ]; then
+#   # create lib/boot if not exist
+#   mkdir -p /usr/lib/boot
+
+#   # update kernel symlink
+#   # if symlink doesn't exist or broken
+#   if [ ! -e /usr/lib/boot/vmlinuz-${pkgbase} ]; then
+#     # symlink exist so it's broken
+#     [ -L /usr/lib/boot/vmlinuz-${pkgbase} ] &&
+#       rm -f /usr/lib/boot/vmlinuz-${pkgbase}
+#     ln -s ../modules/${version}/vmlinuz /usr/lib/boot/vmlinuz-${pkgbase}
+#   fi
+
+#   # update initramfs symlink
+#   # if symlink doesn't exist or broken
+#   if [ ! -e /usr/lib/boot/initramfs-${pkgbase}.img ]; then
+#     # symlink exist so it's broken
+#     [ -L /usr/lib/boot/initramfs-${pkgbase}.img ] &&
+#       rm -f /usr/lib/boot/initramfs-${pkgbase}.img
+#     ln -s ../modules/${version}/initrd /usr/lib/boot/initramfs-${pkgbase}.img
+#   fi
+# fi
+
+  # solution 2: pkgbase symlink
+
   # only when os is not legacy
   if [ ! -d /boot ]; then
-    # create lib/boot if not exist
-    mkdir -p /usr/lib/boot
-
-    # update kernel symlink
-    # if symlink doesn't exist or broken
-    if [ ! -e /usr/lib/boot/vmlinuz-${pkgbase} ]; then
+    # if the symlink doesn't exist or broken
+    if [ ! -e /usr/lib/modules/${pkgbase} ]; then
       # symlink exist so it's broken
-      [ -L /usr/lib/boot/vmlinuz-${pkgbase} ] &&
-        rm -f /usr/lib/boot/vmlinuz-${pkgbase}
-      ln -s ../modules/${version}/vmlinuz /usr/lib/boot/vmlinuz-${pkgbase}
-    fi
-
-    # update initramfs symlink
-    # if symlink doesn't exist or broken
-    if [ ! -e /usr/lib/boot/initramfs-${pkgbase}.img ]; then
-      # symlink exist so it's broken
-      [ -L /usr/lib/boot/initramfs-${pkgbase}.img ] &&
-        rm -f /usr/lib/boot/initramfs-${pkgbase}.img
-      ln -s ../modules/${version}/initrd /usr/lib/boot/initramfs-${pkgbase}.img
+      [ -L /usr/lib/modules/${pkgbase} ] &&
+        rm -f /usr/lib/modules/${pkgbase}
+      ln -s ${version} /usr/lib/modules/${pkgbase}
     fi
   fi
+
 done

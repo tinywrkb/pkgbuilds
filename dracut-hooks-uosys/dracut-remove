@@ -2,6 +2,10 @@
 
 while read -r line; do
     if [[ "$line" == 'usr/lib/modules/'+([^/])'/pkgbase' ]]; then
+
+        # ignore pkgbase name symlinks
+        [ -L $(dirname /${line}) ] && continue
+
         read -r pkgbase < "/${line}"
         [ "${pkgbase}" = linux ] && pkgbase=linux-latest
 
@@ -13,11 +17,15 @@ while read -r line; do
         [ -f "/boot/initramfs-${pkgbase}.img" ] &&
           rm -f "/boot/initramfs-${pkgbase}.img"
 
-        # remove symlinks
-        [ -L "/usr/lib/boot/vmlinuz-${pkgbase}" ] &&
-          rm -f "/usr/lib/boot/vmlinuz-${pkgbase}"
-        [ -L "/usr/lib/boot/initramfs-${pkgbase}.img" ] &&
-          rm -f "/usr/lib/boot/initramfs-${pkgbase}img"
+        # remove /usr/lib/boot symlinks
+        #[ -L "/usr/lib/boot/vmlinuz-${pkgbase}" ] &&
+        #  rm -f "/usr/lib/boot/vmlinuz-${pkgbase}"
+        #[ -L "/usr/lib/boot/initramfs-${pkgbase}.img" ] &&
+        #  rm -f "/usr/lib/boot/initramfs-${pkgbase}img"
+
+        # remove pkgbase symlink
+        [ -L "/usr/lib/modules/${pkgbase}" ] &&
+          rm -f "/usr/lib/modules/${pkgbase}"
     fi
     if [[ "$line" == 'usr/lib/firmware/'+([^/])'-ucode/'+([^/])'-ucode.img' ]]; then
         # /boot only exist on legacy os
