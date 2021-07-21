@@ -1,0 +1,83 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+pkgbase=tinyalsa
+pkgname=(tinyalsa-lib tinyalsa-libasound tinyalsa-utils)
+pkgver=2.0.0
+pkgrel=1
+pkgdesc="Tiny library to interface with ALSA in the Linux kernel"
+url="https://github.com/tinyalsa/tinyalsa"
+license=(BSD)
+arch=(x86_64)
+makedepends=(git meson doxygen xmltoman)
+_commit=1c5fb68ced57d838f2b7ecd0c00bc1fefc9ab60d  # tags/2.0.0
+source=("git+https://github.com/tinyalsa/tinyalsa.git#commit=$_commit")
+sha256sums=('SKIP')
+_libasoundver=2.0.0
+
+pkgver() {
+  cd tinyalsa
+  git describe --tags | sed 's/^v//;s/-/+/g'
+}
+
+build() {
+  local meson_options=(
+    -D docs=enabled
+    -D examples=enabled
+    -D utils=enabled
+  )
+  arch-meson tinyalsa build "${meson_options[@]}"
+  meson compile -C build
+}
+
+_pick() {
+  local p="$1" f d; shift
+  for f; do
+    d="$srcdir/$p/${f#$pkgdir/}"
+    mkdir -p "$(dirname "$d")"
+    mv "$f" "$d"
+    rmdir -p --ignore-fail-on-non-empty "$(dirname "$f")"
+  done
+}
+
+package_tinyalsa-lib() {
+  depends=(glibc)
+  optdepends=('tinyalsa-libasound: alsa-lib compat'
+              'tinyalsa-utils: utilities')
+  provides=(libtinyalsa.so)
+
+  meson install -C build --destdir "$pkgdir"
+
+  ( cd "$pkgdir"
+    _pick utils usr/bin/tiny{cap,mix,pcminfo,play}
+    _pick utils usr/share/man/man1/tiny{cap,mix,pcminfo,play}.1
+  )
+
+  install -Dt "$pkgdir/usr/share/licenses/$pkgname" -m644 tinyalsa/LICENSE
+}
+
+package_tinyalsa-utils() {
+  pkgdesc+=" - Utilities"
+  depends=(libtinyalsa.so)
+
+  mv utils/* "$pkgdir"
+  install -Dt "$pkgdir/usr/share/licenses/$pkgname" -m644 tinyalsa/LICENSE
+}
+
+package_tinyalsa-libasound() {
+  pkgdesc+=" - alsa-lib compat"
+  license=(GPL)
+  arch=(any)
+  depends=(tinyalsa-lib)
+  conflicts=(alsa-lib)
+  provides=(libasound.so)
+
+  install -dm755 "$pkgdir"/usr/lib
+  cd "$pkgdir"/usr/lib
+
+  ln -s libasound.so{.${_libasoundver:0:1},}
+  ln -s libasound.so.{${_libasoundver:0:3},${_libasoundver:0:1}}
+  ln -s libasound.so.{${_libasoundver:0:5},${_libasoundver:0:3}}
+  ln -s libtinyalsa.so.${pkgver:0:5} libasound.so.${_libasoundver:0:5}
+}
+
+# vim:set sw=2 et:
