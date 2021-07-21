@@ -6,7 +6,7 @@ pkgver=2021.02.06.1
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
-licesne=('GPL')
+license=('GPL')
 url=''
 depends=('uosys-mods')
 
