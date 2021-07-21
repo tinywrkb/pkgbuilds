@@ -69,7 +69,9 @@ package_tinyalsa-libasound() {
   arch=(any)
   depends=(tinyalsa-lib)
   conflicts=(alsa-lib)
-  provides=(libasound.so)
+  provides=(libasound.so=2-64)
+  # workaround for bluez and libcanberra depending on alsa-lib instead of libasound.so
+  provides+=(alsa-lib)
 
   install -dm755 "$pkgdir"/usr/lib
   cd "$pkgdir"/usr/lib
