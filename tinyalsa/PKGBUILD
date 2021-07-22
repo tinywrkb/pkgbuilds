@@ -1,7 +1,7 @@
 # Maintainer: tinywrkb <tinywrkb@gmail.com>
 
 pkgbase=tinyalsa
-pkgname=(tinyalsa-lib tinyalsa-libasound tinyalsa-utils)
+pkgname=(tinyalsa-lib tinyalsa-utils)
 pkgver=2.0.0
 pkgrel=1
 pkgdesc="Tiny library to interface with ALSA in the Linux kernel"
@@ -12,7 +12,6 @@ makedepends=(git meson doxygen xmltoman)
 _commit=1c5fb68ced57d838f2b7ecd0c00bc1fefc9ab60d  # tags/2.0.0
 source=("git+https://github.com/tinyalsa/tinyalsa.git#commit=$_commit")
 sha256sums=('SKIP')
-_libasoundver=2.0.0
 
 pkgver() {
   cd tinyalsa
@@ -41,8 +40,7 @@ _pick() {
 
 package_tinyalsa-lib() {
   depends=(glibc)
-  optdepends=('tinyalsa-libasound: alsa-lib compat'
-              'tinyalsa-utils: utilities')
+  optdepends=('tinyalsa-utils: utilities')
   provides=(libtinyalsa.so)
 
   meson install -C build --destdir "$pkgdir"
@@ -61,25 +59,6 @@ package_tinyalsa-utils() {
 
   mv utils/* "$pkgdir"
   install -Dt "$pkgdir/usr/share/licenses/$pkgname" -m644 tinyalsa/LICENSE
-}
-
-package_tinyalsa-libasound() {
-  pkgdesc+=" - alsa-lib compat"
-  license=(GPL)
-  arch=(any)
-  depends=(tinyalsa-lib)
-  conflicts=(alsa-lib)
-  provides=(libasound.so=2-64)
-  # workaround for bluez and libcanberra depending on alsa-lib instead of libasound.so
-  provides+=(alsa-lib)
-
-  install -dm755 "$pkgdir"/usr/lib
-  cd "$pkgdir"/usr/lib
-
-  ln -s libasound.so{.${_libasoundver:0:1},}
-  ln -s libasound.so.{${_libasoundver:0:3},${_libasoundver:0:1}}
-  ln -s libasound.so.{${_libasoundver:0:5},${_libasoundver:0:3}}
-  ln -s libtinyalsa.so.${pkgver:0:5} libasound.so.${_libasoundver:0:5}
 }
 
 # vim:set sw=2 et:
