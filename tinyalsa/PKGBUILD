@@ -1,7 +1,7 @@
 # Maintainer: tinywrkb <tinywrkb@gmail.com>
 
 pkgbase=tinyalsa
-pkgname=(tinyalsa-lib tinyalsa-utils)
+pkgname=(tinyalsa tinyalsa-utils)
 pkgver=2.0.0
 pkgrel=1
 pkgdesc="Tiny library to interface with ALSA in the Linux kernel"
@@ -38,7 +38,7 @@ _pick() {
   done
 }
 
-package_tinyalsa-lib() {
+package_tinyalsa() {
   depends=(glibc)
   optdepends=('tinyalsa-utils: utilities')
   provides=(libtinyalsa.so)
