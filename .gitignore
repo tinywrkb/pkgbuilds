@@ -8,5 +8,6 @@
 *.log
 *.pkg.tar.zst
 *.sig
+*.sign
 *.tar.gz
 *.tar.xz
