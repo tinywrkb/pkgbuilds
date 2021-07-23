@@ -18,6 +18,13 @@ pkgver() {
   git describe --tags | sed 's/^v//;s/-/+/g'
 }
 
+prepare() {
+  cd tinyalsa
+  sed -i "/'asoundlib.h',/a 'attributes.h'," \
+    include/tinyalsa/meson.build
+  sed -i "/'pcm.h',/a 'plugin.h'," \
+    include/tinyalsa/meson.build
+}
 build() {
   local meson_options=(
     -D docs=enabled
