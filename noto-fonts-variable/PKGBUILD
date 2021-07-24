@@ -1,0 +1,39 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Contributor: Antonio Rojas <arojas@archlinux.org>
+
+pkgname=noto-fonts-variable
+pkgver=20210720
+pkgrel=1
+pkgdesc='Google Noto variable fonts'
+url='https://www.google.com/get/noto/'
+license=(custom:SIL)
+arch=(any)
+_commit=49d1cdc3c292dc822d0f16fcb0655afb110be16d
+source=("noto-fonts-variable-${pkgver}.tar.gz::https://github.com/googlefonts/noto-fonts/archive/${_commit}.tar.gz"
+        {46,66}-noto-{mono,serif,sans}.conf)
+sha256sums=('88e678722a24b427d011ec71d9d4668fae02d0fdc4b80d9d9120bd9424f7c988'
+            'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+
+package_noto-fonts-variable(){
+  optdepends=('noto-fonts-cjk-variable: CJK characters'
+              'noto-fonts-emoji: Emoji characters')
+  conflicts=(noto-fonts{,-extra,} ttf-croscore)
+  provides=(noto-fonts{,-extra,} ttf-croscore ttf-font)
+
+  cd noto-fonts-*/
+
+  pushd unhinted/variable-ttf
+  for f in *.ttf; do
+    install -Dm644 $f \
+      "$pkgdir"/usr/share/fonts/noto/${f//-VF.ttf}.ttf
+  done
+  popd
+
+  install -Dm644 -t "$pkgdir"/usr/share/fontconfig/conf.avail/ \
+    ../{46,66}-noto-{mono,serif,sans}.conf
+  install -dm755 "$pkgdir"/usr/share/fontconfig/conf.default
+  ln -s  -t "$pkgdir"/usr/share/fontconfig/conf.default/ \
+    ../conf.avail/{46,66}-noto-{mono,serif,sans}.conf
+
+  install -Dm644 LICENSE -t "$pkgdir"/usr/share/licenses/${pkgname}/
+}
