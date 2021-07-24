@@ -119,35 +119,35 @@ _package_subset(){
 }
 
 package_noto-fonts-cjk-hk-variable(){
-  pkgdesc+=' - Traditional Chinese HK locl'
+  pkgdesc+=' - Traditional Chinese HK as default language (OpenType locl)'
 
   _lang=hk
   _package_locl
 }
 
 package_noto-fonts-cjk-jp-variable(){
-  pkgdesc+=' - Japanese locl'
+  pkgdesc+=' - Japanese as default language (OpenType locl)'
 
   _lang=jp
   _package_locl
 }
 
 package_noto-fonts-cjk-kr-variable(){
-  pkgdesc+=' - Korean locl'
+  pkgdesc+=' - Korean as default language (OpenType locl)'
 
   _lang=kr
   _package_locl
 }
 
 package_noto-fonts-cjk-sc-variable(){
-  pkgdesc+=' - Simplified Chinese locl'
+  pkgdesc+=' - Simplified Chinese as default language (OpenType locl)'
 
   _lang=sc
   _package_locl
 }
 
 package_noto-fonts-cjk-tc-variable(){
-  pkgdesc+=' - Traditional Chinese locl'
+  pkgdesc+=' - Traditional Chinese as default language (OpenType locl)'
 
   _lang=tc
   _package_locl
