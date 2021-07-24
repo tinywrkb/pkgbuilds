@@ -12,7 +12,7 @@ pkgdesc="A small and lightweight implementation of the XDG Sound Theme Specifica
 url="http://0pointer.de/lennart/projects/libcanberra"
 arch=(x86_64)
 license=(LGPL)
-depends=(libltdl libpulse libvorbis sound-theme-freedesktop)
+depends=(libltdl libpulse libvorbis sound-theme-freedesktop tdb)
 makedepends=(git gtk3)
 provides=("libcanberra-pulse=$pkgver-$pkgrel" libcanberra-gtk3.so)
 replaces=("libcanberra-pulse<0.30+2+gc0620e4-4")
@@ -60,11 +60,10 @@ build() {
     --disable-lynx
     --disable-oss
     --disable-static
-    # tdb breaks compilation
-    --disable-tdb
     --enable-gtk3
     --enable-null
     --enable-pulse
+    --enable-tdb
     --with-builtin=dso
   )
   ./configure "${config_options[@]}"
