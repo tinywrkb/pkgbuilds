@@ -3,8 +3,8 @@
 
 # TODO: maybe create split packages for the mono fonts?
 
-pkgbase=noto-fonts-cjk-variable
-pkgname=(noto-fonts-{cjk,{cjk-,}{hk,jp,kr,sc,tc}}-variable)
+pkgbase=noto-fonts-cjk-vf
+pkgname=(noto-fonts-{cjk,{cjk-,}{hk,jp,kr,sc,tc}}-vf)
 pkgver=20210430
 pkgrel=1
 pkgdesc='Google Noto CJK variable fonts'
@@ -29,7 +29,7 @@ _faces=(Black
 
 _langs=(hk jp kr sc tc)
 
-package_noto-fonts-cjk-variable(){
+package_noto-fonts-cjk-vf(){
   cd noto-cjk-*/
   for f in NotoSans{,Mono}CJK-VF.otf.ttc; do
     install -Dm644 \
@@ -53,8 +53,8 @@ package_noto-fonts-cjk-variable(){
 }
 
 _package_locl(){
-  conflicts+=(noto-fonts-cjk-variable)
-  provides+=(noto-fonts-cjk-variable)
+  conflicts+=(noto-fonts-cjk-vf)
+  provides+=(noto-fonts-cjk-vf)
 
   cd noto-cjk-${_commit}
 
@@ -89,7 +89,7 @@ _package_subset(){
   # we need to conflict if the mono font is installed
   #for i in ${_langs[@]}; do
   #  [ $i = $_lang ] && continue
-  #  conflicts+=(noto-fonts-cjk-${i}-variable)
+  #  conflicts+=(noto-fonts-cjk-${i}-vf)
   #done
 
   install -Dm644 \
@@ -118,70 +118,70 @@ _package_subset(){
   install -Dm644 LICENSE -t "$pkgdir"/usr/share/licenses/${pkgname}/
 }
 
-package_noto-fonts-cjk-hk-variable(){
+package_noto-fonts-cjk-hk-vf(){
   pkgdesc+=' - Traditional Chinese HK as default language (OpenType locl)'
 
   _lang=hk
   _package_locl
 }
 
-package_noto-fonts-cjk-jp-variable(){
+package_noto-fonts-cjk-jp-vf(){
   pkgdesc+=' - Japanese as default language (OpenType locl)'
 
   _lang=jp
   _package_locl
 }
 
-package_noto-fonts-cjk-kr-variable(){
+package_noto-fonts-cjk-kr-vf(){
   pkgdesc+=' - Korean as default language (OpenType locl)'
 
   _lang=kr
   _package_locl
 }
 
-package_noto-fonts-cjk-sc-variable(){
+package_noto-fonts-cjk-sc-vf(){
   pkgdesc+=' - Simplified Chinese as default language (OpenType locl)'
 
   _lang=sc
   _package_locl
 }
 
-package_noto-fonts-cjk-tc-variable(){
+package_noto-fonts-cjk-tc-vf(){
   pkgdesc+=' - Traditional Chinese as default language (OpenType locl)'
 
   _lang=tc
   _package_locl
 }
 
-package_noto-fonts-hk-variable(){
+package_noto-fonts-hk-vf(){
   pkgdesc='Google Noto Traditional Chinese HK variable fonts'
 
   _lang=hk
   _package_subset
 }
 
-package_noto-fonts-jp-variable(){
+package_noto-fonts-jp-vf(){
   pkgdesc='Google Noto Japanese variable fonts'
 
   _lang=jp
   _package_subset
 }
 
-package_noto-fonts-kr-variable(){
+package_noto-fonts-kr-vf(){
   pkgdesc='Google Noto Korean variable fonts'
 
   _lang=kr
   _package_subset
 }
 
-package_noto-fonts-sc-variable(){
+package_noto-fonts-sc-vf(){
   pkgdesc='Google Noto Simplified Chinese variable fonts'
 
   _lang=sc
   _package_subset
 }
 
-package_noto-fonts-tc-variable(){
+package_noto-fonts-tc-vf(){
   pkgdesc='Google Noto Traditional Chinese variable fonts'
 
   _lang=tc
