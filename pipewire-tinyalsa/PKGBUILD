@@ -37,6 +37,9 @@ prepare() {
     $(find ./ -name meson.build)
   sed -i 's/#include <alsa\//#include <tinyalsa\//' \
     $(find spa/plugins/alsa -name '*.h' -o -name '*.c')
+
+  # TODO: enable alsa spa plugin
+  sed -i '/if tinyalsa_dep.found/,/endif/d' spa/plugins/meson.build
 }
 
 build() {
@@ -45,6 +48,7 @@ build() {
     -D bluez5-backend-ofono=disabled
     -D jack-devel=enabled
     -D libjack-path=/usr/lib
+    # TODO: enable pipewire-alsa?
     -D pipewire-alsa=disabled
     -D docs=enabled
     -D jack=disabled
@@ -94,8 +98,9 @@ package_pipewire-tinyalsa() {
 
   ( cd "$pkgdir"
 
-    _pick acp usr/lib/udev
-    _pick acp usr/share/alsa-card-profile
+    # TODO: enable this after fixing alsa
+    #_pick acp usr/lib/udev
+    #_pick acp usr/share/alsa-card-profile
 
     _pick docs usr/share/doc
 
@@ -129,7 +134,8 @@ package_alsa-card-profiles-tinyalsa() {
   license=(LGPL)
   conflicts+=(${pkgname%-$_pkgpostfix})
   provides+=(${pkgname%-$_pkgpostfix})
-  mv acp/* "$pkgdir"
+  # TODO: enable this after fixing alsa
+  #mv acp/* "$pkgdir"
 }
 
 package_pipewire-docs-tinyalsa() {
