@@ -39,20 +39,26 @@ prepare() {
 build() {
   cd bluez-${pkgver}
   autoreconf -ivf
-  ./configure \
-          --prefix=/usr \
-          --mandir=/usr/share/man \
-          --sysconfdir=/etc \
-          --localstatedir=/var \
-          --libexecdir=/usr/lib \
-          --with-dbusconfdir=/usr/share \
-          --enable-btpclient \
-          --enable-midi \
-          --enable-sixaxis \
-          --enable-mesh \
-          --enable-hid2hci \
-          --enable-experimental \
-          --enable-library # this is deprecated
+
+  config_options=(
+    --prefix=/usr
+    --mandir=/usr/share/man
+    --sysconfdir=/etc
+    --localstatedir=/var
+    --libexecdir=/usr/lib
+    --with-dbusconfdir=/usr/share
+    --enable-btpclient
+    # TODO: enable this after fixing alsa
+    --disable-midi
+    --enable-sixaxis
+    --enable-mesh
+    --enable-hid2hci
+    --enable-experimental
+    # this is deprecated
+    --enable-library
+  )
+
+  ./configure "${config_options[@]}"
   make
 }
 
