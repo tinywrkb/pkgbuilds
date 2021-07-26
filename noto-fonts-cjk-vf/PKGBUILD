@@ -1,8 +1,6 @@
 # Maintainer: tinywrkb <tinywrkb@gmail.com>
 # Contributor: Antonio Rojas <arojas@archlinux.org>
 
-# TODO: maybe create split packages for the mono fonts?
-
 pkgbase=noto-fonts-cjk-vf
 pkgname=(noto-fonts-{cjk,{cjk-,}{hk,jp,kr,sc,tc}}-vf)
 pkgver=20210430
@@ -86,21 +84,22 @@ _package_locl(){
 _package_subset(){
   cd noto-cjk-${_commit}
 
-  # we need to conflict if the mono font is installed
-  #for i in ${_langs[@]}; do
-  #  [ $i = $_lang ] && continue
-  #  conflicts+=(noto-fonts-cjk-${i}-vf)
-  #done
-
+  # install sans font
   install -Dm644 \
     Sans/Variable/OTF/Subset/NotoSans${_lang^^}-VF.otf \
     "$pkgdir"/usr/share/fonts/noto-cjk/NotoSans${_lang^^}.otf
 
-  # there are no subset mono fonts, so install the multi-lingual with default locl?
-  #install -Dm644 \
-  #  Sans/Variable/OTF/Mono/NotoSansMonoCJK${_lang}-VF.otf \
-  #  "$pkgdir"/usr/share/fonts/noto-cjk/NotoSansMonoCJK.otf
+  # install mono font
+  # there are no subset mono fonts, so install the multi-lingual with default locl, and then conflict
+  for i in ${_langs[@]}; do
+    [ $i = $_lang ] && continue
+    conflicts+=(noto-fonts-cjk-${i}-vf)
+  done
+  install -Dm644 \
+    Sans/Variable/OTF/Mono/NotoSansMonoCJK${_lang}-VF.otf \
+    "$pkgdir"/usr/share/fonts/noto-cjk/NotoSansMonoCJK.otf
 
+  # install serif font
   if [ ${_lang} != 'hk' ]; then
     for face in "${_faces[@]}"; do
       install -Dm644 \
