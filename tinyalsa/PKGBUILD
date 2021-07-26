@@ -2,16 +2,17 @@
 
 pkgbase=tinyalsa
 pkgname=(tinyalsa tinyalsa-utils)
-pkgver=2.0.0
+pkgver=2.0.0+24+g597934f
 pkgrel=1
 pkgdesc="Tiny library to interface with ALSA in the Linux kernel"
 url="https://github.com/tinyalsa/tinyalsa"
 license=(BSD)
 arch=(x86_64)
 makedepends=(git meson doxygen xmltoman)
-_commit=1c5fb68ced57d838f2b7ecd0c00bc1fefc9ab60d  # tags/2.0.0
-source=("git+https://github.com/tinyalsa/tinyalsa.git#commit=$_commit")
-sha256sums=('SKIP')
+_commit=597934fc7c722bc2f9e1f933e1f03a9853159f93  # tags/2.0.0
+source=("git+https://github.com/tinyalsa/tinyalsa.git#commit=$_commit"
+        0001-meson-add-attributes.h-and-plugin.h-public-headers.patch)
+sha256sums=('SKIP' 'SKIP')
 
 pkgver() {
   cd tinyalsa
@@ -20,10 +21,8 @@ pkgver() {
 
 prepare() {
   cd tinyalsa
-  sed -i "/'asoundlib.h',/a 'attributes.h'," \
-    include/tinyalsa/meson.build
-  sed -i "/'pcm.h',/a 'plugin.h'," \
-    include/tinyalsa/meson.build
+
+  patch -Np1 -i ../0001-meson-add-attributes.h-and-plugin.h-public-headers.patch
 }
 build() {
   local meson_options=(
