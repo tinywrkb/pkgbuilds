@@ -1,0 +1,19 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+pkgname=evince-previewer-flatpak-wrapper
+pkgver=2021.07.26.1
+pkgrel=1
+pkgdesc="Print preview with the GTK Print portal implementation using Evince Flathub app"
+url=''
+arch=(any)
+license=(GPL)
+conflicts=(evince{,-previewer})
+provides=(evince-previewer)
+source=('wrapper')
+sha256sums=('SKIP')
+
+package() {
+  depends=(flatpak)
+  install -Dm755 wrapper "$pkgdir"/usr/bin/evince-previewer-flatpak-wrapper
+  ln -s evince-previewer-flatpak-wrapper "$pkgdir"/usr/bin/evince-previewer
+}

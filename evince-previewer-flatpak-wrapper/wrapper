@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if ! $(flatpak info org.gnome.Evince &> /dev/null); then
+  echo 'evince-previewer-flatpak-wrapper: org.gnome.Evince was not found!'
+  exit 1
+fi
+
+flatpak run --filesystem=/tmp --command=evince-previewer org.gnome.Evince "$@"
