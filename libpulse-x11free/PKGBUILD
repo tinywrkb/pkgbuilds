@@ -4,7 +4,7 @@
 _pkgname=libpulse
 pkgname=${_pkgname}-x11free
 pkgdesc="PulseAudio client library"
-pkgver=14.99.2
+pkgver=15.0
 pkgrel=1
 arch=(x86_64)
 url="https://www.freedesktop.org/wiki/Software/PulseAudio/"
@@ -16,14 +16,13 @@ conflicts=($_pkgname)
 provides=(libpulse{,-simple,-mainloop-glib}.so)
 provides+=($_pkgname)
 backup=(etc/pulse/client.conf)
-_commit=ce962563eba7ee18ad4641f700d097adbea6b6d7  # tags/v14.99.2
+_commit=6329a2498eb038f8a9537888280a62b00a93f68e  # tags/v15.0
 source=("git+https://gitlab.freedesktop.org/pulseaudio/pulseaudio.git#commit=$_commit")
 sha256sums=('SKIP')
 
 pkgver() {
   cd pulseaudio
   git describe --tags | sed 's/^v//;s/-/+/g'
-  #git describe --tags | sed 's/^v//;s/-/+/g' | sed 's/^14\..+/14.99+/'
 }
 
 build() {
@@ -44,7 +43,7 @@ build() {
     -D alsa=disabled
     -D asyncns=disabled
     -D avahi=disabled
-    -D bluez5=false
+    -D bluez5=disabled
     -D bluez5-gstreamer=disabled
     -D bluez5-native-headset=false
     -D bluez5-ofono-headset=false
