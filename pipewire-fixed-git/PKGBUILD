@@ -18,7 +18,7 @@ license=(MIT)
 arch=(x86_64)
 makedepends=(git meson doxygen xmltoman valgrind libpulse alsa-lib libusb
              gst-plugins-base rtkit dbus sdl2 ncurses libsndfile bluez-libs sbc
-             libldac libopenaptx libfdk-aac avahi webrtc-audio-processing)
+             libldac libfreeaptx libfdk-aac avahi webrtc-audio-processing)
 checkdepends=(desktop-file-utils)
 source=("git+https://gitlab.freedesktop.org/pipewire/pipewire.git")
 sha256sums=('SKIP')
@@ -68,7 +68,7 @@ package_pipewire-fixed-git() {
   license+=(LGPL)  # libspa-alsa
   depends=(rtkit alsa-card-profiles-fixed-git libdbus-1.so libncursesw.so libsndfile.so
            libudev.so libusb-1.0.so libasound.so libsystemd.so libbluetooth.so
-           libsbc.so libldacBT_enc.so libopenaptx.so libfdk-aac.so
+           libsbc.so libldacBT_enc.so libfreeaptx.so libfdk-aac.so
            libwebrtc_audio_processing.so)
   optdepends=('pipewire-docs-fixed-git: Documentation'
               'pipewire-media-session-fixed-git: Default session manager'
