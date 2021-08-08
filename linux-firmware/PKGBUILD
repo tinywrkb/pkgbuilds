@@ -1,0 +1,107 @@
+# Maintainer: Thomas Bächler <thomas@archlinux.org>
+
+# doc:
+#  - https://github.com/gregkh/linux/blob/master/drivers/base/firmware_loader/Kconfig
+#  - https://github.com/gregkh/linux/blob/master/Documentation/staging/xz.rst
+#  - https://github.com/gregkh/linux/commit/82fd7a8142a10b8eb41313074b3859d82c0857dc#diff-3f2f188b3e25721eaeca2b10be788f74b6e0377058d8d25a464f46bbc570e773
+# zst patch: https://lkml.org/lkml/2020/8/22/139
+# alt: https://src.fedoraproject.org/rpms/linux-firmware/blob/rawhide/f/0001-Add-support-for-compressing-firmware-in-copy-firmwar.patch
+pkgbase=linux-firmware
+pkgname=(linux-firmware{,-compressed} amd-ucode)
+_tag=20210716
+pkgver=20210716.b7c134f
+pkgrel=1
+pkgdesc="Firmware files for Linux"
+url="https://git.kernel.org/?p=linux/kernel/git/firmware/linux-firmware.git;a=summary"
+license=('GPL2' 'GPL3' 'custom')
+arch=('any')
+makedepends=('git')
+options=(!strip)
+source=("git+https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git#tag=${_tag}?signed")
+sha256sums=('SKIP')
+validpgpkeys=('4CDE8575E547BF835FE15807A31B6BD72486CFD6') # Josh Boyer <jwboyer@fedoraproject.org>
+
+_backports=(
+)
+
+prepare() {
+  cd ${pkgname}
+
+  local _c
+  for _c in "${_backports[@]}"; do
+    git log --oneline -1 "${_c}"
+    git cherry-pick -n "${_c}"
+  done
+}
+
+pkgver() {
+  cd ${pkgname}
+
+  # Commit date + short rev
+  echo $(TZ=UTC git show -s --pretty=%cd --date=format-local:%Y%m%d HEAD).$(git rev-parse --short HEAD)
+}
+
+build() {
+  mkdir -p kernel/x86/microcode
+  cat ${pkgbase}/amd-ucode/microcode_amd*.bin > kernel/x86/microcode/AuthenticAMD.bin
+
+  # Reproducibility: set the timestamp on the bin file
+  if [[ -n ${SOURCE_DATE_EPOCH} ]]; then
+    touch -d @${SOURCE_DATE_EPOCH} kernel/x86/microcode/AuthenticAMD.bin
+  fi
+
+  # Reproducibility: strip the inode and device numbers from the cpio archive
+  echo kernel/x86/microcode/AuthenticAMD.bin |
+    bsdtar --uid 0 --gid 0 -cnf - -T - |
+    bsdtar --null -cf - --format=newc @- > amd-ucode.img
+}
+
+package_linux-firmware() {
+  cd ${pkgname}
+
+  make DESTDIR="${pkgdir}" FIRMWAREDIR=/usr/lib/firmware install
+
+  # Trigger a microcode reload for configurations not using early updates
+  echo 'w /sys/devices/system/cpu/microcode/reload - - - - 1' |
+    install -Dm644 /dev/stdin "${pkgdir}/usr/lib/tmpfiles.d/${pkgname}.conf"
+
+  install -Dt "${pkgdir}/usr/share/licenses/${pkgname}" -m644 LICEN* WHENCE
+}
+
+package_linux-firmware-compressed() {
+  conflicts=(${pkgbase})
+  provides=(${pkgbase})
+
+  cd ${pkgbase}
+
+  make DESTDIR="${pkgdir}" FIRMWAREDIR=/usr/lib/firmware install
+
+  # compress firmware blobs
+  find "${pkgdir}"/usr/lib/firmware \
+    -type f -not \( -name '*.txt' \) \
+    -exec xz --check=crc32 '{}' \;
+
+  # fix symlinks
+  while IFS= read -r -d '' fwlnk; do
+    fwtarget=$(readlink "$fwlnk")
+    rm "$fwlnk"
+    ln -s ${fwtarget}.xz "${fwlnk}".xz
+  done < <(find "${pkgdir}"/usr/lib/firmware -type l -print0)
+
+  # Trigger a microcode reload for configurations not using early updates
+  echo 'w /sys/devices/system/cpu/microcode/reload - - - - 1' |
+    install -Dm644 /dev/stdin "${pkgdir}/usr/lib/tmpfiles.d/${pkgname}.conf"
+
+  install -Dt "${pkgdir}/usr/share/licenses/${pkgname}" -m644 LICEN* WHENCE
+}
+
+package_amd-ucode() {
+  pkgdesc="Microcode update image for AMD CPUs"
+  license=(custom)
+
+  install -Dt "${pkgdir}/boot" -m644 amd-ucode.img
+
+  install -Dt "${pkgdir}/usr/share/licenses/${pkgname}" -m644 ${pkgbase}/LICENSE.amd-ucode
+}
+
+# vim:set sw=2 et:
