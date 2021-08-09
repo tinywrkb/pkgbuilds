@@ -4,7 +4,7 @@
 
 pkgname=gtk3-nonsensefree
 pkgver=3.24.30
-pkgrel=1
+pkgrel=2
 epoch=1
 pkgdesc="GTK3 without X11, Tracker, and Cloudproviders"
 arch=(x86_64)
