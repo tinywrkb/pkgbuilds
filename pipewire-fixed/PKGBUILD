@@ -36,7 +36,7 @@ build() {
   local meson_options=(
     -D bluez5-backend-hsphfpd=disabled
     -D bluez5-backend-ofono=disabled
-    -D jack-devel=true
+    -D jack-devel=enabled
     -D libjack-path=/usr/lib
     -D docs=enabled
     -D jack=disabled
