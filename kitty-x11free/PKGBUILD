@@ -6,7 +6,7 @@
 
 _pkgname=kitty
 pkgname=$_pkgname-x11free
-pkgver=0.22.2
+pkgver=0.23.1
 pkgrel=1
 pkgdesc="A modern, hackable, featureful, OpenGL-based terminal emulator"
 arch=('x86_64')
@@ -19,7 +19,7 @@ conflicts=($_pkgname)
 provides=($_pkgname)
 source=("${_pkgname}-${pkgver}.tar.xz::https://github.com/kovidgoyal/${_pkgname}/releases/download/v${pkgver}/${_pkgname}-${pkgver}.tar.xz"
         "${_pkgname}-${pkgver}.tar.xz.sig::https://github.com/kovidgoyal/${_pkgname}/releases/download/v${pkgver}/${_pkgname}-${pkgver}.tar.xz.sig")
-sha512sums=('6736ec643444b262d2b6fa0d1c1c69df91f97fe157c066187a5da0ab91db2ab254c2ab5003d68044252787ff88c6696b96c5109ee5fb62c5b4d8799155aed650'
+sha512sums=('2d0c822e6bfca41b0a5e5e71e62f5073792b10c236287a509a6c790e19d098205c8719dbcb4aa630abbbaa3d44d6c9986c13efde7a9556772a89709383a0fe94'
             'SKIP')
 validpgpkeys=('3CE1780F78DD88DF45194FD706BC317B515ACE7C') # Kovid Goyal
 
