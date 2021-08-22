@@ -2,7 +2,7 @@
 
 _pkgname=pacman
 pkgname=uosys-mods-${_pkgname}
-pkgver=2021.08.22.1
+pkgver=2021.08.22.2
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
