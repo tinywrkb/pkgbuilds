@@ -1,10 +1,8 @@
 # Maintainer: tinywrkb <tinywrkb@gmail.com>
 
-# TODO: might need to handle /etc/cni/net.d/87-podman-bridge.conflist, net.d is also owned by cni-plugins
-
 _pkgname=podman
 pkgname=uosys-mods-${_pkgname}
-pkgver=2021.06.14.1
+pkgver=2021.08.22.1
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
@@ -18,14 +16,17 @@ build() {
 
 #mv_list=()
 
-rmdir_list=(containers/compose)
+rmdir_list=(cni/net.d containers/compose)
 
-link_list=(containers/compose)
+link_list=(cni/net.d containers/compose)
 EOF
 
   cat << EOF > tmpfiles.d.conf
 # $_pkgname
 d /var/etc/containers - - - - -
+
+# cni-plugins
+d /var/etc/cni/net.d
 
 # containers-common
 # TODO: maybe by default bind-mount from or symlink to /containers or /data/containers or /data/var/lib/containers
@@ -37,6 +38,6 @@ EOF
 }
 
 package() {
-  depends+=($_pkgname)
+  depends+=($_pkgname podman-compose)
   source /usr/lib/os/os-mods-install
 }
