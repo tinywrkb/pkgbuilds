@@ -1,0 +1,60 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Contributor: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Ionut Biru <ibiru@archlinux.org>
+
+pkgname=udisks2-minimal
+pkgver=2.9.3
+pkgrel=1
+pkgdesc="Disk Management Service, version 2"
+arch=('x86_64')
+url="https://www.freedesktop.org/wiki/Software/udisks"
+license=('GPL2')
+depends=('polkit' 'libatasmart' 'libgudev' 'libblockdev-minimal')
+makedepends=('git' 'gobject-introspection' 'gtk-doc' 'parted')
+optdepends=('gptfdisk: GUID partition table support'
+            'ntfs-3g: NTFS filesystem management support'
+            'dosfstools: VFAT filesystem management support')
+_commit=c430dd9a27e158693cc783e9ee91bf6e5b2a8819  # tags/2.9.3
+source=("git+https://github.com/storaged-project/udisks.git#commit=$_commit")
+sha256sums=('SKIP')
+
+pkgver() {
+  cd udisks
+  git describe --tags | sed 's/^udisks-//;s/-/+/g'
+}
+
+prepare() {
+  cd udisks
+  NOCONFIGURE=1 ./autogen.sh
+}
+
+build() {
+  cd udisks
+  local config_options=(
+    --prefix=/usr
+    --libexecdir=/usr/lib
+    --localstatedir=/var
+    --sbindir=/usr/bin
+    --sysconfdir=/etc
+    --with-systemdsystemunitdir=/usr/lib/systemd/system
+    --disable-static
+    --disable-lvm2
+    --disable-gtk-doc
+    enable_available_modules=yes
+  )
+  ./configure "${config_options[@]}"
+  make
+}
+
+check() {
+  cd udisks
+  make check
+}
+
+package() {
+  conflicts+=(udisks2)
+  provides+=(udisks2)
+
+  cd udisks
+  make DESTDIR="$pkgdir" install
+}
