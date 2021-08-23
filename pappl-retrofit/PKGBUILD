@@ -1,0 +1,42 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+pkgname=pappl-retrofit
+pkgver=r7.1b0fba0
+pkgrel=1
+pkgdesc='PPD/Classic CUPS driver retro-fit Printer Application Library'
+arch=('x86_64')
+url="https://github.com/OpenPrinting/pappl-retrofit"
+license=('APACHE')
+# depends on cups 3.x with the removal of ppd api
+depends=('cups-filters' 'pappl')
+makedepends=('git')
+_commit=1b0fba0bee15a209cc01671e430b9c32cfb7cbee  # master
+source=("git+https://github.com/OpenPrinting/pappl-retrofit.git#commit=$_commit")
+sha256sums=('SKIP')
+
+pkgver() {
+  cd pappl-retrofit
+  ( set -o pipefail
+    git describe --long 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+  )
+}
+
+prepare() {
+  cd pappl-retrofit
+  NOCONFIGURE=1 ./autogen.sh
+}
+
+build() {
+  cd pappl-retrofit
+  local config_options=(
+    --prefix=/usr
+  )
+  ./configure "${config_options[@]}"
+  make
+}
+
+package() {
+  cd pappl-retrofit
+  make DESTDIR="$pkgdir" install
+}
