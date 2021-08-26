@@ -114,6 +114,10 @@ package_pipewire-fixed() {
     _pick zeroconf usr/lib/pipewire-$_ver/libpipewire-module-zeroconf-discover.so
   )
 
+  mkdir -p "$pkgdir/etc/alsa/conf.d"
+  ln -st "$pkgdir/etc/alsa/conf.d" \
+    /usr/share/alsa/alsa.conf.d/50-pipewire.conf
+
   install -Dt "$pkgdir/usr/share/licenses/$pkgname" -m644 pipewire/COPYING
 }
 
@@ -152,7 +156,8 @@ package_pipewire-alsa-fixed() {
 
   mkdir -p "$pkgdir/etc/alsa/conf.d"
   ln -st "$pkgdir/etc/alsa/conf.d" \
-    /usr/share/alsa/alsa.conf.d/{50-pipewire,99-pipewire-default}.conf
+    /usr/share/alsa/alsa.conf.d/99-pipewire-default.conf
+
   install -Dm644 /dev/null \
     "$pkgdir/usr/share/pipewire/media-session.d/with-alsa"
 
