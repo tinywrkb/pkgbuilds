@@ -36,13 +36,14 @@ build() {
   local meson_options=(
     -D bluez5-backend-hsphfpd=disabled
     -D bluez5-backend-ofono=disabled
-    -D jack-devel=enabled
-    -D libjack-path=/usr/lib
     -D docs=enabled
+    -D jack-devel=true
     -D jack=disabled
     -D libcamera=disabled
-    -D udevrulesdir=/usr/lib/udev/rules.d
+    -D libjack-path=/usr/lib
     -D roc=disabled
+    -D session-managers=media-session
+    -D udevrulesdir=/usr/lib/udev/rules.d
   )
   arch-meson pipewire build "${meson_options[@]}"
   meson compile -C build
