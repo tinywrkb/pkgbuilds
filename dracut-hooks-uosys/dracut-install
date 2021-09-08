@@ -127,7 +127,7 @@ for kernel in "${kernels[@]}"; do
   omit_dracutmodules+=' nbd network network-legacy nfs rngd stratis '
   omit_dracutmodules+=' crypt dmraid lunmask lvm mdraid modsign nvdimm rootfs-block usrmnt qemu qemu-net kernel-network-modules '
 
-  path="$(grep -lE "^${kernel}\$" /usr/lib/modules/*/pkgbase)"
+  path=$(grep -lE "^${kernel}\$" /usr/lib/modules/*/pkgbase | grep -v linux)
   version=$(basename "${path%/pkgbase}")
   read -r pkgbase < "$path"
 

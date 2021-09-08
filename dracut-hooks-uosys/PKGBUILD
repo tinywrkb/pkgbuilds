@@ -3,7 +3,7 @@
 # Contributor: Kevin Del Castillo <quebin31@gmail.com>
 
 pkgname=dracut-hooks-uosys
-pkgver=2021.07.21.1
+pkgver=2021.09.08.1
 pkgrel=1
 pkgdesc="dracut libalpm hooks for /usr only system"
 url=https://dracut.wiki.kernel.org/index.php/Main_Page
