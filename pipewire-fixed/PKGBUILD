@@ -30,6 +30,8 @@ pkgver() {
 
 prepare() {
   cd pipewire
+  # fixes dot graphs generation
+  git cherry-pick -n 954befccff49be6d3d4f20f767ac6c1d129dddd3
 }
 
 build() {
