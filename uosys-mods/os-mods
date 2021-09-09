@@ -245,9 +245,6 @@ while read -r pkg; do
     podman-compose|podman-compose-git|podman-compose-fixed|cni-plugins)
       pkg=podman
       ;;
-    samba-cephfree)
-      pkg=samba
-      ;;
     smartmontools-uosys)
       pkg=smartmontools
       ;;
