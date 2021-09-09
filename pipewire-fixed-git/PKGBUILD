@@ -16,7 +16,7 @@ pkgdesc+=" (GIT version)"
 url="https://pipewire.org"
 license=(MIT)
 arch=(x86_64)
-makedepends=(git meson doxygen xmltoman valgrind libpulse alsa-lib libusb
+makedepends=(git meson graphviz doxygen python-docutils valgrind libpulse alsa-lib libusb
              gst-plugins-base rtkit dbus sdl2 ncurses libsndfile bluez-libs sbc
              libldac libfreeaptx libfdk-aac avahi webrtc-audio-processing)
 checkdepends=(desktop-file-utils)
