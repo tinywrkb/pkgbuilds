@@ -63,7 +63,7 @@ for kernel in "${kernels[@]}"; do
 
   add_drivers=''
   # modprobe vfio and gvt kernel modules
-  force_drivers=' i915 kvmgt vfio vfio_iommu_type1 vfio_mdev vfio_pci vfio_virqfd virtio-gpu virtio-pci virtiofs fuse usb_storage sg virtio-scsi '
+  force_drivers=' i915 kvmgt mdev vfio vfio_iommu_type1 vfio_pci vfio_virqfd virtio-gpu virtio-pci virtiofs fuse usb_storage sg virtio-scsi '
   # added fs driver: btrfs cifs exfat ext4 fat fuse msdos squashfs vfat virtiofs
   omit_drivers_fs=' 9p affs befs cachefiles ceph coda cramfs cuse dlm ecryptfs erofs f2fs fscache '
   omit_drivers_fs+=' gfs2 grace hfs hfsplus isofs jbd2 jffs2 jfs kafs '
@@ -131,22 +131,25 @@ for kernel in "${kernels[@]}"; do
   version=$(basename "${path%/pkgbase}")
   read -r pkgbase < "$path"
 
+  # make sure the default kernel package uses the linux-${version] naming scheme
+  #  so it will work correctly with our scripted bootloader menu
+  [ "${pkgbase}" = linux ] && pkgbase=linux-latest
+
   # per kernel package extra dracut options
   case $pkgbase in
+    linux-latest|linux-mainline)
+      :
+      ;;
     linux-lts419)
       add_drivers+=' '
       # sata drivers are not built into 419lts kernel
       force_drivers+=' ahci libahci virtio '
       ;;
-    #*)
-    #  add_drivers+=' '
-    #  force_drivers+=' '
-    #  ;;
+    *)
+      # vfio mdev device was removed in 5.14 and merged with mdev
+      force_drivers+=' vfio_mdev '
+      ;;
   esac
-
-  # make sure the default kernel package uses the linux-${version] naming scheme
-  #  so it will work correctly with our scripted bootloader menu
-  [ "${pkgbase}" = linux ] && pkgbase=linux-latest
 
   # copy into /boot, legacy os compatibility
   [ -d /boot ] && install -Dm0644 "${path%'/pkgbase'}/vmlinuz" "/boot/vmlinuz-${pkgbase}"
