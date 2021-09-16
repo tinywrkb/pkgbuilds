@@ -16,9 +16,10 @@ pkgdesc+=" (GIT version)"
 url="https://pipewire.org"
 license=(MIT)
 arch=(x86_64)
-makedepends=(git meson graphviz doxygen python-docutils valgrind libpulse alsa-lib libusb
-             gst-plugins-base rtkit dbus sdl2 ncurses libsndfile bluez-libs sbc
-             libldac libfreeaptx libfdk-aac avahi webrtc-audio-processing)
+makedepends=(git meson doxygen graphviz python-docutils valgrind libpulse
+             alsa-lib libusb gst-plugins-base rtkit dbus sdl2 ncurses libsndfile
+             bluez-libs sbc libldac libfreeaptx libfdk-aac avahi
+             webrtc-audio-processing)
 checkdepends=(desktop-file-utils)
 source=("git+https://gitlab.freedesktop.org/pipewire/pipewire.git")
 sha256sums=('SKIP')
