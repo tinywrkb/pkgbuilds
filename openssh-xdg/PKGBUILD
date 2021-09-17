@@ -44,6 +44,9 @@ prepare() {
 	cd "${srcdir}/${_pkgname}-${pkgver}"
 	patch -p1 -i ../glibc-2.31.patch
 
+	# check-config target is failing in chroot(nspawn), missing host keys
+	sed -i 's/^\(install: .*\) check-config$/\1/' Makefile.in
+
 	autoreconf
 }
 
