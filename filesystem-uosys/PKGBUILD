@@ -12,7 +12,7 @@
 #        current workaround is to avoid the service by using a kernel parameter
 
 pkgname=filesystem-uosys
-pkgver=2021.06.30.1
+pkgver=2021.09.19.1
 pkgrel=1
 pkgdesc='Base Linux distribution files'
 arch=('x86_64')
@@ -51,7 +51,7 @@ package() {
   ################################
 
   # setup /usr hierarchy
-  install -dm755 ${pkgdir}/usr/{bin,include,lib,opt,share/{misc,pacman/db,pixmaps},src}
+  install -dm755 ${pkgdir}/usr/{bin,include,lib,share/{misc,pacman/db,pixmaps},src}
   install -dm755 ${pkgdir}/usr/share/man/man{1..8}
 
   # add lib symlinks
@@ -158,28 +158,6 @@ package() {
   #touch {,usr/}etc/{hostname,machine-id,machine-info}
   ln -s -t ${pkgdir}/etc/ \
     /var/etc/{hostname,machine-id,machine-info}
-
-
-  ################################
-  ########  var tmpfiles #########
-  ################################
-
-  # TODO: move into installation script, if even needed
-  # package these to avoid package installation issues on non booted system
-  #install -dm755 ${pkgdir}/var/{empty,local,srv}
-  ## var/{log/old,opt,lib/misc}
-  #install -dm1777 ${pkgdir}/var/{tmp,spool/mail}
-  #ln -s -t ${pkgdir}/var/ \
-  #  ../run/lock \
-  #  ../run \
-  #  spool/mail
-
-  #d /var/srv/ftp 555 - - - -
-  #d /var/srv/git 755 - - - -
-  #d /var/srv/http 755 - - - -
-  #d /var/srv/nfs 755 - - - -
-  #d /var/srv/smb 755 - - - -
-  #d /var/srv/tftp 755 - - - -
 }
 
 # vim:set ts=2 sw=2 et:
