@@ -8,7 +8,6 @@ d /var/local - - - - -
 L /var/lock - - - - ../run/lock
 d /var/log/old - - - - -
 L /var/mail - - - - spool/mail
-d /var/opt - - - - -
 d /var/spool/mail - - - - -
 
 # file serving
