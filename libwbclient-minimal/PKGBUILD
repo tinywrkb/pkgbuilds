@@ -1,15 +1,15 @@
 # Maintainer: tinywrkb <tinywrkb@gmail.com>
 
-# TODO: rebuild from source
+# TODO: build from source
 pkgname=libwbclient-minimal
 pkgdesc='Winbind client libs'
-pkgver=4.14.7
-pkgrel=2
+pkgver=4.15.0
+pkgrel=1
 arch=(x86_64)
 url='https://www.samba.org'
 license=(LGPL)
-source=('https://mirror.bethselamin.de/extra/os/x86_64/smbclient-4.14.7-2-x86_64.pkg.tar.zst')
-sha256sums=('85c113e075b83b8367be2ddd3b7b886917686641c6a53096edb559123a12d7b1')
+source=("https://mirror.bethselamin.de/extra/os/x86_64/smbclient-${pkgver}-${pkgrel}-x86_64.pkg.tar.zst")
+sha256sums=('9cc3c4a1e6b1ec9d4284f10dff5a98dee0ffc7ccf093e5032d5f8ebb4dd971fc')
 
 package() {
   depends=(libbsd)
