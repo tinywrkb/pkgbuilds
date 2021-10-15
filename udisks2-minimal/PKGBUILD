@@ -3,7 +3,7 @@
 # Contributor: Ionut Biru <ibiru@archlinux.org>
 
 pkgname=udisks2-minimal
-pkgver=2.9.3
+pkgver=2.9.4
 pkgrel=1
 pkgdesc="Disk Management Service, version 2"
 arch=('x86_64')
@@ -14,7 +14,7 @@ makedepends=('git' 'gobject-introspection' 'gtk-doc' 'parted')
 optdepends=('gptfdisk: GUID partition table support'
             'ntfs-3g: NTFS filesystem management support'
             'dosfstools: VFAT filesystem management support')
-_commit=c430dd9a27e158693cc783e9ee91bf6e5b2a8819  # tags/2.9.3
+_commit=001c486e6d099ed33e2de4f5c73c03e3ee180f81  # tags/2.9.4
 source=("git+https://github.com/storaged-project/udisks.git#commit=$_commit")
 sha256sums=('SKIP')
 
