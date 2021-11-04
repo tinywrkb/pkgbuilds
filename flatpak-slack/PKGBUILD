@@ -13,7 +13,6 @@ license=(LGPL)
 depends=(dbus glib2 libsoup polkit libxau ostree json-glib libseccomp libarchive
          python bubblewrap appstream-glib xdg-dbus-proxy)
 makedepends=(intltool systemd gobject-introspection gtk-doc git docbook-xsl xmlto)
-checkdepends=(valgrind socat)
 conflicts=(flatpak)
 provides=(flatpak)
 _commit=96aafda476c2634941dfcd68a65fe13f582eefcb  # tags/1.12.2^0
@@ -75,11 +74,6 @@ build() {
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
 
   make
-}
-
-check() {
-  cd flatpak
-  make -k check
 }
 
 package() {
