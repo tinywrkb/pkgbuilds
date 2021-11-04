@@ -1,0 +1,25 @@
+From e70164e00e412f204197f4dcaa664e674df7fad1 Mon Sep 17 00:00:00 2001
+From: tinywrkb <tinywrkb@gmail.com>
+Date: Thu, 4 Nov 2021 13:30:28 +0200
+Subject: [PATCH] Allow /proc access during apply_extra
+
+---
+ common/flatpak-dir.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/common/flatpak-dir.c b/common/flatpak-dir.c
+index c5b03d3e..878b7d63 100644
+--- a/common/flatpak-dir.c
++++ b/common/flatpak-dir.c
+@@ -7869,7 +7869,7 @@ apply_extra_data (FlatpakDir   *self,
+   if (!flatpak_run_setup_base_argv (bwrap, runtime_files, NULL, runtime_arch,
+                                     /* Might need multiarch in apply_extra (see e.g. #3742). Should be pretty safe in this limited context */
+                                     FLATPAK_RUN_FLAG_MULTIARCH |
+-                                    FLATPAK_RUN_FLAG_NO_SESSION_HELPER | FLATPAK_RUN_FLAG_NO_PROC,
++                                    FLATPAK_RUN_FLAG_NO_SESSION_HELPER,
+                                     error))
+     return FALSE;
+ 
+-- 
+2.33.1
+
