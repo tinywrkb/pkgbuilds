@@ -1,6 +1,6 @@
 _pkgname=systemd
 pkgname=uosys-mods-${_pkgname}
-pkgver=2021.07.20.1
+pkgver=2021.11.11.1
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
