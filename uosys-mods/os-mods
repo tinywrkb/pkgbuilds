@@ -230,16 +230,19 @@ while read -r pkg; do
     openssh-xdg)
       pkg=openssh
       ;;
-    pipewire-jack|pipewire-media-session|pipewire-pulse)
+    pipewire-jack|pipewire-pulse)
       pkg=pipewire
       ;;
-    pipewire-fixed|pipewire-jack-fixed|pipewire-media-session-fixed|pipewire-pulse-fixed)
+    pipewire-fixed|pipewire-jack-fixed|pipewire-pulse-fixed)
       pkg=pipewire
       ;;
-    pipewire-fixed-git|pipewire-jack-fixed-git|pipewire-media-session-fixed-git|pipewire-pulse-fixed-git)
+    pipewire-fixed-git|pipewire-jack-fixed-git|pipewire-pulse-fixed-git)
       pkg=pipewire
       ;;
-    pipewire-git|pipewire-jack-git|pipewire-media-session-git|pipewire-pulse-git)
+    pipewire-git|pipewire-jack-git|pipewire-pulse-git)
+      pkg=pipewire
+      ;;
+    pipewire-session-manager|pipewire-session-manager-git)
       pkg=pipewire
       ;;
     podman-compose|podman-compose-git|podman-compose-fixed|cni-plugins)
