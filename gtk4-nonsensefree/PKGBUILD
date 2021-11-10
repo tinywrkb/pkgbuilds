@@ -2,24 +2,23 @@
 # Contributor: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
 
 pkgname=gtk4-nonsensefree
-pkgver=4.4.0
+pkgver=4.4.1
 pkgrel=1
 epoch=1
 pkgdesc="GObject-based multi-platform GUI toolkit"
 arch=(x86_64)
 url="https://www.gtk.org/"
-depends=(glib2 json-glib rest
-         cairo gdk-pixbuf2 graphene libepoxy libgl libegl
-         fribidi fontconfig harfbuzz pango
-         libcolord dconf libcups librsvg libxkbcommon wayland
-         desktop-file-utils
-         adwaita-icon-theme cantarell-fonts iso-codes shared-mime-info)
-makedepends=(git meson docbook-xsl wayland-protocols sysprof python
-             shaderc sassc gobject-introspection)
+depends=(glib2 cairo pango fribidi gdk-pixbuf2 libepoxy libgl libegl harfbuzz
+         libxkbcommon graphene iso-codes wayland libcolord
+         fontconfig libcups rest json-glib
+         librsvg dconf shared-mime-info desktop-file-utils
+         adwaita-icon-theme cantarell-fonts)
+makedepends=(git meson shaderc sassc gobject-introspection docbook-xsl
+             wayland-protocols)
 provides=(gtk4)
 conflicts=(gtk4)
 license=(LGPL)
-_commit=f1f197e3b94a55d5cbfaae2498f991a0ae733b32  # tags/4.4.0^0
+_commit=3090fbac82d86543cd198ddf38d4044e05c87d91  # tags/4.4.1^0
 source=("git+https://gitlab.gnome.org/GNOME/gtk.git#commit=$_commit"
         gtk4-querymodules.hook)
 sha256sums=('SKIP'
@@ -35,27 +34,33 @@ prepare() {
 }
 
 build() {
-  # https://gitlab.gnome.org/GNOME/gtk/-/commit/df4b564d69cc7d2e751537eff61259b36f37e9e5
-  CFLAGS+=" -DG_ENABLE_DEBUG -DG_DISABLE_CAST_CHECKS"
+  CFLAGS+=" -DG_DISABLE_CAST_CHECKS"
   # TODO: set build type? --buildtype release
-  arch-meson gtk build \
-    -D x11-backend=false \
-    -D wayland-backend=true \
-    -D broadway_backend=false \
-    -D media-ffmpeg=disabled \
-    -D media-gstreamer=disabled \
-    -D print-cups=auto \
-    -D cloudproviders=disabled \
-    -D sysprof=enabled \
-    -D tracker=disabled \
-    -D colord=enabled \
-    -D gtk_doc=false \
-    -D man-pages=true \
-    -D introspection=auto \
-    -D demos=false \
-    -D build-examples=false \
-    -D build-tests=false \
-
+  local meson_options=(
+    # GDK backends
+    -D x11-backend=false
+    -D wayland-backend=true
+    -D broadway-backend=false
+    # Media backends
+    -D media-ffmpeg=disabled
+    -D media-gstreamer=disabled
+    # Print backends
+    -D print-cups=auto
+    # Optional features
+    -D cloudproviders=disabled
+    -D sysprof=disabled
+    -D tracker=disabled
+    -D colord=enabled
+    # Documentation and introspection
+    -D gtk_doc=false
+    -D man-pages=true
+    -D introspection=auto
+    # Demos, examples and tests
+    -D demos=false
+    -D build-examples=false
+    -D build-tests=false
+  )
+  arch-meson gtk build "${meson_options[@]}"
   meson compile -C build
   ninja -C build
 }
