@@ -2,7 +2,7 @@
 
 _pkgname=pipewire
 pkgname=uosys-mods-${_pkgname}
-pkgver=2021.02.24.1
+pkgver=2021.11.11.1
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
@@ -12,7 +12,7 @@ depends=('uosys-mods')
 
 build() {
   cat << EOF > services_cleanup
-service_list=(user/pipewire.service.wants/pipewire-media-session.service
+service_list=(user/pipewire.service.wants/pipewire-session-manager.service
               user/sockets.target.wants/pipewire.socket
               user/sockets.target.wants/pipewire-pulse.socket)
 
@@ -22,12 +22,12 @@ EOF
 }
 
 package() {
-  depends+=($_pkgname pipewire-pulse)
+  depends+=($_pkgname pipewire-pulse pipewire-session-manager)
   source /usr/lib/os/os-mods-install
 
   mkdir -p ${pkgdir}/usr/lib/systemd/user/pipewire.service.wants
   ln -s -t ${pkgdir}/usr/lib/systemd/user/pipewire.service.wants/ \
-    ../pipewire-media-session.service
+    ../pipewire-session-manager.service
 
   mkdir -p ${pkgdir}/usr/lib/systemd/user/sockets.target.wants
   ln -s -t ${pkgdir}/usr/lib/systemd/user/sockets.target.wants/ \
