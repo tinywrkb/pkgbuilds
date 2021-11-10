@@ -2,31 +2,30 @@
 # Contributor: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
 # Contributor: Ionut Biru <ibiru@archlinux.org>
 
-_pkgname=gcr
-pkgname=$_pkgname-x11free
-pkgver=3.40.0
+pkgname=gcr-x11free
+pkgver=3.41.0
 pkgrel=1
 pkgdesc="A library for bits of crypto UI and parsing"
 url="https://gitlab.gnome.org/GNOME/gcr"
 arch=(x86_64)
 license=(GPL2)
-depends=(gtk3-nonsensefree libgcrypt p11-kit)
+depends=(gtk3-nonsensefree libgcrypt p11-kit openssh libsecret)
 makedepends=(gobject-introspection vala libxslt git meson)
 conflicts=(gcr)
 provides=(gcr libgck-1.so libgcr-{base,ui}-3.so)
-_commit=dbde3e131180bcee7c930e21170da05ec0494a3d  # 3.40.0^0
+_commit=f5026a8c9c7d78372b3efeca3412b0e40011ce11  # 3.41.0^0
 backup=(etc/security/limits.d/10-gcr.conf)
 source=("git+https://gitlab.gnome.org/GNOME/gcr.git#commit=$_commit")
 sha256sums=('SKIP')
 
 pkgver() {
-  cd $_pkgname
+  cd gcr
   git describe --tags | sed 's/-/+/g'
 }
 
 build() {
   # TODO: -D introspection=false
-  arch-meson $_pkgname build \
+  arch-meson gcr build \
     -D gtk_doc=false \
 
   meson compile -C build
@@ -38,7 +37,7 @@ check() {
 }
 
 package() {
-  DESTDIR="$pkgdir" meson install -C build
+  meson install -C build --destdir "$pkgdir"
 
   # gcr wants to lock some memory to prevent swapping out private keys
   # https://bugs.archlinux.org/task/32616
