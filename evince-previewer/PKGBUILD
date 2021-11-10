@@ -4,7 +4,7 @@
 
 # removed depends: libspectre gsfonts poppler-glib
 pkgname=evince-previewer
-pkgver=40.4
+pkgver=41.2
 pkgrel=1
 pkgdesc="Print preview with the GTK Print portal implementation"
 url="https://wiki.gnome.org/Apps/Evince"
@@ -16,7 +16,7 @@ makedepends=(python git meson appstream-glib)
 conflicts=(evince)
 provides=(libev{document,view}3.so)
 groups=(gnome)
-_commit=d5639b30081f8ded08aa6be64ca0d1954f8daa52  # tags/40.4^0
+_commit=e6d860a3058732c83b3774d705650bc516a294ae  # tags/41.2^0
 source=("git+https://gitlab.gnome.org/GNOME/evince.git#commit=$_commit")
 sha256sums=('SKIP')
 
@@ -34,8 +34,6 @@ build() {
     -D viewer=false
     -D previewer=true
     -D thumbnailer=false
-    # TODO: remove browser_plugin on the next release
-    -D browser_plugin=false
     -D nautilus=false
     -D comics=disabled
     -D djvu=disabled
