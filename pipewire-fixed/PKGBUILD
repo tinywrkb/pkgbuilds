@@ -8,7 +8,7 @@ pkgbase=$_pkgbase-$_pkgpostfix
 pkgname=({pipewire,alsa-card-profiles,pipewire-docs,pipewire-alsa,pipewire-jack}-$_pkgpostfix
          {pipewire-pulse,gst-plugin-pipewire,pipewire-zeroconf,pipewire-v4l2}-$_pkgpostfix)
 pkgver=0.3.40
-pkgrel=1
+pkgrel=2
 epoch=1
 pkgdesc="Low-latency audio/video router and processor"
 url="https://pipewire.org"
@@ -77,7 +77,7 @@ package_pipewire-fixed() {
               'pipewire-v4l2-fixed: V4L2 interceptor')
   provides=(libpipewire-$_ver.so)
   conflicts+=(${pkgname%-$_pkgpostfix})
-  provides+=(${pkgname%-$_pkgpostfix})
+  provides+=(${pkgname%-$_pkgpostfix}=$pkgver)
   install=pipewire.install
 
   meson install -C build --destdir "$pkgdir"
