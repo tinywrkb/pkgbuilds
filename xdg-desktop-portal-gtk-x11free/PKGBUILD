@@ -1,0 +1,52 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Contributor: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+# Contributor: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+# Contributor: Patrick Griffis <tingping@tingping.se>
+
+pkgname=xdg-desktop-portal-gtk-x11free
+pkgver=1.10.0
+pkgrel=3
+pkgdesc="A backend implementation for xdg-desktop-portal using GTK"
+url="https://github.com/flatpak/xdg-desktop-portal-gtk"
+arch=(x86_64)
+license=(LGPL)
+depends=(gtk3-nonsensefree gsettings-desktop-schemas)
+makedepends=(xdg-desktop-portal python git)
+optdepends=("evince: Print preview")
+conflicts=(xdg-desktop-portal-gtk)
+provides=(xdg-desktop-portal-impl xdg-desktop-portal-gtk)
+_commit=3a9ac80eb720d1ba8a2aecc2108f66b2f737f185  # tags/1.10.0^0
+source=("git+https://github.com/flatpak/xdg-desktop-portal-gtk#commit=$_commit")
+sha256sums=('SKIP')
+
+pkgver() {
+  cd xdg-desktop-portal-gtk
+  git describe --tags | sed 's/^v//;s/-/+/g'
+}
+
+prepare() {
+  cd xdg-desktop-portal-gtk
+  
+  # Fix build
+  git cherry-pick -n e34f49ca8365 19c5385b9f5f
+
+  NOCONFIGURE=1 ./autogen.sh
+}
+
+build() {
+  cd xdg-desktop-portal-gtk
+  ./configure --prefix=/usr --libexecdir=/usr/lib \
+    --enable-settings \
+    --enable-appchooser
+  make 
+}
+
+check() {
+  cd xdg-desktop-portal-gtk
+  make check
+}
+
+package() {
+  cd xdg-desktop-portal-gtk
+  DESTDIR="$pkgdir" make install
+}
