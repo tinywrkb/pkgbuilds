@@ -7,18 +7,11 @@ Target = pipewire
 Target = pipewire-fixed
 Target = pipewire-fixed-git
 Target = pipewire-git
-Target = pipewire-jack
-Target = pipewire-jack-fixed
-Target = pipewire-jack-fixed-git
-Target = pipewire-jack-git
-Target = pipewire-pulse
-Target = pipewire-pulse-fixed
-Target = pipewire-pulse-fixed-git
-Target = pipewire-pulse-git
-Target = pipewire-session-manager
-Target = pipewire-session-manager-git
+Target = pipewire-media-session
+Target = pipewire-media-session-git
 Target = systemd
-Target = systemd-uosys
+Target = wireplumber
+Target = wireplumber-git
 Target = xdg-user-dirs
 
 [Action]

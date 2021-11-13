@@ -15,23 +15,14 @@ while read -r pkg; do
     openssh-xdg)
       pkg=openssh
       ;;
-    pipewire-jack|pipewire-pulse)
+    pipewire-fixed|pipewire-fixed-git|pipewire-git)
       pkg=pipewire
       ;;
-    pipewire-fixed|pipewire-jack-fixed|pipewire-pulse-fixed)
+    pipewire-media-session|pipewire-media-session-git)
       pkg=pipewire
       ;;
-    pipewire-fixed-git|pipewire-jack-fixed-git|pipewire-pulse-fixed-git)
+    wireplumber|wireplumber-git)
       pkg=pipewire
-      ;;
-    pipewire-git|pipewire-jack-git|pipewire-pulse-git)
-      pkg=pipewire
-      ;;
-    pipewire-session-manager|pipewire-session-manager-git)
-      pkg=pipewire
-      ;;
-    systemd-uosys)
-      pkg=systemd
       ;;
   esac
 
