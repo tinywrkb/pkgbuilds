@@ -32,7 +32,7 @@ is_file_accessible() {
   return $?
 }
 
-try_wine_exec_with_portal(){
+try_wine_exec_with_docportal(){
   if is_file_accessible "$1"; then
     wine_exec "$@"
   else
