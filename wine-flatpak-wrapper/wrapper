@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# TODO: config file support with the following settings
+#        - different WINE_FLATPAK_ID
+#        - allow access to file location with the --filesystem permission
+#        - never use the document portal
+# TODO: improve file handling
+# TODO: test file format to:
+#       - run in dosbox
+#       - execute vbscript, batch <- running context matter, so this might not be a great idea
+#       - execute reg files
+
+WINE_FLATPAK_ID=org.winehq.Wine
+
+exiterr() {
+  echo "wine-flatpak-wrapper: $@"
+  exit 1
+}
+
+wine_exec_with_docportal() {
+  wine_program="$(realpath "$1")"
+  shift
+  exec flatpak run --command=wine --file-forwarding $WINE_FLATPAK_ID @@ "$wine_program" @@ "$@"
+}
+
+wine_exec() {
+  exec flatpak run --command=wine $WINE_FLATPAK_ID "$@"
+}
+
+is_file_accessible() {
+  flatpak run --command=stat $WINE_FLATPAK_ID "$1" &>/dev/null
+  return $?
+}
+
+try_wine_exec_with_portal(){
+  if is_file_accessible "$1"; then
+    wine_exec "$@"
+  else
+    wine_exec_with_docportal "$@"
+  fi
+}
+
+if ! $(flatpak info $WINE_FLATPAK_ID &> /dev/null); then
+  exiterr "$WINE_FLATPAK_ID was not found!"
+fi
+
+if [ $# -eq 1 ] && [[ $1 =~ ^/.*$ ]]; then
+  # most likely invoked due to a binmft config, so use the document portal
+  if [ -f "$1" ]; then
+    try_wine_exec_with_docportal "$@"
+  else
+    exiterr "No such file or not a regular file: $1"
+  fi
+elif [ $# -ge 1] && [ -f "$1" ]; then
+  # if the first parameter is an existing file and is not accessible to the sandbox then use the
+  #  document portal.
+  #  the implication of this is that if there's a local file with a similar name to a wine program,
+  #  then the wrapper will give wine a full path to the file and try running it instead of the wine
+  #  program
+  # TODO: maybe test file format before use the docportal exec
+  try_wine_exec_with_docportal "$@"
+else
+  wine_exec "$@"
+fi

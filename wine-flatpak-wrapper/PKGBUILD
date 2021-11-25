@@ -1,0 +1,18 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+pkgname=wine-flatpak-wrapper
+pkgver=2021.11.25.1
+pkgrel=1
+pkgdesc="Run Windows binaries with a Wine Flatpak app"
+url=''
+arch=(any)
+license=(GPL)
+conflicts=(wine)
+source=('binfmt.conf' 'wrapper')
+sha256sums=('SKIP' 'SKIP')
+
+package() {
+  depends=(flatpak)
+  install -Dm755 wrapper "$pkgdir"/usr/bin/wine
+  install -Dm644 binfmt.conf "$pkgdir"/usr/lib/binfmt.d/wine.conf
+}
