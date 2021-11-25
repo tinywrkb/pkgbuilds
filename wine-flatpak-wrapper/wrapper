@@ -51,7 +51,7 @@ if [ $# -eq 1 ] && [[ $1 =~ ^/.*$ ]]; then
   else
     exiterr "No such file or not a regular file: $1"
   fi
-elif [ $# -ge 1] && [ -f "$1" ]; then
+elif [ $# -ge 1 ] && [ -f "$1" ]; then
   # if the first parameter is an existing file and is not accessible to the sandbox then use the
   #  document portal.
   #  the implication of this is that if there's a local file with a similar name to a wine program,
