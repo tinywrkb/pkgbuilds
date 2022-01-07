@@ -1,17 +1,18 @@
 # Maintainer: tinywrkb <tinywrkb@gmail.com>
 # Contributor: Christian Rebischke <chris.rebischke@archlinux.org>
 # Contributor: Jiachen YANG <farseerfc@archlinux.org>
+# Contributor: Daniel M. Capella <polyzen@archlinux.org>
 # Contributor: kpcyrd <git@rxv.cc>
 # Contributor: quininer <quininer@live.com>
 _pkgname=alacritty
 pkgname=${_pkgname}-x11free
 pkgdesc="A cross-platform, GPU-accelerated terminal emulator"
 pkgver=0.9.0
-pkgrel=1
+pkgrel=3
 arch=('x86_64')
 url="https://github.com/alacritty/alacritty"
 license=('Apache')
-makedepends=('git' 'rust' 'cargo' 'cmake' 'fontconfig' 'ncurses' 'desktop-file-utils' 'gdb' 'libxkbcommon')
+makedepends=('git' 'rust' 'cargo' 'cmake' 'ncurses' 'desktop-file-utils' 'gdb' 'libxkbcommon')
 depends=('freetype2' 'fontconfig')
 checkdepends=('ttf-dejavu') # for monospace fontconfig test
 optdepends=('ncurses: for alacritty terminfo database')
@@ -23,17 +24,17 @@ sha256sums=('SKIP')
 
 prepare() {
   cd "$_pkgname"
+
+  # https://bugs.archlinux.org/task/72912
+  git cherry-pick -n 58985a4dcbe464230b5d2566ee68e2d34a1788c8
+
   sed -i 's/default = \["wayland", "x11"\]/default = ["wayland"]/' alacritty/Cargo.toml
+  cargo fetch --locked --target "$CARCH-unknown-linux-gnu"
 }
 
 build(){
   cd "$_pkgname"
-  env CARGO_INCREMENTAL=0 cargo build --release --locked
-}
-
-check(){
-  cd "$_pkgname"
-  env CARGO_INCREMENTAL=0 cargo test --release --locked
+  env CARGO_INCREMENTAL=0 cargo build --release --locked --offline
 }
 
 package() {
