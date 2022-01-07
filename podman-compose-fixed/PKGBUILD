@@ -3,14 +3,14 @@
 
 # TODO: add unprivleged service with podman:podman user
 pkgname=podman-compose-fixed
-pkgver=0.1.5.r101.g6e3383d
-_commit=6e3383de72a47dc728972e6d87295ce25a6231ef
-pkgrel=1
+pkgver=1.0.3
+_commit=24ec539932580a6bc96d6eb2341141b6d7198b39
+pkgrel=2
 pkgdesc='A script to run docker-compose.yml using podman'
 arch=('any')
 url='https://github.com/containers/podman-compose'
 license=('GPL2')
-depends=('python-yaml' 'podman')
+depends=('python-yaml' 'podman' 'python-dotenv')
 makedepends=('git' 'python-setuptools')
 conflicts=('podman-compose')
 provides=('podman-compose')
@@ -23,7 +23,7 @@ sha256sums=('SKIP'
 
 pkgver() {
   cd podman-compose
-  git describe --long | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
+  git describe --tags | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
 }
 
 build() {
