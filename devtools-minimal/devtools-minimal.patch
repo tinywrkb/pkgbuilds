@@ -1,8 +1,8 @@
 diff --git a/Makefile b/Makefile
-index 6adcee5..32780c3 100644
+index 9951b7d..6091982 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -4,21 +4,15 @@ PREFIX = /usr/local
+@@ -5,21 +5,15 @@ PREFIX = /usr/local
  MANDIR = $(PREFIX)/share/man
  
  IN_PROGS = \
@@ -24,7 +24,7 @@ index 6adcee5..32780c3 100644
  	sogrep
  
  BINPROGS = \
-@@ -27,45 +21,6 @@ BINPROGS = \
+@@ -28,47 +22,9 @@ BINPROGS = \
  CONFIGFILES = \
  	makepkg-x86_64.conf \
  	pacman-extra.conf \
@@ -35,7 +35,9 @@ index 6adcee5..32780c3 100644
 -	pacman-multilib-staging.conf \
 -	pacman-kde-unstable.conf \
 -	pacman-gnome-unstable.conf
--
+ 
+ SETARCH_ALIASES = \
+ 
 -COMMITPKG_LINKS = \
 -	extrapkg \
 -	testingpkg \
@@ -69,11 +71,11 @@ index 6adcee5..32780c3 100644
 -
  
  MANS = \
- 	doc/lddd.1 \
-@@ -104,14 +59,10 @@ install:
- 	install -dm0755 $(DESTDIR)$(PREFIX)/share/devtools
+ 	doc/archbuild.1 \
+@@ -112,14 +68,10 @@ install:
  	install -m0755 ${BINPROGS} $(DESTDIR)$(PREFIX)/bin
  	install -m0644 ${CONFIGFILES} $(DESTDIR)$(PREFIX)/share/devtools
+ 	for a in ${SETARCH_ALIASES}; do install -m0644 setarch-aliases.d/$$a $(DESTDIR)$(PREFIX)/share/devtools/setarch-aliases.d; done
 -	for l in ${COMMITPKG_LINKS}; do ln -sf commitpkg $(DESTDIR)$(PREFIX)/bin/$$l; done
 -	for l in ${ARCHBUILD_LINKS}; do ln -sf archbuild $(DESTDIR)$(PREFIX)/bin/$$l; done
 -	for l in ${CROSSREPOMOVE_LINKS}; do ln -sf crossrepomove $(DESTDIR)$(PREFIX)/bin/$$l; done
@@ -85,10 +87,10 @@ index 6adcee5..32780c3 100644
  	for manfile in $(MANS); do \
  		install -Dm644 $$manfile -t $(DESTDIR)$(MANDIR)/man$${manfile##*.}; \
  	done;
-@@ -119,12 +70,8 @@ install:
- uninstall:
+@@ -128,12 +80,8 @@ uninstall:
  	for f in ${BINPROGS}; do rm -f $(DESTDIR)$(PREFIX)/bin/$$f; done
  	for f in ${CONFIGFILES}; do rm -f $(DESTDIR)$(PREFIX)/share/devtools/$$f; done
+ 	for f in ${SETARCH_ALIASES}; do rm -f $(DESTDIR)$(PREFIX)/share/devtools/setarch-aliases.d/$$f; done
 -	for l in ${COMMITPKG_LINKS}; do rm -f $(DESTDIR)$(PREFIX)/bin/$$l; done
 -	for l in ${ARCHBUILD_LINKS}; do rm -f $(DESTDIR)$(PREFIX)/bin/$$l; done
 -	for l in ${CROSSREPOMOVE_LINKS}; do rm -f $(DESTDIR)$(PREFIX)/bin/$$l; done
