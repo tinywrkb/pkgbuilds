@@ -1,0 +1,29 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Contributor: Johannes Löthberg <johannes@kyriasis.com>
+# Contributor: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor: hydro <hydro@freenet.de>
+
+pkgname=mediainfo-minimal
+pkgver=21.09
+pkgrel=1
+pkgdesc="Supplies technical and tag information about a video or audio file (CLI interface)"
+url="https://mediaarea.net/"
+arch=('x86_64')
+license=('BSD')
+depends=(libmediainfo-minimal)
+conflicts=(mediainfo)
+provides=(mediainfo)
+source=(https://mediaarea.net/download/source/mediainfo/$pkgver/mediainfo_$pkgver.tar.xz)
+sha512sums=('81545c936ec5f17f94246b2cd5343afd105d0b0791f151689fbecdb084778dd4e84da79f47529f16b8383542894819af995ec608588fc6d9f45e9be38a4304db')
+
+build() {
+  cd MediaInfo/Project/GNU/CLI
+  ./autogen.sh
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  make -C MediaInfo/Project/GNU/CLI DESTDIR="$pkgdir" install
+  install -Dm644 MediaInfo/LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+}
