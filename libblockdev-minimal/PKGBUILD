@@ -4,7 +4,7 @@
 _pkgname=libblockdev
 pkgname=$_pkgname-minimal
 pkgver=2.26
-pkgrel=1
+pkgrel=3
 pkgdesc="A library for manipulating block devices"
 arch=('x86_64')
 url="https://github.com/rhinstaller/libblockdev"
