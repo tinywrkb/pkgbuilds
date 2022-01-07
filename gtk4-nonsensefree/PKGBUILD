@@ -2,23 +2,24 @@
 # Contributor: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
 
 pkgname=gtk4-nonsensefree
-pkgver=4.4.1
+pkgver=4.6.0
 pkgrel=1
 epoch=1
 pkgdesc="GObject-based multi-platform GUI toolkit"
-arch=(x86_64)
 url="https://www.gtk.org/"
-depends=(glib2 cairo pango fribidi gdk-pixbuf2 libepoxy libgl libegl harfbuzz
-         libxkbcommon graphene iso-codes wayland libcolord
-         fontconfig libcups rest json-glib
-         librsvg dconf shared-mime-info desktop-file-utils
-         adwaita-icon-theme cantarell-fonts)
+arch=(x86_64)
+depends=(glib2 cairo pango fribidi gdk-pixbuf2 libpng libtiff libjpeg libepoxy
+         libgl libegl harfbuzz libxkbcommon graphene iso-codes
+         libcolord wayland
+         fontconfig libcups
+         rest json-glib librsvg dconf shared-mime-info
+         desktop-file-utils adwaita-icon-theme cantarell-fonts)
 makedepends=(git meson shaderc sassc gobject-introspection docbook-xsl
-             wayland-protocols)
+             wayland-protocols python-gobject python-docutils)
 provides=(gtk4)
 conflicts=(gtk4)
 license=(LGPL)
-_commit=3090fbac82d86543cd198ddf38d4044e05c87d91  # tags/4.4.1^0
+_commit=70cb61fb7104c76a15bc6494a10e6ff1d470f6d8  # tags/4.6.0^0
 source=("git+https://gitlab.gnome.org/GNOME/gtk.git#commit=$_commit"
         gtk4-querymodules.hook)
 sha256sums=('SKIP'
@@ -26,11 +27,7 @@ sha256sums=('SKIP'
 
 pkgver() {
   cd gtk
-  git describe --tags | sed 's/-/+/g'
-}
-
-prepare() {
-  cd gtk
+  git describe --tags | sed 's/[^-]*-g/r&/;s/-/+/g'
 }
 
 build() {
@@ -86,4 +83,4 @@ END
   rm usr/share/man/man1/gtk4-broadwayd.1
 }
 
-# vim:set ts=2 sw=2 et:
+# vim:set sw=2 et:
