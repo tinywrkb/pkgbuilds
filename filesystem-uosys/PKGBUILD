@@ -12,7 +12,7 @@
 #        current workaround is to avoid the service by using a kernel parameter
 
 pkgname=filesystem-uosys
-pkgver=2021.09.19.1
+pkgver=2022.01.06.1
 pkgrel=1
 pkgdesc='Base Linux distribution files'
 arch=('x86_64')
@@ -21,12 +21,12 @@ url=''
 provides=('filesystem')
 conflicts=('filesystem')
 # removed from backup: 'etc/crypttab' 'etc/fstab' 'etc/host.conf' 'etc/hosts'
-#          'etc/issue' 'etc/ld.so.conf' 'etc/motd' 'etc/nsswitch.conf'
+#          'etc/issue' 'etc/ld.so.conf' 'etc/nsswitch.conf'
 #          'etc/profile'
 backup=('etc/shells' 'etc/group' 'etc/gshadow' 'etc/passwd' 'etc/shadow')
 depends=('iana-etc')
-source=(arch-release issue motd os-release
-        archlinux{,-logo}.{png,svg}
+source=(arch-release issue os-release
+        archlinux-logo{.{png,svg},-text{,-dark}.svg}
         background-{black,solarized}-1920x1080.png
         crypttab fstab
         group gshadow passwd shadow
@@ -34,7 +34,7 @@ source=(arch-release issue motd os-release
         env-generator ld.so.conf locale.conf locale.sh profile shells vconsole.conf
         limits sysctl sysusers tmpfiles)
 
-sha256sums=(SKIP SKIP SKIP SKIP
+sha256sums=(SKIP SKIP SKIP
             SKIP SKIP SKIP SKIP
             SKIP SKIP
             SKIP SKIP
@@ -76,7 +76,7 @@ package() {
   # TODO: install resolv.conf as a template? can somehow be used as a fallback?
 
   install -Dm644 -t ${pkgdir}/etc/ \
-    arch-release issue motd \
+    arch-release issue \
     fstab \
     group passwd \
     host.conf hosts nsswitch.conf \
@@ -116,7 +116,7 @@ package() {
 
   # add logo
   install -Dm644 -t ${pkgdir}/usr/share/pixmaps/ \
-    archlinux{,-logo}.{svg,png}
+    archlinux-logo{.{png,svg},-text{,-dark}.svg}
 
   # add backgrounds
   for f in background-{black,solarized}-1920x1080.png; do
