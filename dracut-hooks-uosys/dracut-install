@@ -137,7 +137,7 @@ for kernel in "${kernels[@]}"; do
 
   # per kernel package extra dracut options
   case $pkgbase in
-    linux-latest|linux-mainline)
+    linux-latest|linux-lts|linux-mainline)
       :
       ;;
     linux-lts419)
