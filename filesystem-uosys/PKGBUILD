@@ -12,7 +12,7 @@
 #        current workaround is to avoid the service by using a kernel parameter
 
 pkgname=filesystem-uosys
-pkgver=2022.01.20.1
+pkgver=2022.01.20.2
 pkgrel=1
 pkgdesc='Base Linux distribution files'
 arch=('x86_64')

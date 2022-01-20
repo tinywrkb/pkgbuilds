@@ -7,8 +7,6 @@ PATH=/usr/bin
 [ -d /usr/bin/core_perl ] && PATH+=:/usr/bin/core_perl
 PATH+=:"$HOME"/.local/bin
 
-echo "PATH=$PATH"
-
 # XDG dirs
 XDG_CACHE_HOME="$HOME/.cache"
 XDG_CONFIG_HOME="$HOME/.config"
@@ -29,4 +27,6 @@ PATH+=":${FLATPAK_SYSTEM_DIR}/exports/bin"
 echo "FLATPAK_USER_DIR=$FLATPAK_USER_DIR"
 echo "FLATPAK_SYSTEM_DIR=$FLATPAK_SYSTEM_DIR"
 echo "FLATPAK_SYSTEM_CACHE_DIR=$FLATPAK_SYSTEM_CACHE_DIR"
+
+# print PATH, this should stay at the end of the generator
 echo "PATH=$PATH"
