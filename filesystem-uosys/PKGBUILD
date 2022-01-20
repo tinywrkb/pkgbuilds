@@ -12,7 +12,7 @@
 #        current workaround is to avoid the service by using a kernel parameter
 
 pkgname=filesystem-uosys
-pkgver=2022.01.20.2
+pkgver=2022.01.20.3
 pkgrel=1
 pkgdesc='Base Linux distribution files'
 arch=('x86_64')
@@ -151,7 +151,9 @@ package() {
     /var/etc/{adjtime,resolv.conf}
 
   # timezone, two levels of symlinks, needs a proper patch in systemd to recursively expand and resolve the real path
-  ln -s /var/etc/localtime ${pkgdir}/etc/localtime
+  #ln -s /var/etc/localtime ${pkgdir}/etc/localtime
+
+  ln -s /usr/share/zoneinfo/UTC ${pkgdir}/etc/localtime
 
   # machine specific identifiers
   # TODO: better solution compatible with cli helpers? switch back to mount points?
