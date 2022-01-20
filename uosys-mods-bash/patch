@@ -1,12 +1,17 @@
 --- a/etc/bash.bashrc
 +++ b/etc/bash.bashrc
-@@ -20,3 +20,9 @@
+@@ -20,3 +20,14 @@
  esac
  
  [ -r /usr/share/bash-completion/bash_completion   ] && . /usr/share/bash-completion/bash_completion
 +
 +# load bash functions
 +[ -r /etc/bash.functions ] && . /etc/bash.functions
++
++if [ -z "$IMPORTED_SYSTEMD_ENV" ]; then
++  export IMPORTED_SYSTEMD_ENV=1
++  import_systemd_environment
++fi
 +
 +# load bash_profile from xdg config dir
 +[ -r ~/.config/bash/bashrc ] && . ~/.config/bash/bashrc
