@@ -1,9 +1,12 @@
 --- a/etc/bash.bashrc
 +++ b/etc/bash.bashrc
-@@ -20,3 +20,6 @@
+@@ -20,3 +20,9 @@
  esac
  
  [ -r /usr/share/bash-completion/bash_completion   ] && . /usr/share/bash-completion/bash_completion
 +
++# load bash functions
++[ -r /etc/bash.functions ] && . /etc/bash.functions
++
 +# load bash_profile from xdg config dir
-+[ -f ~/.config/bash/bashrc ] && . ~/.config/bash/bashrc
++[ -r ~/.config/bash/bashrc ] && . ~/.config/bash/bashrc

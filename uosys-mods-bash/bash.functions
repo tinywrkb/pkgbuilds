@@ -1,0 +1,40 @@
+if [ -z "$OS_BASH_FUNCTIONS" ]; then
+  export OS_BASH_FUNCTIONS=1
+
+  source_executable_output(){
+set -a
+source /dev/fd/0 <<EOF
+$($1)
+EOF
+set +a
+  }
+  export -f source_executable_output
+
+  import_systemd_environment(){
+    local env_gens=()
+    local env_gen_dirs=()
+
+    # directories order according to systemd.generator.7 man page
+    for d in /{run,etc,usr/lib}/systemd/user-environment-generators; do
+      [ -d $d ] && env_gen_dirs+=($d)
+    done
+
+    # find all environment generators, only keep file name
+    for f in $(find ${env_gen_dirs[@]} -perm -0005 -type f); do
+      env_gens+=($(basename $f))
+    done
+
+    # sort and remove duplicates
+    IFS=$'\n' env_gens=($(sort -u <<<${env_gens[*]}))
+
+    for env_gen in ${env_gens[@]}; do
+      for d in ${env_gen_dirs[@]}; do
+        if [ -f ${d}/${env_gen} ]; then
+          source_executable_output ${d}/${env_gen}
+          break
+        fi
+      done
+    done
+  }
+  export -f import_systemd_environment
+fi
