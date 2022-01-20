@@ -1,8 +1,8 @@
 # Maintainer: Brian Bidulock <bidulock@openss7.org>
-# contributor: jan alexander steffens (heftig) <heftig@archlinux.org>
-# contributor: jan de groot <jgc@archlinux.org>
-# contributor: aline freitas <aline@alinefreitas.com.br>
-# contributor: tinywrkb <tinywrkb@gmail.com>
+# Contributor: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+# Contributor: Jan de Groot <jgc@archlinux.org>
+# Contributor: Aline Freitas <aline@alinefreitas.com.br>
+# Contributor: tinywrkb <tinywrkb@gmail.com>
 
 pkgname=polkit-fixed-git
 pkgver=0.120.r2.g2ae10cb
