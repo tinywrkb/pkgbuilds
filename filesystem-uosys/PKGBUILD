@@ -12,7 +12,7 @@
 #        current workaround is to avoid the service by using a kernel parameter
 
 pkgname=filesystem-uosys
-pkgver=2022.01.06.1
+pkgver=2022.01.20.1
 pkgrel=1
 pkgdesc='Base Linux distribution files'
 arch=('x86_64')
@@ -31,7 +31,7 @@ source=(arch-release issue os-release
         crypttab fstab
         group gshadow passwd shadow
         host.conf hosts nsswitch.conf resolv.conf
-        env-generator ld.so.conf locale.conf locale.sh profile shells vconsole.conf
+        env-generator-system env-generator-user ld.so.conf locale.conf locale.sh profile shells vconsole.conf
         limits sysctl sysusers tmpfiles)
 
 sha256sums=(SKIP SKIP SKIP
@@ -40,7 +40,7 @@ sha256sums=(SKIP SKIP SKIP
             SKIP SKIP
             SKIP SKIP SKIP SKIP
             SKIP SKIP SKIP SKIP
-            SKIP SKIP SKIP SKIP SKIP SKIP SKIP
+            SKIP SKIP SKIP SKIP SKIP SKIP SKIP SKIP
             SKIP SKIP SKIP SKIP)
 
 package() {
@@ -112,7 +112,8 @@ package() {
   install -Dm644 tmpfiles ${pkgdir}/usr/lib/tmpfiles.d/os.conf
 
   # setup systemd.environment-generator
-  install -Dm755 env-generator ${pkgdir}/usr/lib/systemd/system-environment-generators/10-os
+  install -Dm755 env-generator-system ${pkgdir}/usr/lib/systemd/system-environment-generators/10-os
+  install -Dm755 env-generator-user ${pkgdir}/usr/lib/systemd/user-environment-generators/10-os
 
   # add logo
   install -Dm644 -t ${pkgdir}/usr/share/pixmaps/ \
