@@ -1,0 +1,18 @@
+[Unit]
+Description=SSH key agent
+
+[Service]
+Type=simple
+SuccessExitStatus=2
+Environment=SSH_AGENT_DIR=%t/ssh-agent
+Environment=SSH_AUTH_SOCK=%t/ssh-agent/sock
+Environment=SSH_AGENT_PID_FILE=%t/ssh-agent/pid
+ExecStartPre=/usr/bin/mkdir -p $SSH_AGENT_DIR
+ExecStartPre=/usr/bin/rm -f $SSH_AUTH_SOCK $SSH_AGENT_PID_FILE
+ExecStart=/usr/bin/ssh-agent -D -a $SSH_AUTH_SOCK
+ExecStartPost=/bin/sh -c 'echo $MAINPID > $SSH_AGENT_PID_FILE'
+#ExecStop=/usr/bin/sh -c 'SSH_AGENT_PID=$MAINPID ssh-agent -k'
+ExecStopPost=/usr/bin/rm -f $SSH_AUTH_SOCK $SSH_AGENT_PID_FILE
+
+[Install]
+WantedBy=default.target
