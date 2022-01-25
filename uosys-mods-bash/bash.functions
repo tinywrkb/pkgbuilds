@@ -26,6 +26,7 @@ set +a
 
     # sort and remove duplicates
     IFS=$'\n' env_gens=($(sort -u <<<${env_gens[*]}))
+    unset IFS
 
     for env_gen in ${env_gens[@]}; do
       for d in ${env_gen_dirs[@]}; do

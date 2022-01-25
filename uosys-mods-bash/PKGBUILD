@@ -2,7 +2,7 @@
 
 _pkgname=bash
 pkgname=uosys-mods-${_pkgname}
-pkgver=2022.01.20.1
+pkgver=2022.01.25.1
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
