@@ -2,39 +2,34 @@
 # Contributor: Jan de Groot <jgc@archlinux.org>
 
 pkgname=polkit-duktape
-pkgver=0.120
-pkgrel=4
+pkgver=0.120.r3.ga2bf5c9
+pkgrel=1
 pkgdesc="polkit with duktape as the javascript engine"
 arch=(x86_64)
 license=(LGPL)
 url="https://www.freedesktop.org/wiki/Software/polkit/"
-depends=(glib2 pam expat systemd duktape)
+depends=(glib2 pam expat systemd 'duktape>=2.6.0-2')
 makedepends=(meson gtk-doc gobject-introspection git)
 checkdepends=(python-dbusmock)
 conflicts=(polkit)
 provides=(polkit)
 backup=(etc/pam.d/polkit-1)
-_commit=92b910ce2273daf6a76038f6bd764fa6958d4e8e # tags/0.120
+_commit=a2bf5c9c83b6ae46cbd5c779d3055bff81ded683 # 0.120.r3.ga2bf5c9
 source=("git+https://gitlab.freedesktop.org/polkit/polkit.git#commit=$_commit"
-        "0001-Add-duktape-as-javascript-engine.patch")
+        '0001-meson-0.61.patch')
 sha256sums=('SKIP'
-            '518217b4dad71ac1662d271c89f2f3f40b3435e0f3530a9c81944644fed76534')
+            '9a84b59d38b3f86c70c5fc3a28cbfe8d7a22cf190eb20ff433f7f53f5ff73a9a')
 
 pkgver() {
   cd polkit
-  git describe --tags | sed 's/-/+/g'
+  git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
 }
 
 prepare() {
   cd polkit
 
   # https://gitlab.freedesktop.org/polkit/polkit/-/merge_requests/99
-  git remote add upstream https://gitlab.freedesktop.org/polkit/polkit.git
-  git fetch upstream merge-requests/99/merge
-  git merge --no-commit --squash FETCH_HEAD
-
-  # https://gitlab.freedesktop.org/polkit/polkit/-/merge_requests/97
-  patch -p1 -i ../0001-Add-duktape-as-javascript-engine.patch
+  patch -Np1 -i ../0001-meson-0.61.patch
 }
 
 build() {
@@ -52,9 +47,9 @@ build() {
   meson compile -C build
 }
 
-#check() {
-#  meson test -C build --print-errorlogs
-#}
+check() {
+  meson test -C build --print-errorlogs -t 3
+}
 
 package() {
   meson install -C build --destdir "$pkgdir"
