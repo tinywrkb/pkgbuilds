@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if [ -f /sys/class/drm/card0/device/graphics/fb0/name ] &&
+  [ "$(cat /sys/class/drm/card0/device/graphics/fb0/name)" == "i915drmfb" ]; then
+  LIBVA_DRIVER_NAME=i965
+  VDPAU_DRIVER=va_gl
+fi
+
+if [ -n "$LIBVA_DRIVER_NAME" ]; then
+  echo "LIBVA_DRIVER_NAME=$LIBVA_DRIVER_NAME"
+fi
+
+if [ -n "$VDPAU_DRIVER" ]; then
+  echo "VDPAU_DRIVER=$VDPAU_DRIVER"
+fi
+
