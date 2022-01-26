@@ -3,9 +3,9 @@
 
 # TODO: add unprivleged service with podman:podman user
 pkgname=podman-compose-fixed
-pkgver=1.0.3
-_commit=24ec539932580a6bc96d6eb2341141b6d7198b39
-pkgrel=2
+pkgver=1.0.3.r28.g09c6cbe
+_commit=09c6cbe503ba79f2856846c20af2f9b7000c24a5
+pkgrel=1
 pkgdesc='A script to run docker-compose.yml using podman'
 arch=('any')
 url='https://github.com/containers/podman-compose'
