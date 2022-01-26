@@ -29,7 +29,7 @@ package_noto-fonts-cjk-vf(){
       ${_font}/Variable/OTC/Noto${_font}CJK-VF.otf.ttc \
       "$pkgdir"/usr/share/fonts/noto-cjk/Noto${_font}CJK.ttc
 
-    # Mono only for Sans
+    # mono is available only for sans
     [ "${_font}" = "Sans" ] || continue
     install -Dm644 \
       ${_font}/Variable/OTC/Noto${_font}MonoCJK-VF.otf.ttc \
@@ -56,7 +56,7 @@ _package_locl(){
       ${_font}/Variable/OTF/Noto${_font}CJK${_lang}-VF.otf \
       "$pkgdir"/usr/share/fonts/noto-cjk/Noto${_font}CJK.otf
 
-    # Mono only for Sans
+    # mono is available only for sans
     [ "${_font}" = "Sans" ] || continue
     install -Dm644 \
       ${_font}/Variable/OTF/Mono/Noto${_font}MonoCJK${_lang}-VF.otf \
@@ -81,15 +81,16 @@ _package_subset(){
 
   for _font in Sans Serif; do
     install -Dm644 \
-      {_font}/Variable/OTF/Subset/Noto{_font}${_lang^^}-VF.otf \
+      ${_font}/Variable/OTF/Subset/Noto${_font}${_lang^^}-VF.otf \
       "$pkgdir"/usr/share/fonts/noto-cjk/Noto{_font}${_lang^^}.otf
-  done
 
-  # install mono font
-  # there are no subset mono fonts, so install the multi-lingual with default locl
-  install -Dm644 \
-    Sans/Variable/OTF/Mono/NotoSansMonoCJK${_lang}-VF.otf \
-    "$pkgdir"/usr/share/fonts/noto-cjk/NotoSansMonoCJK.otf
+    # mono is available only for sans
+    [ "${_font}" = "Sans" ] || continue
+    # there are no subset mono fonts, so install the multi-lingual with default locl
+    install -Dm644 \
+      ${_font}/Variable/OTF/Mono/Noto${_font}MonoCJK${_lang}-VF.otf \
+      "$pkgdir"/usr/share/fonts/noto-cjk/Noto${_font}MonoCJK.otf
+  done
 
   install -Dm644 -t "$pkgdir"/usr/share/fontconfig/conf.avail/ \
     ../70-noto-${_lang}.conf 
