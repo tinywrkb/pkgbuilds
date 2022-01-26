@@ -1,0 +1,19 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+_pkgname=tmux
+pkgname=uosys-mods-${_pkgname}
+pkgver=2022.01.26.1
+pkgrel=1
+pkgdesc="$_pkgname uosys mods"
+arch=('any')
+license=('GPL')
+url=''
+depends=('uosys-mods')
+source=('environment' 'user-tmpfiles')
+sha256sums=('SKIP' 'SKIP')
+
+package() {
+  depends+=($_pkgname)
+  install -Dm644 environment ${pkgdir}/usr/lib/environment.d/tmux.conf
+  install -Dm644 user-tmpfiles ${pkgdir}/usr/share/user-tmpfiles.d/tmux.conf
+}
