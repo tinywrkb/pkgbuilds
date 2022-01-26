@@ -1,6 +1,6 @@
 _pkgname=systemd
 pkgname=uosys-mods-${_pkgname}
-pkgver=2022.01.03.1
+pkgver=2022.01.26.1
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
@@ -154,6 +154,13 @@ package() {
   ln -s systemd-homed.service ${pkgdir}/usr/lib/systemd/system/dbus-org.freedesktop.home1.service
   ln -s systemd-networkd.service ${pkgdir}/usr/lib/systemd/system/dbus-org.freedesktop.network1.service
   ln -s systemd-resolved.service ${pkgdir}/usr/lib/systemd/system/dbus-org.freedesktop.resolve1.service
+
+  # enable user services
+  mkdir -p ${pkgdir}/usr/lib/systemd/user/{basic,timers}.target.wants
+  ln -s -t ${pkgdir}/usr/lib/systemd/user/basic.target.wants \
+    ../systemd-tmpfiles-setup.service
+  ln -s -t ${pkgdir}/usr/lib/systemd/user/timers.target.wants \
+    ../systemd-tmpfiles-clean.timer
 
   # create-machine-id service and dracut hook
   install -Dm644 create-machine-id.service -t ${pkgdir}/usr/lib/systemd/system/
