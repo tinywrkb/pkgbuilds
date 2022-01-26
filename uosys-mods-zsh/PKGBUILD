@@ -2,19 +2,20 @@
 
 _pkgname=zsh
 pkgname=uosys-mods-${_pkgname}
-pkgver=2021.01.26.1
+pkgver=2022.01.26.1
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
 license=('GPL')
 url=''
 depends=('uosys-mods')
-source=('zshenv')
-sha256sums=('SKIP')
+source=('environment' 'zshenv')
+sha256sums=('SKIP' 'SKIP')
 
 
 package() {
   depends+=($_pkgname)
   source /usr/lib/os/os-mods-install
   install -Dm644 zshenv -t ${pkgdir}/etc/zsh/
+  install -Dm644 environment ${pkgdir}/usr/lib/environment.d/zsh.conf
 }
