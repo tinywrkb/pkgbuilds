@@ -1,0 +1,18 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+_pkgname=sway
+pkgname=uosys-mods-${_pkgname}
+pkgver=2022.01.26.1
+pkgrel=1
+pkgdesc="$_pkgname uosys mods"
+arch=('any')
+license=('GPL')
+url=''
+depends=('uosys-mods')
+source=('user-tmpfiles')
+sha256sums=('SKIP')
+
+package() {
+  depends+=($_pkgname)
+  install -Dm644 user-tmpfiles ${pkgdir}/usr/share/user-tmpfiles.d/sway.conf
+}
