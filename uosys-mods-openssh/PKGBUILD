@@ -2,15 +2,15 @@
 
 _pkgname=openssh
 pkgname=uosys-mods-${_pkgname}
-pkgver=2022.01.23.1
+pkgver=2022.01.26.1
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
 license=('GPL')
 url=''
 depends=('uosys-mods')
-source=('patch' 'ssh-agent.service')
-sha256sums=('SKIP' 'SKIP')
+source=('patch' 'environment' 'ssh-agent.service')
+sha256sums=('SKIP' 'SKIP' 'SKIP')
 
 build() {
   cat << EOF > mods
@@ -46,4 +46,6 @@ package() {
   install -dm755 ${pkgdir}/usr/lib/systemd/user/default.target.wants/
   ln -s -t ${pkgdir}/usr/lib/systemd/user/default.target.wants/ \
     ../ssh-agent.service
+
+  install -Dm644 environment ${pkgdir}/usr/lib/environment.d/openssh.conf
 }
