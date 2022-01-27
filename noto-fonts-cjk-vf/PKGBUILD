@@ -3,26 +3,29 @@
 
 pkgbase=noto-fonts-cjk-vf
 pkgname=(noto-fonts-{cjk,{cjk-,}{hk,jp,kr,sc,tc}}-vf)
-pkgver=20220126
+pkgver=20220121
 pkgrel=1
 pkgdesc='Google Noto CJK variable fonts'
 url='https://www.google.com/get/noto/'
 license=(custom:SIL)
 arch=(any)
-_commit=39abe091d7332e5a0c186b51209cd20df0733e0d
-#source=("${pkgbase}-${pkgver}.tar.gz::https://github.com/googlefonts/noto-cjk/archive/${_commit}.tar.gz"
-source=("noto-cjk::git+https://github.com/googlefonts/noto-cjk.git#commit=${_commit}"
-        70-noto-{cjk,hk,jp,kr,sc,tc}.conf)
-sha256sums=('SKIP'
-            'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
-makedepends=(git)
 conflicts=(noto-fonts-cjk)
 provides=(noto-fonts-cjk)
+_commit=70dc26931fcfbed08afc8f683af108ee3027ad54
+source=("noto-cjk-${pkgver}.tar.gz::https://github.com/googlefonts/noto-cjk/archive/${_commit}.tar.gz"
+        70-noto-{cjk,hk,jp,kr,sc,tc}.conf)
+sha256sums=('3e03522d5ee8ac0d8125eda48785c7afabbad81e20afb2e9da4403f00418535c'
+            '357e9ed6553087567ec5a28f835db5c43d3cd68a688e4677f759cca465379a32'
+            '70f5ad3bd3e3d90c98c6a9ea2f3a28c2564fe18f0d7b8d78926a284cec398fd0'
+            '0b5bd14a869234e50b735505e96257cd8e0851031a02735353895b7408abd313'
+            '233846410004447b718545aa83a5375400d5e3a0219e79ff0ab50a430aec765b'
+            '099e5f2fff526d0d38d57ce5aa0ebd92e0886aaa937f77812f85d63d3e01e53c'
+            '42d6a448bae63daba8eb6123a7b5e56683536f82709ed448a0b29c12bdf18e02')
 
 _langs=(hk jp kr sc tc)
 
 package_noto-fonts-cjk-vf(){
-  cd noto-cjk
+  cd noto-cjk-${_commit}
 
   for _font in Sans Serif; do
     install -Dm644 \
@@ -49,7 +52,7 @@ _package_locl(){
   conflicts+=(noto-fonts-cjk-vf)
   provides+=(noto-fonts-cjk-vf)
 
-  cd noto-cjk
+  cd noto-cjk-${_commit}
 
   for _font in Sans Serif; do
     install -Dm644 \
@@ -77,7 +80,7 @@ _package_subset(){
   conflicts+=(noto-fonts-cjk-vf)
   provides+=(noto-fonts-cjk-vf)
 
-  cd noto-cjk
+  cd noto-cjk-${_commit}
 
   for _font in Sans Serif; do
     install -Dm644 \
