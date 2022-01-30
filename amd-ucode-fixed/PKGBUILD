@@ -1,0 +1,20 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+pkgname=amd-ucode-fixed
+pkgdesc='Microcode update files for AMD CPUs'
+pkgver=20220119.0c6a7b3
+pkgrel=2
+arch=(x86_64)
+url="https://git.kernel.org/?p=linux/kernel/git/firmware/linux-firmware.git;a=summary"
+license=(custom)
+arch=('any')
+options=(!strip)
+source=("https://mirror.bethselamin.de/core/os/x86_64/amd-ucode-${pkgver}-${pkgrel}-any.pkg.tar.zst")
+sha256sums=('4b05b228dd664db02f38e213e513af24e5e40fc0c4624838586be390da999d91')
+
+package() {
+  install -Dm644 -t "${pkgdir}"/usr/lib/firmware/amd-ucode/ \
+    boot/amd-ucode.img
+  install -Dm644 -t "${pkgdir}"/usr/share/licenses/amd-ucode/ \
+    usr/share/licenses/amd-ucode/LICENSE.amd-ucode
+}
