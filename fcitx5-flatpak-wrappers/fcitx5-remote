@@ -1,0 +1,9 @@
+#!/bin/sh
+
+_APP_ID=org.fcitx.Fcitx5
+
+if ! $(flatpak info $_APP_ID &> /dev/null); then
+  echo "$0: $_APP_ID was not found!"
+  exit 1
+fi
+exec flatpak run --command=/app/bin/fcitx5-remote $_APP_ID "$@"
