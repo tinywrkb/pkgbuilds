@@ -1,0 +1,341 @@
+From cd12dfa8d6fb4162c1e6b24b016a78921f960f0a Mon Sep 17 00:00:00 2001
+From: Jeremiasz Nelz <remi6397@gmail.com>
+Date: Sat, 9 Oct 2021 19:40:55 +0200
+Subject: [PATCH] Implement SIXEL image previewer
+
+---
+ README.md                    |   4 +-
+ doc/ranger.1                 |  19 +++++-
+ doc/ranger.pod               |  19 +++++-
+ doc/rifle.1                  |   2 +-
+ ranger/config/rc.conf        |   9 +++
+ ranger/container/settings.py |   5 +-
+ ranger/ext/img_display.py    | 116 ++++++++++++++++++++++++++++-------
+ 7 files changed, 146 insertions(+), 28 deletions(-)
+
+diff --git a/README.md b/README.md
+index f18d320e..6c97926e 100644
+--- a/README.md
++++ b/README.md
+@@ -89,8 +89,8 @@ For enhanced file previews (with `scope.sh`):
+ 
+ * `img2txt` (from `caca-utils`) for ASCII-art image previews
+ * `w3mimgdisplay`, `ueberzug`, `mpv`, `iTerm2`, `kitty`, `terminology` or `urxvt` for image previews
+-* `convert` (from `imagemagick`) to auto-rotate images and for SVG previews
+-* `ffmpegthumbnailer` for video thumbnails
++* `convert` (from `imagemagick`) to auto-rotate images and for image previews
++* `ffmpeg`, or `ffmpegthumbnailer` for video thumbnails
+ * `highlight`, `bat` or `pygmentize` for syntax highlighting of code
+ * `atool`, `bsdtar`, `unrar` and/or `7z` to preview archives
+ * `bsdtar`, `tar`, `unrar`, `unzip` and/or `zipinfo` (and `sed`) to preview
+diff --git a/doc/ranger.1 b/doc/ranger.1
+index 57646fc7..84b59061 100644
+--- a/doc/ranger.1
++++ b/doc/ranger.1
+@@ -308,7 +308,7 @@ are automatically used when available but completely optional.
+ \&\f(CW\*(C`w3mimgdisplay\*(C'\fR, \f(CW\*(C`ueberzug\*(C'\fR, \f(CW\*(C`mpv\*(C'\fR, \f(CW\*(C`iTerm2\*(C'\fR, \f(CW\*(C`kitty\*(C'\fR, \f(CW\*(C`terminology\*(C'\fR or
+ \&\f(CW\*(C`urxvt\*(C'\fR for image previews
+ .IP "\-" 2
+-\&\f(CW\*(C`convert\*(C'\fR (from \f(CW\*(C`imagemagick\*(C'\fR) to auto-rotate images and for \s-1SVG\s0 previews
++\&\f(CW\*(C`convert\*(C'\fR (from \f(CW\*(C`imagemagick\*(C'\fR) to auto-rotate images and for image previews
+ .IP "\-" 2
+ \&\f(CW\*(C`ffmpegthumbnailer\*(C'\fR for video thumbnails
+ .IP "\-" 2
+@@ -358,6 +358,20 @@ This feature relies on the dimensions of the terminal's font.  By default, a
+ width of 8 and height of 11 are used.  To use other values, set the options
+ \&\f(CW\*(C`iterm2_font_width\*(C'\fR and \f(CW\*(C`iterm2_font_height\*(C'\fR to the desired values.
+ .PP
++\fIsixel\fR
++.IX Subsection "sixel"
++.PP
++\&\s-1SIXEL\s0 is the industry standard for displaying images in terminals.
++.PP
++Most mainstream terminal emulators include \s-1SIXEL\s0 support, for example:
++programs based on \s-1VTE\s0 >=0.68 (eg. \s-1GNOME\s0 Terminal), iTerm2, Mintty, etc.
++.PP
++To enable this feature, install the program \f(CW\*(C`convert\*(C'\fR (from \f(CW\*(C`imagemagick\*(C'\fR)
++and set the option \f(CW\*(C`preview_images_method\*(C'\fR to sixel.
++.PP
++Extra arguments (such as preferred dithering method) can be passed to convert
++by setting \f(CW\*(C`sixel_extra_args\*(C'\fR.
++.PP
+ \fIkitty\fR
+ .IX Subsection "kitty"
+ .PP
+@@ -1211,6 +1225,9 @@ Increase it in case of experiencing display corruption.
+ Offset in pixels for the inner border of the terminal. Some terminals require
+ the offset to be specified explicitly, among others st and UXterm, some don't
+ like urxvt.
++.IP "sixel_extra_args [string]" 4
++.IX Item "sixel_extra_args [string]"
++Extra arguments passed to \f(CW\*(C`convert\*(C'\fR when generating \s-1SIXEL\s0 image previews.
+ .IP "wrap_plaintext_previews [bool]" 4
+ .IX Item "wrap_plaintext_previews [bool]"
+ Whether or not to wrap long lines in the pager, this includes previews of plain
+diff --git a/doc/ranger.pod b/doc/ranger.pod
+index ed347665..aa21cd37 100644
+--- a/doc/ranger.pod
++++ b/doc/ranger.pod
+@@ -234,7 +234,7 @@ C<urxvt> for image previews
+ 
+ =item -
+ 
+-C<convert> (from C<imagemagick>) to auto-rotate images and for SVG previews
++C<convert> (from C<imagemagick>) to auto-rotate images and for image previews
+ 
+ =item -
+ 
+@@ -310,6 +310,19 @@ This feature relies on the dimensions of the terminal's font.  By default, a
+ width of 8 and height of 11 are used.  To use other values, set the options
+ C<iterm2_font_width> and C<iterm2_font_height> to the desired values.
+ 
++=head3 sixel
++
++SIXEL is the industry standard for displaying images in terminals.
++
++Most mainstream terminal emulators include SIXEL support, for example:
++programs based on VTE >=0.68 (eg. GNOME Terminal), iTerm2, Mintty, etc.
++
++To enable this feature, install the program C<convert> (from C<imagemagick>)
++and set the option C<preview_images_method> to sixel.
++
++Extra arguments (such as preferred dithering method) can be passed to convert
++by setting C<sixel_extra_args>.
++
+ =head3 kitty
+ 
+ This only works in Kitty. It requires PIL (or pillow) to work.
+@@ -1307,6 +1320,10 @@ Offset in pixels for the inner border of the terminal. Some terminals require
+ the offset to be specified explicitly, among others st and UXterm, some don't
+ like urxvt.
+ 
++=item sixel_extra_args [string]
++
++Extra arguments passed to C<convert> when generating SIXEL image previews.
++
+ =item wrap_plaintext_previews [bool]
+ 
+ Whether or not to wrap long lines in the pager, this includes previews of plain
+diff --git a/doc/rifle.1 b/doc/rifle.1
+index 1d3553f4..f6427e0e 100644
+--- a/doc/rifle.1
++++ b/doc/rifle.1
+@@ -1,4 +1,4 @@
+-.\" Automatically generated by Pod::Man 4.11 (Pod::Simple 3.35)
++.\" Automatically generated by Pod::Man 4.14 (Pod::Simple 3.42)
+ .\"
+ .\" Standard preamble:
+ .\" ========================================================================
+diff --git a/ranger/config/rc.conf b/ranger/config/rc.conf
+index 9d08a6a7..c436a52c 100644
+--- a/ranger/config/rc.conf
++++ b/ranger/config/rc.conf
+@@ -93,6 +93,11 @@ set preview_images false
+ #   Previews images in full color in the terminology terminal emulator.
+ #   Supports a wide variety of formats, even vector graphics like svg.
+ #
++# * sixel:
++#   Previews images using the SIXEL protocol. This requires "convert"
++#   from "imagemagick" and works consistently across many popular
++#   terminals.
++#
+ # * urxvt:
+ #   Preview images in full color using urxvt image backgrounds. This
+ #   requires using urxvt compiled with pixbuf support.
+@@ -127,6 +132,10 @@ set w3m_offset 0
+ set iterm2_font_width 8
+ set iterm2_font_height 11
+ 
++# Extra arguments passed to convert when generating SIXEL image previews
++# (see: preview_images_method: sixel)
++set sixel_extra_args -dither FloydSteinberg
++
+ # Use a unicode "..." character to mark cut-off filenames?
+ set unicode_ellipsis false
+ 
+diff --git a/ranger/container/settings.py b/ranger/container/settings.py
+index 7549325a..c90bbe93 100644
+--- a/ranger/container/settings.py
++++ b/ranger/container/settings.py
+@@ -101,6 +101,7 @@ ALLOWED_SETTINGS = {
+     'wrap_plaintext_previews': bool,
+     'wrap_scroll': bool,
+     'xterm_alt_key': bool,
++    'sixel_extra_args': str,
+ }
+ 
+ ALLOWED_VALUES = {
+@@ -111,8 +112,8 @@ ALLOWED_VALUES = {
+     'nested_ranger_warning': ['true', 'false', 'error'],
+     'one_indexed': [False, True],
+     'preview_images_method': ['w3m', 'iterm2', 'terminology',
+-                              'urxvt', 'urxvt-full', 'kitty',
+-                              'ueberzug'],
++                              'sixel', 'urxvt', 'urxvt-full',
++                              'kitty', 'ueberzug'],
+     'vcs_backend_bzr': ['disabled', 'local', 'enabled'],
+     'vcs_backend_git': ['enabled', 'disabled', 'local'],
+     'vcs_backend_hg': ['disabled', 'local', 'enabled'],
+diff --git a/ranger/ext/img_display.py b/ranger/ext/img_display.py
+index ffaa4c07..2b357928 100644
+--- a/ranger/ext/img_display.py
++++ b/ranger/ext/img_display.py
+@@ -6,7 +6,7 @@
+ """Interface for drawing images into the console
+ 
+ This module provides functions to draw images in the terminal using supported
+-implementations, which are currently w3m, iTerm2 and urxvt.
++implementations.
+ """
+ 
+ from __future__ import (absolute_import, division, print_function)
+@@ -17,12 +17,13 @@ import errno
+ import fcntl
+ import imghdr
+ import os
++import shlex
+ import struct
+ import sys
+ import warnings
+ import json
+ import threading
+-from subprocess import Popen, PIPE
++from subprocess import Popen, PIPE, check_output
+ from collections import defaultdict
+ 
+ import termios
+@@ -65,6 +66,47 @@ def move_cur(to_y, to_x):
+     bin_stdout.write(tparm)
+ 
+ 
++def get_terminal_size():
++    farg = struct.pack("HHHH", 0, 0, 0, 0)
++    fd_stdout = sys.stdout.fileno()
++    fretint = fcntl.ioctl(fd_stdout, termios.TIOCGWINSZ, farg)
++    return struct.unpack("HHHH", fretint)
++
++
++def get_font_dimensions():
++    """
++    Get the height and width of a character displayed in the terminal in
++    pixels.
++    """
++    rows, cols, xpixels, ypixels = get_terminal_size()
++    return (xpixels // cols), (ypixels // rows)
++
++
++def image_fit_width(width, height, max_cols, max_rows, font_width=None, font_height=None):
++    if font_width is None or font_height is None:
++        font_width, font_height = get_font_dimensions()
++
++    max_width = font_width * max_cols
++    max_height = font_height * max_rows
++    if height > max_height:
++        if width > max_width:
++            width_scale = max_width / width
++            height_scale = max_height / height
++            min_scale = min(width_scale, height_scale)
++            max_scale = max(width_scale, height_scale)
++            if width * max_scale <= max_width and height * max_scale <= max_height:
++                return width * max_scale
++            return width * min_scale
++
++        scale = max_height / height
++        return width * scale
++    elif width > max_width:
++        scale = max_width / width
++        return width * scale
++
++    return width
++
++
+ class ImageDisplayError(Exception):
+     pass
+ 
+@@ -315,25 +357,11 @@ class ITerm2ImageDisplayer(ImageDisplayer, FileManagerAware):
+         return text
+ 
+     def _fit_width(self, width, height, max_cols, max_rows):
+-        max_width = self.fm.settings.iterm2_font_width * max_cols
+-        max_height = self.fm.settings.iterm2_font_height * max_rows
+-        if height > max_height:
+-            if width > max_width:
+-                width_scale = max_width / width
+-                height_scale = max_height / height
+-                min_scale = min(width_scale, height_scale)
+-                max_scale = max(width_scale, height_scale)
+-                if width * max_scale <= max_width and height * max_scale <= max_height:
+-                    return width * max_scale
+-                return width * min_scale
+-
+-            scale = max_height / height
+-            return width * scale
+-        elif width > max_width:
+-            scale = max_width / width
+-            return width * scale
+-
+-        return width
++        font_width = self.fm.settings.iterm2_font_width
++        font_height = self.fm.settings.iterm2_font_height
++
++        return image_fit_width(
++                width, height, max_cols, max_rows, font_width, font_height)
+ 
+     @staticmethod
+     def _encode_image_content(path):
+@@ -382,6 +410,52 @@ class ITerm2ImageDisplayer(ImageDisplayer, FileManagerAware):
+         return width, height
+ 
+ 
++@register_image_displayer("sixel")
++class SixelImageDisplayer(ImageDisplayer, FileManagerAware):
++    """Implementation of ImageDisplayer using SIXEL."""
++
++    def __init__(self):
++        self.win = None
++
++    def draw(self, path, start_x, start_y, width, height):
++        if self.win is None:
++            self.win = self.fm.ui.win.subwin(height, width, start_y, start_x)
++        else:
++            self.win.mvwin(start_y, start_x)
++            self.win.resize(height, width)
++
++        font_width, font_height = get_font_dimensions()
++        fit_width = font_width * width
++        fit_height = font_height * height
++
++        sixel_extra_args = shlex.split(self.fm.settings.sixel_extra_args)
++        result = check_output(["convert", path + "[0]",
++                               "-geometry", "{0}x{1}>"
++                               .format(fit_width, fit_height)]
++                              + sixel_extra_args
++                              + ["sixel:-"],
++                              stderr=PIPE)
++
++        with temporarily_moved_cursor(start_y, start_x):
++            if PY3:
++                sys.stdout.buffer.write(result)
++            else:
++                sys.stdout.write(result.encode())
++            sys.stdout.flush()
++
++    def clear(self, start_x, start_y, width, height):
++        if self.win is not None:
++            self.win.clear()
++            self.win.refresh()
++
++            self.win = None
++
++        self.fm.ui.win.redrawwin()
++
++    def quit(self):
++        self.clear(0, 0, 0, 0)
++
++
+ @register_image_displayer("terminology")
+ class TerminologyImageDisplayer(ImageDisplayer, FileManagerAware):
+     """Implementation of ImageDisplayer using terminology image display support
+-- 
+2.35.0
+
