@@ -1,7 +1,7 @@
 # Maintainer: tinywrkb <tinywrkb@gmail.com>
 
 pkgname=fcitx5-flatpak-wrappers
-pkgver=2022.02.01.1
+pkgver=2022.02.03.1
 pkgrel=1
 pkgdesc="Wrappers for running the Flatpak Fcitx5 app"
 url=''
@@ -9,11 +9,11 @@ arch=(any)
 license=(GPL)
 conflicts=(fcitx5)
 provides=(fcitx5)
-source=(fcitx5-{configtool,reload,remote,wayland-launcher})
-sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP')
+source=(fcitx5{,-configtool,-reload,-remote,-wayland-launcher})
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 
 package() {
   depends=(flatpak)
-  install -Dm755 fcitx5-{configtool,reload,remote} -t "$pkgdir"/usr/bin/
+  install -Dm755 fcitx5{,-configtool,-reload,-remote} -t "$pkgdir"/usr/bin/
   install -Dm755 fcitx5-wayland-launcher -t "$pkgdir"/usr/lib/fcitx5/libexec/
 }
