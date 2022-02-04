@@ -1,0 +1,20 @@
+#!/bin/sh
+
+_time=$(date +'%k:%M')
+
+if systemctl --user is-active sway-idle-inhibit.service &>/dev/null; then
+  _idle=
+else
+  _idle=
+fi
+
+_audio+=" $(pactl get-sink-volume @DEFAULT_SINK@ | head -1  | cut -d'/' -f2 | tr -d ' ')"
+_audio+="  $(pactl get-source-volume @DEFAULT_SOURCE@ | head -1  | cut -d'/' -f2 | tr -d ' ')"
+
+_mem="$(free -g | grep Mem | awk '{printf "%d", $3/$2 * 100.0}')% "
+
+_temp="$(sensors | grep 'Package id 0' | awk '{printf $4}' | tr -d '+') "
+
+_xkb="$(wmkbd) "
+
+echo "$_idle  $_audio  $_mem  $_temp  $_xkb  $_time "

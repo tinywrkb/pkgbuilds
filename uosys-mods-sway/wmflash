@@ -1,0 +1,10 @@
+#!/bin/sh
+
+
+swaymsg opacity minus 0.2
+sleep .1
+swaymsg opacity plus 0.2
+sleep .1
+swaymsg opacity minus 0.2
+sleep .1
+swaymsg opacity plus 0.2

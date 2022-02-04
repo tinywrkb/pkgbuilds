@@ -1,0 +1,84 @@
+#!/bin/bash
+
+set -x
+
+unset wid
+unset wwidth wheight
+unset barheight
+unset resx resy
+unset wrkspy
+unset snapx snapy
+unset mintree
+
+#tree=$(swaymsg -t get_tree|jq -r '..|select(.type? == "root")')
+
+#mintree=$(echo "$tree"|jq -r '.rect')
+#resx=$(echo "$mintree"|jq '.width')
+#resy=$(echo "$mintree"|jq '.height')
+
+mintree=($(swaymsg -t get_tree|jq -r '..|select(.type? == "root")|(.rect.width,.rect.height),(..|select(.type? == "output")|select(.active? == true)|.nodes|.[0]|.rect|.height),(..|select(.focused? == true)|.id,.rect.width,.rect.height,.rect.x,.rect.y)'))
+echo
+echo mintree is: ${mintree[@]}
+echo
+
+resx=${mintree[0]}
+resy=${mintree[1]}
+
+# to change to actual bar width recognition
+# wrkspy=$(echo "$tree"|jq -r '..|select(.type? == "output")|select(.active? == true)|.nodes|.[0]|.rect|.height')
+wrkspy=${mintree[2]}
+barheight=$(( $resy - $wrkspy ))
+
+#mintree=''
+#mintree=$(echo "$tree"|jq -r '..|select(.focused? == true)')
+#wid=$(echo "$mintree"|jq '.id')
+#mintree=$(echo "$mintree"|jq -r '.rect')
+#wwidth=$(echo "$mintree"|jq '.width')
+#wheight=$(echo "$mintree"|jq '.height')
+#
+#snapx=$(echo "$mintree"|jq '.x')
+#snapy=$(echo "$mintree"|jq '.y')
+
+#mintree=($(echo "$tree"|jq '..|select(.focused? == true)|.id,.rect.width,.rect.height,.rect.x,.rect.y'))
+wid=${mintree[3]}
+wwidth=${mintree[4]}
+wheight=${mintree[5]}
+snapx=${mintree[6]}
+snapy=${mintree[7]}
+
+case $1 in
+  0)
+    snapx=0
+    snapy=0
+    ;;
+  1)
+    snapx=$(( $resx - $wwidth ))
+    snapy=0
+    ;;
+  2)
+    snapx=$(( $resx - $wwidth ))
+    snapy=$(( $resy - $wheight - $barheight ))
+    ;;
+  3)
+    snapx=$(( 0 ))
+    snapy=$(( $resy - $wheight - $barheight ))
+    ;;
+  "up")
+    snapy=0
+    ;;
+  "down")
+    snapy=$(( $resy - $wheight - $barheight ))
+    ;;
+  "right")
+    snapx=$(( $resx - $wwidth ))
+    ;;
+  "left")
+    snapx=0
+    ;;
+  "center"|*)
+    snapx=$(( ( $resx - $wwidth ) / 2  ))
+    snapy=$(( ( $resy - $wheight ) / 2  ))
+    ;;
+esac
+
+swaymsg "[con_id=$wid] move position $snapx $snapy"
