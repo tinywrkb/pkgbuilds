@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# TODO: process rofi options: dmenu mode, format with index
+exec fuzzel-launch

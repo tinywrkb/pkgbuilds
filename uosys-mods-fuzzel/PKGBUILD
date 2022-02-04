@@ -1,0 +1,19 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+_pkgname=fuzzel
+pkgname=uosys-mods-${_pkgname}
+pkgver=2022.02.04.1
+pkgrel=1
+pkgdesc="$_pkgname uosys mods"
+arch=('any')
+license=('GPL')
+url=''
+depends=('uosys-mods')
+source=(dmenu fuzzel-launch{,-bin} rofi)
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP')
+
+package() {
+  depends+=($_pkgname)
+  install -Dm755 -t ${pkgdir}/usr/bin/ \
+    dmenu fuzzel-launch{,-bin} rofi
+}

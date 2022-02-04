@@ -1,0 +1,22 @@
+#!/bin/bash
+
+options=(--font=monospace
+              --icon-theme=hicolor
+              --terminal=foot
+              --lines=15
+              --width=80
+              --horizontal-pad=40
+              --vertical-pad=8
+              --inner-pad=0
+              --background=073642ff
+              --text-color=eee8d5ff
+              --match-color=dc322fff
+              --selection-color=586e75ff
+              --selection-text-color=fdf6e3ff
+              --border-width=1
+              --border-radius=10
+              --border-color=002b36ff
+              --line-height=32
+              --letter-spacing=0)
+
+exec fuzzel "${options[@]}" "$@"
