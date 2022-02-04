@@ -242,7 +242,7 @@ while read -r pkg; do
     smartmontools-uosys)
       pkg=smartmontools
       ;;
-    systemd-swap|systemd-uosys)
+    systemd-idmap|systemd-swap)
       pkg=systemd
       ;;
     wireplumber|wireplumber-git)
