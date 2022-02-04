@@ -21,6 +21,9 @@ while read -r pkg; do
     pipewire-media-session|pipewire-media-session-git)
       pkg=pipewire
       ;;
+    systemd-idmap)
+      pkg=systemd
+      ;;
     wireplumber|wireplumber-git)
       pkg=pipewire
       ;;

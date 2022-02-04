@@ -10,6 +10,7 @@ Target = pipewire-git
 Target = pipewire-media-session
 Target = pipewire-media-session-git
 Target = systemd
+Target = systemd-idmap
 Target = wireplumber
 Target = wireplumber-git
 Target = xdg-user-dirs
