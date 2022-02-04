@@ -1,7 +1,8 @@
 #!/bin/sh
 
+# video hardware acceleration
 if [ -f /sys/class/drm/card0/device/graphics/fb0/name ] &&
-  [ "$(cat /sys/class/drm/card0/device/graphics/fb0/name)" == "i915drmfb" ]; then
+  [ "$(cat /sys/class/drm/card0/device/graphics/fb0/name 2>/dev/null)" == "i915drmfb" ]; then
   LIBVA_DRIVER_NAME=i965
   VDPAU_DRIVER=va_gl
 fi
@@ -14,3 +15,9 @@ if [ -n "$VDPAU_DRIVER" ]; then
   echo "VDPAU_DRIVER=$VDPAU_DRIVER"
 fi
 
+# wlroots variables, https://gitlab.freedesktop.org/wlroots/wlroots/-/blob/master/docs/env_vars.md
+# TODO: WLR_RENDERER=vulkan needs a reliable test for vulkan capability
+# allow software renderer in vm
+if virtid="$(systemd-detect-virt 2>/dev/null)"; then
+  echo "WLR_RENDERER_ALLOW_SOFTWARE=1"
+fi

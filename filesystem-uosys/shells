@@ -2,4 +2,6 @@
 # See shells(5) for details.
 
 /bin/sh
+/usr/bin/sh
 /bin/bash
+/usr/bin/bash
