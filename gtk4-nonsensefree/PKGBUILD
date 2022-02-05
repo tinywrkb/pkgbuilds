@@ -3,7 +3,7 @@
 
 pkgname=gtk4-nonsensefree
 pkgver=4.6.0
-pkgrel=1
+pkgrel=3
 epoch=1
 pkgdesc="GObject-based multi-platform GUI toolkit"
 url="https://www.gtk.org/"
@@ -12,8 +12,8 @@ depends=(glib2 cairo pango fribidi gdk-pixbuf2 libpng libtiff libjpeg libepoxy
          libgl libegl harfbuzz libxkbcommon graphene iso-codes
          libcolord wayland
          fontconfig libcups
-         rest json-glib librsvg dconf shared-mime-info
-         desktop-file-utils adwaita-icon-theme cantarell-fonts)
+         librsvg dconf shared-mime-info desktop-file-utils
+         adwaita-icon-theme cantarell-fonts)
 makedepends=(git meson shaderc sassc gobject-introspection docbook-xsl
              wayland-protocols python-gobject python-docutils)
 provides=(gtk4)
@@ -28,6 +28,13 @@ sha256sums=('SKIP'
 pkgver() {
   cd gtk
   git describe --tags | sed 's/[^-]*-g/r&/;s/-/+/g'
+}
+
+prepare() {
+  cd gtk
+
+  # Ensure noexecstack
+  git cherry-pick -n 46509b6dd28c58ae 17c2a1cb4ea2093d
 }
 
 build() {
