@@ -1,4 +1,4 @@
-From 529475738896f83043584a535b847bc4a237fe0f Mon Sep 17 00:00:00 2001
+From 5334ce32a0d69eac7caaa8f35f83c495699f832d Mon Sep 17 00:00:00 2001
 From: Jeremiasz Nelz <remi6397@gmail.com>
 Date: Sat, 9 Oct 2021 19:40:55 +0200
 Subject: [PATCH] Implement SIXEL image previewer
@@ -10,8 +10,8 @@ Subject: [PATCH] Implement SIXEL image previewer
  doc/rifle.1                  |   2 +-
  ranger/config/rc.conf        |   9 +++
  ranger/container/settings.py |   5 +-
- ranger/ext/img_display.py    | 117 ++++++++++++++++++++++++++++-------
- 7 files changed, 147 insertions(+), 28 deletions(-)
+ ranger/ext/img_display.py    | 113 ++++++++++++++++++++++++++++-------
+ 7 files changed, 143 insertions(+), 28 deletions(-)
 
 diff --git a/README.md b/README.md
 index f18d320e..6c97926e 100644
@@ -177,7 +177,7 @@ index 7549325a..c90bbe93 100644
      'vcs_backend_git': ['enabled', 'disabled', 'local'],
      'vcs_backend_hg': ['disabled', 'local', 'enabled'],
 diff --git a/ranger/ext/img_display.py b/ranger/ext/img_display.py
-index ffaa4c07..e5098fc6 100644
+index ffaa4c07..4db788a8 100644
 --- a/ranger/ext/img_display.py
 +++ b/ranger/ext/img_display.py
 @@ -6,7 +6,7 @@
@@ -204,15 +204,7 @@ index ffaa4c07..e5098fc6 100644
  from collections import defaultdict
  
  import termios
-@@ -31,6 +32,7 @@ import codecs
- from tempfile import NamedTemporaryFile
- 
- from ranger.core.shared import FileManagerAware
-+from ranger import PY3
- 
- W3MIMGDISPLAY_ENV = "W3MIMGDISPLAY_PATH"
- W3MIMGDISPLAY_OPTIONS = []
-@@ -65,6 +67,47 @@ def move_cur(to_y, to_x):
+@@ -65,6 +66,47 @@ def move_cur(to_y, to_x):
      bin_stdout.write(tparm)
  
  
@@ -260,7 +252,7 @@ index ffaa4c07..e5098fc6 100644
  class ImageDisplayError(Exception):
      pass
  
-@@ -315,25 +358,11 @@ class ITerm2ImageDisplayer(ImageDisplayer, FileManagerAware):
+@@ -315,25 +357,11 @@ class ITerm2ImageDisplayer(ImageDisplayer, FileManagerAware):
          return text
  
      def _fit_width(self, width, height, max_cols, max_rows):
@@ -291,7 +283,7 @@ index ffaa4c07..e5098fc6 100644
  
      @staticmethod
      def _encode_image_content(path):
-@@ -382,6 +411,52 @@ class ITerm2ImageDisplayer(ImageDisplayer, FileManagerAware):
+@@ -382,6 +410,49 @@ class ITerm2ImageDisplayer(ImageDisplayer, FileManagerAware):
          return width, height
  
  
@@ -322,10 +314,7 @@ index ffaa4c07..e5098fc6 100644
 +                              stderr=PIPE)
 +
 +        with temporarily_moved_cursor(start_y, start_x):
-+            if PY3:
-+                sys.stdout.buffer.write(result)
-+            else:
-+                sys.stdout.write(result.encode())
++            sys.stdout.buffer.write(result)
 +            sys.stdout.flush()
 +
 +    def clear(self, start_x, start_y, width, height):
