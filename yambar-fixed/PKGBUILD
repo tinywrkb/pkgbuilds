@@ -1,0 +1,46 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Maintainer: Moritz Poldrack <moritz at poldrack dot dev>
+pkgname=yambar-fixed
+pkgver=1.7.0
+pkgrel=1
+pkgdesc='Modular status panel for X11 and Wayland, inspired by polybar, without X11 backend'
+arch=(x86_64)
+url='https://codeberg.org/dnkl/yambar'
+license=(MIT)
+depends=(fcft libyaml systemd-libs wayland xcb-util-cursor)
+# systemd make dependency because libudev.pc is incorrectly packaged in systemd instead of systemd-libs
+makedepends=(alsa-lib git libmpdclient meson scdoc systemd tllist wayland-protocols xcb-util{-errors,-wm} xorgproto)
+# TODO: xcb-util-wm might also be needed for the xwindow
+optdepends=('alsa-lib: for the ALSA module'
+            'json-c: for the XKB module'
+            'libmpdclient: for the MPD module'
+            'xcb-util-errors: for the xwindow module')
+conflicts=(yambar)
+provides=(libdynlist.so yambar)
+_commit=42d944d020100991294e6b3a6dca45c7926bc5bb  # tags/1.7.0
+source=("git+https://codeberg.org/dnkl/yambar#commit=$_commit")
+sha256sums=('SKIP')
+
+pkgver() {
+  cd yambar
+  git describe --tags 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+  local meson_options=(
+    --buildtype release
+    -D core-plugins-as-shared-libraries=true
+  )
+  arch-meson yambar build "${meson_options[@]}"
+  meson compile -C build
+}
+
+check() {
+  meson test -C build --print-errorlogs
+}
+
+package() {
+  meson install -C build --destdir "${pkgdir}"
+  install -Dm644 yambar/LICENSE -t "$pkgdir"/usr/share/licenses/${pkgname}/
+  ln -s -t "$pkgdir"/usr/lib/ yambar/libdynlist.so
+}
