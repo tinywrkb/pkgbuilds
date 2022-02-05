@@ -1,7 +1,7 @@
 # Maintainer: tinywrkb <tinywrkb@gmail.com>
 # Maintainer: Moritz Poldrack <moritz at poldrack dot dev>
 pkgname=yambar-x11free
-pkgver=1.7.0
+pkgver=1.8.0
 pkgrel=1
 pkgdesc='Modular status panel for X11 and Wayland, inspired by polybar, without X11 backend'
 arch=(x86_64)
@@ -15,7 +15,7 @@ optdepends=('alsa-lib: for the ALSA module'
             'libmpdclient: for the MPD module')
 conflicts=(yambar)
 provides=(libdynlist.so yambar)
-_commit=42d944d020100991294e6b3a6dca45c7926bc5bb  # tags/1.7.0
+_commit=3cc142a27302adbb4a314ea95c901a5216b06d98  # tags/1.8.0
 source=("git+https://codeberg.org/dnkl/yambar#commit=$_commit")
 sha256sums=('SKIP')
 
