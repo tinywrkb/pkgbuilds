@@ -2,7 +2,6 @@
 
 unset DISPLAY XAUTHORITY WAYLAND_DISPLAY
 export SWAYSOCK="${XDG_RUNTIME_DIR}"/sway/sway-ipc.sock
-export XDG_SESSION_TYPE=wayland
 
 die() {
   2>&1 echo "start-sway: ${@:-Something went wrong!}"
@@ -39,6 +38,6 @@ else
   export SWAYCONF=/etc/sway/config
 fi
 
-systemctl --user import-environment XDG_SESSION_TYPE XDG_CURRENT_DESKTOP
+systemctl --user import-environment XDG_CURRENT_DESKTOP
 
 exec /usr/bin/sway --config "$SWAYCONF" &>"${XDG_CACHE_HOME:-$HOME/.cache}"/sway.log

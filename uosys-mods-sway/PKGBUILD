@@ -2,7 +2,7 @@
 
 _pkgname=sway
 pkgname=uosys-mods-${_pkgname}
-pkgver=2022.02.04.2
+pkgver=2022.02.05.1
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
