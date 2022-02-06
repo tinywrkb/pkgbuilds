@@ -34,7 +34,7 @@ for _bindir in "${_bindirs[@]}"; do
 done
 
 if [ -n "$_lsdirs" ]; then
-  _execfile="$(ls ${_lsdirs[@]} | sort | uniq | sed '/^$/d' | $_fuzzel_exec --dmenu)"
+  _execfile="$(ls ${_lsdirs[@]} | sort | uniq | sed '/^$/d' | $_fuzzel_exec --dmenu "$@")"
 
   [ -n "$_execfile" ] || { echo "No executable was selected!"; exit; }
 
