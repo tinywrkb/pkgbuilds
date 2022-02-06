@@ -1,7 +1,9 @@
 #!/bin/bash
 
 options=(--font=monospace
+              --font="Noto Sans Mono:size=12,Liberation Mono:size=12"
               --icon-theme=hicolor
+              --fields=filename,name,generic,exec,keywords,categories
               --terminal=foot
               --lines=15
               --width=80

@@ -2,7 +2,7 @@
 
 _pkgname=fuzzel
 pkgname=uosys-mods-${_pkgname}
-pkgver=2022.02.06.2
+pkgver=2022.02.06.3
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
