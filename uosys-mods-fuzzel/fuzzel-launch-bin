@@ -36,7 +36,7 @@ done
 if [ -n "$_lsdirs" ]; then
   _execfile="$(ls ${_lsdirs[@]} | sort | uniq | sed '/^$/d' | $_fuzzel_exec --dmenu "$@")"
 
-  [ -n "$_execfile" ] || { echo "No executable was selected!"; exit; }
+  [ -n "$_execfile" ] || exit 0
 
   if which "$_execfile"; then
     exec "$_execfile"
