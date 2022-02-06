@@ -3,9 +3,6 @@
 # Contributor: Tom Gundersen <teg@jklm.no>
 
 # TODO: report bug: timedatectl doesn't follow /etc/adjtime symlink
-# TODO: report bug: timedatectl doesn't follow recursive /etc/localtime symlink,
-#                   changing the code to recursively is propbably not the proper solution as it will break
-#                   apps and libs that expect a single level of symlink, e.g. flatpak.
 # TODO: report bug: homectl create doesn't follow skel symlink
 # TODO: maybe install a default .updated to usr/etc so the systemd-update-done.service won't fail,
 #        also needs setting timestamp of /usr in the initramfs
@@ -129,9 +126,9 @@ package() {
   # requirement: must be relative
   # users in a booted-up system:
   #   - fusermount/fuse, flatpak (had some code changes for systems where it doesn't exist)
-  # users on a container/chroot
+  # users in a container/chroot
   #   - systemd-tmpfiles.d, systemd-nspawn
-  # workarounds:
+  # possible workarounds:
   #   - only bind usr/etc to etc, never use a symlink
   #   - add a second level of symlink to point to the right location
   ln -s ../proc/self/mounts ${pkgdir}/etc/mtab
@@ -146,19 +143,20 @@ package() {
   ########  var symlinks #########
   ################################
 
-  # TODO: maybe bring back X11/xorg.conf.d or move it into uosys-mods-xorg-server package
-
   ln -s -t ${pkgdir}/etc/ \
     /var/etc/{adjtime,resolv.conf}
 
-  # timezone, two levels of symlinks, needs a proper patch in systemd to recursively expand and resolve the real path
-  #ln -s /var/etc/localtime ${pkgdir}/etc/localtime
-
+  # localtime symlink
+  # it's time to stop usign this symlink and replaced with something
+  # dynamic that doesn't depend on manually changing files in /etc
+  # patching systemd to recursively reslove symlink is not a proper solution
+  # as it will break applications that expect a single level of symlink (e.g. flatpak)
+  # just hardcode the system timezone and use TZ environment variable for the user
   ln -s /usr/share/zoneinfo/UTC ${pkgdir}/etc/localtime
 
   # machine specific identifiers
-  # TODO: better solution compatible with cli helpers? switch back to mount points?
-  # mount points for compatibility with systemd
+  # TODO: replace systemd's utils
+  # mount points for compatibility with systemd's utils
   #touch {,usr/}etc/{hostname,machine-id,machine-info}
   ln -s -t ${pkgdir}/etc/ \
     /var/etc/{hostname,machine-id,machine-info}
