@@ -53,6 +53,7 @@ packages=(
   aur/libcgroup
   private/crun-runc-compat  # use crun and conflict with runc
   private/podman-compose-fixed
+  private/podman-tui-fixed
   private/uosys-mods-libcgroup
   private/uosys-mods-lxc
   private/uosys-mods-lxcfs
