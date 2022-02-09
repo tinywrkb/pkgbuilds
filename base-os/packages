@@ -1,0 +1,538 @@
+packages=(
+
+  ################################################
+  # base
+  ################################################
+
+  base
+  dracut  # TODO: consider adding linux-{latest.lts}-initrd to package prebuilt images, needs automation for generating rebuilds and pkgver bumps
+  elfutils  # dracut: strip binaries in initramfs
+  linux
+  linux-firmware
+  linux-lts
+  lsb-release
+  rtkit
+  sysfsutils
+  systemd-swap  # TODO: remove after switching to zram-generator
+  zram-generator
+  private/dracut-hooks-uosys
+  private/dracut-module-uosys
+  private/filesystem-uosys  # TODO: maybe remove the uosys-rootfs dependency
+  private/uosys-create-user
+  private/uosys-live-media
+  private/uosys-mods
+  private/uosys-mods-glibc
+  private/uosys-mods-kmod
+  private/uosys-mods-linux-firmware
+  private/uosys-mods-pacman
+  private/uosys-mods-shadow
+  private/uosys-mods-systemd
+  private/uosys-mods-util-linux
+  private/uosys-rootfs
+  private/uosys-tools
+
+  # bootloader
+  efibootmgr
+  efitools
+  aur/plymouth-theme-arch-charge-big
+  private/amd-ucode-fixed
+  private/grub-editenv  # TODO: evalute setting efi vars instead, and decide what to do with legacy boot for vps & vms
+  private/intel-ucode-fixed
+  private/plymouth-fixed  # TODO: maybe drop this, project maintainer ignores requests for bug fixes releases, there's no stable channel/branch, the whole idea is questionable, should be handled by the init
+  private/uosys-bootloader
+
+  # containers & resource allocation
+  #private/uosys-mods-qemu  # TODO: reconsider packaging the udev rule
+  buildah
+  crun  # podman support for unified cgroupsv2, might be integrated in runc in the future
+  dnsmasq  # required by lxd (opt for lxc), libvirt networking
+  lxd
+  podman
+  podman-dnsname
+  podman-docker
+  aur/libcgroup
+  private/crun-runc-compat  # use crun and conflict with runc
+  private/podman-compose-fixed
+  private/uosys-mods-libcgroup
+  private/uosys-mods-lxc
+  private/uosys-mods-lxcfs
+  private/uosys-mods-lxd
+  private/uosys-mods-podman
+
+  # docs
+  man-db
+  man-pages
+  pinfo  # better info viewer
+  texinfo  # being kept for the install-info alpm hooks
+
+  # filesystem
+  btrfs-progs
+  cdrtools  # iso
+  compsize
+  device-mapper
+  dosfstools
+  duperemove
+  e2fsprogs
+  exfat-utils
+  fuse-overlayfs  # TODO: evaluate dropping this now that rootless podman can use overlayfs directly, https://bugs.archlinux.org/task/71358
+  fuse2  # also used by flatpak fusermount wrappers # TODO: evaluate dropping this in favor of fusermount symlink
+  fuse3  # also used by flatpak fusermount wrappers
+  fuseiso  # TODO: drop this in favor of flatpak, dead project, fuse3 port is not likely
+  gptfdisk
+  jfsutils
+  mdadm
+  mtd-utils
+  mtools
+  multipath-tools
+  parted
+  squashfs-tools  # TODO: evaluate switching to fuse and moving into a flatpak
+  aur/bindfs  # workaround for missing idmap support with mount --bind
+  aur/btrfs-du
+  aur/ntfsprogs-ntfs3
+  private/libblockdev-minimal  # required by udisks2
+  private/udisks2-minimal
+  private/uosys-mods-fuse-common
+  private/uosys-mods-udisks2
+
+  # logging
+  libmicrohttpd  # systemd's remote journald capabilities
+  logrotate
+  s-nail  # TODO: automated mailing solution for log, drop this if not needed
+
+  # network
+  #bind  # moved into a flatpak
+  avahi
+  ethtool
+  iftop
+  iproute2
+  iptables-nft
+  iputils
+  nftables
+  nss-mdns
+  systemd-resolvconf
+  wireguard-tools
+  wol
+  private/openssh-xdg
+  private/uosys-mods-avahi
+  private/uosys-mods-iproute2
+  private/uosys-mods-iptables-nft
+  private/uosys-mods-openssh
+  private/uosys-mods-wireguard-tools
+
+  # netowrk/filesystem
+  #smbclient  # required by cifs-utils
+  cifs-utils
+  sshfs  # TODO: maybe not needed after openssh update, or move into flatpak
+  private/libwbclient-minimal  # required by cifs-utils
+
+  # network/wireless
+  bluez
+  bluez-libs
+  bluez-utils
+  crda
+  hostapd  # TODO: drop when iwd will gain better ap support (saved profiles, autostart ap mode, bandwidth), maybe can be moved into a container
+  iw
+  iwd
+  wireless_tools
+  private/uosys-mods-bluez
+  private/uosys-mods-hostapd
+  private/uosys-mods-iwd
+
+  # shell
+  bash
+  bash-completion
+  byobu
+  fish
+  less
+  mosh
+  reptyr
+  screen
+  sudo  # TODO: evaluate replacing with kexec wrapper (session cookie handler), and adding a minimal alternative (doas?) for a fallback for when polkit is down
+  tmux
+  which
+  zsh
+  zsh-doc
+  aur/bash-complete-alias
+  aur/console-solarized-git
+  aur/powerline-go
+  private/uosys-mods-bash
+  private/uosys-mods-sudo
+  private/uosys-mods-tmux
+  private/uosys-mods-zsh
+
+  # security
+  #rng-tools  # entropy, supports hw backed entropy generator, /dev/hwrng, TODO: enable this? maybe only needed with arm?
+  ccid
+  cryptsetup  # required by systemd, volume_key
+  encfs  # TODO: switch to gocryptfs or drop when subvol encryption is ready, and use flatpak apps for extra stores
+  fprintd
+  fsverity-utils
+  gcr
+  gnome-keyring
+  gnupg
+  libfido2
+  opensc
+  p11-kit
+  paperkey  # barcode
+  pcsclite
+  pwgen
+  qrencode  # barcode
+  volume_key  # required by libblockdev
+  aur/polkit-duktape
+  aur/spectre-meltdown-checker
+  private/uosys-mods-gnupg
+  private/uosys-mods-krb5
+  private/uosys-mods-libfido2
+  private/uosys-mods-p11-kit
+  private/uosys-mods-pcsclite
+
+  ################################################
+  # systemd
+  ################################################
+
+  # TODO: figure out what to keep
+
+  # admin
+  #cockpit-pcp  # disabled, as pcp senselessly installs (duplicate) configs and exec code in /var, and requires running post-install scripts
+  cockpit  # consider keeping only cockpit-bridge, and put the webservice in a pod
+  cockpit-podman
+  kmon
+  aur/chkservice
+  aur/gettext-hostname  # provides inetutils which is a requirement for cockpit
+  private/uosys-mods-cockpit
+
+  # cpu
+  i7z
+  cpupower  # part of linux-tools pkgbase
+  turbostat
+
+  # fw
+  fwupd
+  private/uosys-mods-fwupd
+
+  # hwinfo
+  dmidecode
+  lshw
+  read-edid
+
+  # interfaces
+  i2c-tools
+  pciutils
+
+  # interfaces/external
+  android-udev
+  bolt
+  usbip
+  usbmuxd
+  usbutils
+  private/uosys-mods-android-udev  # TODO: maybe drop this
+
+  # iomon
+  iotop
+  lsof
+
+  # memory
+  memtester
+  smem
+  aur/vmtouch
+
+  # power
+  power-profiles-daemon
+  powertop
+  upower
+  private/uosys-mods-upower
+
+  # proc
+  procps-ng
+  procs  # ps alternative
+  psmisc
+
+  # procmon
+  htop
+  btop
+
+  # storage
+  hddtemp
+  hdparm
+  private/smartmontools-uosys  # TODO: set up alerts
+  private/uosys-mods-smartmontools
+
+  # stress
+  #s-tui  # switched to flatpak due to the python dependencies
+  stress
+
+  # thermal
+  thermald
+  tmon
+  private/lm_sensors-uosys
+  private/uosys-mods-lm_sensors
+
+  # utils
+  sysstat
+
+  ################################################
+  # imaging
+  ################################################
+
+  # TODO: cups-filter will gain pdf raster output in the next manjor release, maybe should require minimal build without ghostscript support
+  #libcamera  # TODO: waiting for stable release, should be enabled in pipewire
+  bluez-cups
+  colord
+  cups  # TODO: evaluate disabling daemon network access in cups 3.0 and only keep the unix socket
+  ipp-usb  # cups http-ipp over usb
+  poppler  # TODO: remove when cups 3.0 is out and create a flatpak for the utils and a wrappers for file manager pdf preview
+  poppler-data  # TODO: figure out if needed for imaging, cjk characters support in pdf with poppler (used by cups-filters and sane)
+  sane  # TODO: move into containers. pod for daemon, flatpak for clients
+  sane-airscan  ## TODO: remove with sane
+  private/gd-x11free  # sane dependency # TODO: remove with sane
+  private/libheif-minimal  # gd->sane # TODO: remove with sane
+  private/uosys-mods-cups
+
+  ################################################
+  # media
+  ################################################
+
+  alsa-card-profiles
+  alsa-utils
+  jack-example-tools
+  njconnect
+  pipewire
+  pipewire-alsa
+  pipewire-jack
+  pipewire-media-session # TODO: switch to wireplumber
+  pipewire-pulse
+  pipewire-v4l2
+  pipewire-zeroconf
+  playerctl
+  v4l-utils  # required by sane # TODO: move into a flatpak
+  aur/ncpamixer
+  private/libpulse-x11free
+  private/mediainfo-minimal
+  private/uosys-mods-alsa-utils
+  private/uosys-mods-pipewire
+
+  ################################################
+  # graphical envirnoment
+  ################################################
+
+  # backlight
+  # TODO: implement backlight control daemon with ddc support and wire it up in upowerd
+  #light  # TODO: enable if backlight daemon is not ready
+  private/ddcutil-x11free
+  private/uosys-mods-ddcutil
+
+  # common
+  #private/uosys-mods-adwaita-icon-theme  # not needed when libxcursor is installed
+  adwaita-icon-theme
+  dex
+  evtest  #TODO: maybe move into a flatpak, need to be able to handle input group without root
+  fontconfig
+  libnotify  # notify-send util
+  python-i3ipc  # for sway auto dim script
+  xdg-user-dirs
+  xkeyboard-config
+  aur/mimeo  # xdg-open alt
+  private/fcitx5-flatpak-wrappers
+  private/gtk3-nonsensefree  # TODO: waiting on gtk4 portal switch, and then drop
+  private/libcanberra-minimal  # xdg sound theme spec impl, required by gtk3, deperecated, TODO: drop this when moving into gtk4
+  private/uosys-mods-fontconfig
+  private/uosys-mods-gsettings-desktop-schemas  # setting different default fonts
+  private/uosys-mods-mimeo
+  private/uosys-mods-xdg-user-dirs
+  private/uosys-mods-xkeyboard-config
+
+  # drivers
+  # https://wiki.archlinux.org/index.php/Hardware_video_acceleration
+  #aur/intel-hybrid-codec-driver
+  #aur/libva-intel-driver-hybrid  # haswell refresh to skylake vp9 decoding and broadwell to skylake hybrid vp8 encoding
+  intel-media-driver  # intel: hd graphics broadwell (2014) and newer, https://github.com/intel/media-driver/
+  libva-intel-driver  # older intel: gma 4500 (2008) and newer, including hd graphics up to coffee lake, https://01.org/linuxmedia/vaapi
+  libva-mesa-driver  # amd: radeon hd 2000 and newer, nvidia: geforce 8 series and newer up until geforce gtx 750
+  libva-utils
+  libva-vdpau-driver  # vdpau-based backend for va-api
+  libvdpau-va-gl
+  mesa
+  mesa-vdpau  # amd: radeon r300 and newer, nvidia: geforce 8 series and newer up until geforce gtx 750 
+  radeontop
+  vdpauinfo
+  vulkan-intel
+  vulkan-tools
+  private/intel-gpu-tools-x11free
+
+  # flatpak
+  flatpak
+  xdg-desktop-portal
+  xdg-desktop-portal-gtk
+  private/appstream-glib-gtkfree
+  private/evince-previewer-flatpak-wrapper
+  private/uosys-mods-flatpak
+  private/wine-flatpak-wrapper
+
+  # fonts
+  awesome-terminal-fonts  # required by lsd
+  otf-font-awesome
+  powerline-fonts
+  ttf-fira-code
+  ttf-hack
+  ttf-liberation  # TODO: maybe switch to a noto-fonts-vf
+  aur/awesome-terminal-fonts-patched  # needed for oh-my, TODO: maybe can be dropped in favor of the non-patch package
+  aur/noto-fonts-cjk-vf
+  aur/noto-fonts-emoji
+  aur/noto-fonts-vf
+
+  # remote access
+  # TODO: missing spice-vdagent impl for wayland
+  qemu-guest-agent
+  wayvnc
+
+  # wayland only
+  # TODO: wlroots screencasting region selection helper
+  cage
+  foot
+  foot-terminfo
+  fuzzel
+  grim  # screenshot
+  json-c  # yambar-x11free optdepend (sway-xkb module)
+  mako  # TODO: maybe only keep fnott
+  slurp  # screen region selection
+  sway
+  swaybg
+  swayidle
+  swaylock  # TODO: maybe replace with something less buggy
+  wayland-utils
+  wl-clipboard
+  xdg-desktop-portal-wlr
+  aur/caffeinated
+  aur/fnott
+  aur/wev
+  private/uosys-mods-fuzzel
+  private/uosys-mods-sway  # TODO: convert shell scripts to compiled code and drop jq dependency
+  private/yambar-x11free
+
+  # x11 only
+  xorg-xwayland
+
+  ################################################
+  # tools
+  ################################################
+
+  # archive
+  cabextract  # TODO: drop in favour of flatpak
+  cpio
+  libarchive
+  p7zip  # deflating self-extrating *.exe
+  rpmextract  # TODO: drop in favour of flatpak
+  unrar  # TODO: drop in favour of flatpak
+  upx
+
+  # backup & sync
+  borg  # TODO: maybe switch with restic
+  python-llfuse  # borg: mounting backups as a fuse file system
+  rsync
+  private/backup-scripts-git
+
+  # coreutils_alt
+  exa  # ls alternative, TODO: only keep one
+  lsd  # ls alternative, TODO: only keep one
+  aur/rmtrash  # rm alternative
+  aur/stringsext
+
+  # data recovery
+  ddrescue
+
+  # deployment
+  stow
+  private/python-startup  # TODO: replace with something that doesn't break in containers, rename to uosys-mods-python
+
+  # downloader
+  axel
+  wget
+
+  # editors
+  kakoune
+  neovim
+  python-pynvim
+  vi
+  private/uosys-mods-vi
+
+  # filemanager
+  broot
+  gnome-epub-thumbnailer  # ranger: epub image preview # TODO: move into a flatpak, parsers shouldn't run directly in the host environment
+  highlight
+  python-chardet  # ranger: encoding detection problems
+  vifm
+  aur/python-bidi  # ranger: bidi
+  aur/ranger-sixel
+  aur/swayimg  # generic sway image viewer, TODO: maybe drop this
+
+  # files
+  ncdu
+  tree
+
+  # mail
+  exim  # TODO: drop?
+  mutt  # TODO: move into a flatpak
+
+  # network
+  # TODO: figure out what can be used without root access and should be moved into a flatpak
+  net-tools
+  openbsd-netcat
+  socat
+  tcpdump
+  traceroute
+  whois
+
+  # search & indexing
+  fd
+  fzf
+  mlocate
+  ripgrep
+  private/uosys-mods-mlocate
+
+  # shell
+  neofetch
+  parallel  # TODO: maybe switch to rush
+  trash-cli
+  aur/stdoutisatty-git
+
+  ################################################
+  # dev
+  ################################################
+
+  # TODO: use containers for development and packaging, and remove archlinux specific tools
+
+  # dev
+  #yq  # switched to flatpak
+  audit
+  bat  # bash testing
+  colordiff
+  diffutils
+  dos2unix
+  git
+  git-lfs
+  jq  # required by asp, aurutils, mako (optional), yq, uosys-mods-sway
+  patch
+  patchutils
+  perl-authen-sasl  # git-mail
+  perl-mime-tools  # git-mail
+  perl-net-smtp-ssl  # git-mail
+  strace
+  tig  # git tui, TODO: move into flatpak
+  tokei  # loc, TODO: move into flatpak
+  aur/git-extras
+  aur/gitflow-avh
+  aur/gitflow-bashcompletion-avh
+  private/uosys-mods-audit
+
+  # dev/archlinux
+  #aur/pkgbuild-introspection
+  arch-audit  # TODO: implement something that integrates better with the system tree builder
+  asp
+  aurpublish
+  debuginfod
+  devtools-minimal
+  expac
+  pacman-contrib  # TODO: evaluate dropping this
+  aur/aurutils
+  private/arch-install-scripts-fixed  # TODO: maybe drop this completely in favor of a minimal solution that isn't shipped broken
+)

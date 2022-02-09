@@ -1,0 +1,16 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+pkgname=base-os
+pkgver=2022.02.08.1
+pkgrel=1
+pkgdesc=""
+arch=('any')
+license=('GPL')
+url=''
+source=('packages')
+sha256sums=('SKIP')
+
+package() {
+  source packages
+  depends=($(echo ${packages[@]} | sed 's@aur/@@g;s@private/@@g'))
+}
