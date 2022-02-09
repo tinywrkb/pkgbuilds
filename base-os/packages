@@ -283,10 +283,6 @@ packages=(
   ipp-usb  # cups http-ipp over usb
   poppler  # TODO: remove when cups 3.0 is out and create a flatpak for the utils and a wrappers for file manager pdf preview
   poppler-data  # TODO: figure out if needed for imaging, cjk characters support in pdf with poppler (used by cups-filters and sane)
-  sane  # TODO: move into containers. pod for daemon, flatpak for clients
-  sane-airscan  ## TODO: remove with sane
-  private/gd-x11free  # sane dependency # TODO: remove with sane
-  private/libheif-minimal  # gd->sane # TODO: remove with sane
   private/uosys-mods-cups
 
   ################################################

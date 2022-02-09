@@ -1,7 +1,7 @@
 # Maintainer: tinywrkb <tinywrkb@gmail.com>
 
 pkgname=base-os
-pkgver=2022.02.09.2
+pkgver=2022.02.09.3
 pkgrel=1
 pkgdesc=""
 arch=('any')
