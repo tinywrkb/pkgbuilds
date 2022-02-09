@@ -526,11 +526,11 @@ packages=(
 
   # dev/archlinux
   #aur/pkgbuild-introspection
+  #private/devtools-minimal
   arch-audit  # TODO: implement something that integrates better with the system tree builder
   asp
   aurpublish
   debuginfod
-  devtools-minimal
   expac
   pacman-contrib  # TODO: evaluate dropping this
   aur/aurutils
