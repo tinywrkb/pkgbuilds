@@ -2,7 +2,7 @@
 
 _pkgname=sway
 pkgname=uosys-mods-${_pkgname}
-pkgver=2022.02.06.2
+pkgver=2022.02.10.1
 pkgrel=1
 pkgdesc="$_pkgname uosys mods"
 arch=('any')
@@ -16,6 +16,7 @@ source=(conf-{common,shell,systemd}.conf
         conf.d-2{3-containers,4-workspaces,5-modes,6-scratchpads,7-windows}.conf
         conf.d-4{0-keybindings-session,1-keybindings-media,2-keybindings-extra}.conf
         conf.d-6{0-startup-applications,1-startup-services,2-startup-scratchpads}.conf
+        ranger-xdg-open.desktop
         start-sway{,-session}
         user-tmpfiles
         wm{bar{,-status,-toggle-hide},flash,kbd,snap})
@@ -26,6 +27,7 @@ sha256sums=('SKIP' 'SKIP' 'SKIP'
             'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP'
             'SKIP' 'SKIP' 'SKIP'
             'SKIP' 'SKIP' 'SKIP'
+            'SKIP'
             'SKIP' 'SKIP'
             'SKIP'
             'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
@@ -45,4 +47,6 @@ package() {
   for f in start-sway{,-session} wm{bar{,-status,-toggle-hide},flash,kbd,snap}; do
     install -Dm755 $f -t ${pkgdir}/usr/bin/
   done
+
+  install -Dm644 ranger-xdg-open.desktop -t ${pkgdir}/usr/share/applications/
 }
