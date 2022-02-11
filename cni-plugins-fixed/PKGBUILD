@@ -3,6 +3,16 @@
 # Contributor: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
 # Contributor: David Runge <dvzrv@archlinux.org>
 
+# man:containers.conf(5)
+#  cni_plugin_dirs=[]
+#   List of paths to directories where CNI plugin binaries are located.
+#   The default list is:
+#     cni_plugin_dirs = [
+#       ...
+#       "/usr/lib/cni",
+#       ...
+#     ]
+
 pkgname=cni-plugins-fixed
 pkgver=1.0.1
 pkgrel=1
