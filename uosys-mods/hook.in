@@ -8,6 +8,7 @@ Target = avahi
 Target = bash
 Target = bluez
 Target = cni-plugins
+Target = cni-plugins-fixed
 Target = cockpit
 Target = containers-common
 Target = cups

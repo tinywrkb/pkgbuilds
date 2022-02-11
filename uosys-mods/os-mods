@@ -236,7 +236,7 @@ while read -r pkg; do
     pipewire-media-session|pipewire-media-session-git)
       pkg=pipewire
       ;;
-    podman-compose|podman-compose-git|podman-compose-fixed|cni-plugins)
+    podman-compose|podman-compose-git|podman-compose-fixed|cni-plugins|cni-plugins-fixed)
       pkg=podman
       ;;
     smartmontools-uosys)
