@@ -48,12 +48,12 @@ packages=(
   dnsmasq  # required by lxd (opt for lxc), libvirt networking
   lxd
   podman
-  podman-dnsname
   podman-docker
   aur/libcgroup
   private/cni-plugins-fixed
   private/crun-runc-compat  # use crun and conflict with runc
   private/podman-compose-fixed
+  private/podman-dnsname-fixed
   private/podman-tui-fixed
   private/uosys-mods-libcgroup
   private/uosys-mods-lxc
