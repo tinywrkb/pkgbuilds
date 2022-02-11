@@ -1,0 +1,50 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Contributor: Morten Linderud <foxboron@archlinux.org>
+# Contributor: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+# Contributor: David Runge <dvzrv@archlinux.org>
+
+pkgname=cni-plugins-fixed
+pkgver=1.0.1
+pkgrel=1
+pkgdesc='Some standard networking plugins, maintained by the CNI team'
+arch=(x86_64)
+url="https://github.com/containernetworking/plugins"
+license=(APACHE)
+depends=(glibc)
+makedepends=(git go)
+conflicts=(cni-plugins)
+provides=(cni-plugins)
+_commit=189d0c06aa6da0c4f052d3831b091e6ea79e6675  # tags/v1.0.1
+source=("cni-plugins::git+https://github.com/containernetworking/plugins.git#commit=${_commit}"
+        'patch')
+sha256sums=('SKIP' 'SKIP')
+
+pkgver() {
+  cd cni-plugins
+  git describe --tags | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+prepare() {
+  cd cni-plugins
+  git apply ../patch
+}
+
+build() {
+  export GOFLAGS="-buildmode=pie -trimpath -mod=readonly -modcacherw"
+  export CGO_LDFLAGS="${LDFLAGS}"
+  export CGO_CFLAGS="${CFLAGS}"
+  export CGO_CPPFLAGS="${CPPFLAGS}"
+  export CGO_CXXFLAGS="${CXXFLAGS}"
+
+  cd cni-plugins
+  ./build_linux.sh
+}
+
+package() {
+  cd cni-plugins
+
+  install -vDm755 bin/* -t "$pkgdir/usr/lib/cni/"
+  install -vdm755 "${pkgdir}/etc/cni/net.d/"
+  install -vDm644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname/"
+  install -vDm644 plugins/ipam/dhcp/systemd/* -t "$pkgdir/usr/lib/systemd/system/"
+}
