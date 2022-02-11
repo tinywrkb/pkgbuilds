@@ -51,6 +51,7 @@ packages=(
   podman-dnsname
   podman-docker
   aur/libcgroup
+  private/cni-plugins-fixed
   private/crun-runc-compat  # use crun and conflict with runc
   private/podman-compose-fixed
   private/podman-tui-fixed
