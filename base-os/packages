@@ -122,10 +122,8 @@ packages=(
   private/uosys-mods-wireguard-tools
 
   # netowrk/filesystem
-  #smbclient  # required by cifs-utils
-  cifs-utils
   sshfs  # TODO: maybe not needed after openssh update, or move into flatpak
-  private/libwbclient-minimal  # required by cifs-utils
+  private/cifs-utils-sambafree
 
   # network/wireless
   bluez
