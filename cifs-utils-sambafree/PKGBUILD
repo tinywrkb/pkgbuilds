@@ -1,0 +1,58 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Contributor: Tobias Powalowski <tpowa@archlinux.org>
+
+# TODO: link against a static libwbclient
+
+pkgname=cifs-utils-sambafree
+pkgver=6.14
+pkgrel=1
+pkgdesc="CIFS filesystem user-space tools"
+arch=(x86_64)
+url="https://wiki.samba.org/index.php/LinuxCIFS_utils"
+license=('GPL')
+depends=(libcap libwbclient-minimal python talloc)
+makedepends=(python-docutils)
+conlicts=(cifs-utils)
+provides=(cifs-utils)
+source=("https://download.samba.org/pub/linux-cifs/cifs-utils/cifs-utils-$pkgver.tar.bz2")
+
+sha256sums=('6609e8074b5421295ff012a31f02ccd9a058415c619c81362ebb788dbf0756b8')
+
+prepare() {
+  cd cifs-utils-$pkgver
+  # Fix install to honor DESTDIR
+  sed -e 's|cd \$(ROOTSBINDIR)|cd $(DESTDIR)$(ROOTSBINDIR)|g' -i Makefile.am
+}
+
+build() {
+  cd cifs-utils-$pkgver
+
+  local configure_options=(
+    --prefix=/usr
+    --sbindir=/usr/bin
+    # TODO: change back to libcap-ng depend when upstream is fixed, https://bugzilla.redhat.com/show_bug.cgi?id=1911846#c12
+    --with-libcap=yes
+    # systemd support is broken in mount.cifs, https://bugs.archlinux.org/task/30958
+    --disable-systemd 
+  )
+
+  autoreconf -fiv
+  ./configure "${configure_options[@]}"
+  make
+}
+
+package() {
+  cd cifs-utils-$pkgver
+
+  make DESTDIR="$pkgdir" ROOTSBINDIR=/usr/bin install
+  install -Dm644 -t "$pkgdir"/etc/request-key.d \
+    contrib/request-key.d/cifs.{idmap,spnego}.conf
+
+  # set mount.cifs uid, to enable none root mounting form fstab
+  chmod +s "$pkgdir"/usr/bin/mount.cifs
+
+  # fix idmap-plugin #42052
+  install -dm755 "$pkgdir"/etc/cifs-utils
+  ln -s /usr/lib/cifs-utils/idmapwb.so \
+    "${pkgdir}"/etc/cifs-utils/idmap-plugin
+}
