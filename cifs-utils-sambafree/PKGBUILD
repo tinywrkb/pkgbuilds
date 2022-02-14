@@ -33,7 +33,7 @@ build() {
     # TODO: change back to libcap-ng depend when upstream is fixed, https://bugzilla.redhat.com/show_bug.cgi?id=1911846#c12
     --with-libcap=yes
     # systemd support is broken in mount.cifs, https://bugs.archlinux.org/task/30958
-    --disable-systemd 
+    --disable-systemd
   )
 
   autoreconf -fiv
