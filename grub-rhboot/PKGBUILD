@@ -69,35 +69,38 @@ build() {
     ./bootstrap --no-git --gnulib-srcdir=../rhboot-gnulib
   )
 
-  local common_configure_options=(
-    FREETYPE="pkg-config freetype2"
-    BUILD_FREETYPE="pkg-config freetype2"
-    --enable-mm-debug
-    --enable-nls
-    --enable-device-mapper
-    --enable-cache-stats
-    --enable-grub-mkfont
-    --enable-grub-mount
-    --prefix="/usr"
-    --bindir="/usr/bin"
-    --sbindir="/usr/bin"
-    --mandir="/usr/share/man"
-    --infodir="/usr/share/info"
-    --datarootdir="/usr/share"
-    --sysconfdir="/etc"
-    --program-prefix=""
-    --with-bootdir="/boot"
-    --with-grubdir="grub"
-    --disable-silent-rules
-    --disable-werror
-  )
-
   echo "Unset all compiler FLAGS..."
   unset CFLAGS
   unset CPPFLAGS
   unset CXXFLAGS
   unset LDFLAGS
   unset MAKEFLAGS
+
+  # TODO: find the cause and drop this
+  export HOST_CPPFLAGS=-I/usr/include
+
+  local common_configure_options=(
+    FREETYPE="pkg-config freetype2"
+    BUILD_FREETYPE="pkg-config freetype2"
+    --bindir=/usr/bin
+    --datarootdir=/usr/share
+    --infodir=/usr/share/info
+    --mandir=/usr/share/man
+    --prefix=/usr
+    --sbindir=/usr/bin
+    --sysconfdir=/etc
+    --enable-mm-debug
+    --enable-nls
+    --enable-device-mapper
+    --enable-cache-stats
+    --enable-grub-mkfont
+    --enable-grub-mount
+    --program-prefix=""
+    --with-bootdir=/boot
+    --with-grubdir=grub
+    --disable-silent-rules
+    --disable-werror
+  )
 
   (
     echo "Build grub bios stuff..."
