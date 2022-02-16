@@ -161,7 +161,7 @@ packages=(
   private/uosys-mods-zsh
 
   # security
-  #rng-tools  # entropy, supports hw backed entropy generator, /dev/hwrng, TODO: enable this? maybe only needed with arm?
+  #rng-tools  # entropy, supports hw backed entropy generator, /dev/hwrng
   ccid
   cryptsetup  # required by systemd, volume_key
   encfs  # TODO: switch to gocryptfs or drop when subvol encryption is ready, and use flatpak apps for extra stores
@@ -276,12 +276,12 @@ packages=(
 
   # TODO: cups-filter will gain pdf raster output in the next manjor release, maybe should require minimal build without ghostscript support
   #libcamera  # TODO: waiting for stable release, should be enabled in pipewire
+  #poppler
+  #poppler-data  # TODO: figure out if needed for imaging, cjk characters support in pdf with poppler (used by cups-filters)
   bluez-cups
   colord
   cups  # TODO: evaluate disabling daemon network access in cups 3.0 and only keep the unix socket
   ipp-usb  # cups http-ipp over usb
-  poppler  # TODO: remove when cups 3.0 is out and create a flatpak for the utils and a wrappers for file manager pdf preview
-  poppler-data  # TODO: figure out if needed for imaging, cjk characters support in pdf with poppler (used by cups-filters and sane)
   private/uosys-mods-cups
 
   ################################################
@@ -370,7 +370,7 @@ packages=(
   powerline-fonts
   ttf-fira-code
   ttf-hack
-  ttf-liberation  # TODO: maybe switch to a noto-fonts-vf
+  ttf-liberation  # TODO: maybe switch to noto-fonts-vf, changes are needed in uosys-mods-gsettings-desktop-schemas
   aur/awesome-terminal-fonts-patched  # needed for oh-my, TODO: maybe can be dropped in favor of the non-patch package
   aur/noto-fonts-cjk-vf
   aur/noto-fonts-emoji
@@ -459,7 +459,6 @@ packages=(
   vifm
   aur/python-bidi  # ranger: bidi
   aur/ranger-sixel
-  aur/swayimg  # generic sway image viewer, TODO: maybe drop this
 
   # files
   ncdu
