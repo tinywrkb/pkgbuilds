@@ -5,6 +5,7 @@
 *-x86_64-package.log.[0-9]*
 *.asc
 *.deb
+*.gz
 *.log
 *.pkg.tar.zst
 *.sig
