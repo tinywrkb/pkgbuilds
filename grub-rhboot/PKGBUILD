@@ -4,7 +4,13 @@
 # Contributor: Tobias Powalowski <tpowa@archlinux.org>
 # Contributor: Keshav Amburay <(the ddoott ridikulus ddoott rat) (aatt) (gemmaeiil) (ddoott) (ccoomm)>
 
-# WARNING: no arch linux detection script fixed are supplied with this package
+# WARNING: this package does not support arch linux installation detection in the grub.cfg generation scripts
+
+# TODO: add fedora branch to pkgver
+#         - <grub_stable_ver>.<fedora_branch>.r<revision_count>.g<sha>
+#           e.g. 2.06.f36.r202.g8c68222cb
+#         - <date>.<grub_stable_ver>.<fedora_branch>.r<revision_count>.g<sha>
+#           e.g. 20220216.2.06.f36.r202.g8c68222cb
 
 pkgname=grub-rhboot
 pkgdesc="GNU GRand Unified Bootloader (2)"
@@ -15,6 +21,7 @@ url="https://github.com/rhboot/grub2"
 arch=(x86_64)
 license=(GPL3)
 options=('!makeflags')
+# TODO: try moving gettext to makedepends
 depends=(device-mapper gettext)
 makedepends=(autogen freetype2 fuse2 git help2man python rsync texinfo ttf-dejavu)
 conflicts=(grub)
@@ -32,16 +39,21 @@ optdepends=('dosfstools: For grub-mkrescue FAT FS and EFI support'
 #_stablever=2.06
 # https://src.fedoraproject.org/rpms/grub2/tree/f36
 _commit=8c68222cbb8e7527c447bd6908578b72b7302f80  # branch/fedora36
+# must use gnulib fork as patches were removed from grub fork
+#  https://github.com/rhboot/grub2/commit/f0f389027945c783c053f2f1e33d4354a92cf1e0
 _gnulib_commit=6db02d3d2febe5e6e855d94722bb24f097c80a6f  # branch/fixes
+#_gnulib_commit=d271f868a8df9bbec29049d01e056481b7a1a263  # grub 2.06 stable
 # in f36 unifont is http://unifoundry.com/pub/unifont/unifont-13.0.06/font-builds/unifont-13.0.06.pcf.gz
 _unifont_ver=14.0.01
 source=("rhboot-grub::git+https://github.com/rhboot/grub2.git#commit=${_commit}"
         "rhboot-gnulib::git+https://github.com/rhboot/gnulib.git#commit=${_gnulib_commit}"
-        "https://ftp.gnu.org/gnu/unifont/unifont-${_unifont_ver}/unifont-${_unifont_ver}.bdf.gz")
+        "https://ftp.gnu.org/gnu/unifont/unifont-${_unifont_ver}/unifont-${_unifont_ver}.bdf.gz"
+        gnulib-locale-{configure.ac,Makefile.am})
 
 sha256sums=('SKIP'
             'SKIP'
-            '391d194f6307fcd0915daafd360509a734e26f3e4013e63d47deb2530d59e66e')
+            '391d194f6307fcd0915daafd360509a734e26f3e4013e63d47deb2530d59e66e'
+            'SKIP' 'SKIP')
 
 pkgver() {
   cd rhboot-grub
@@ -49,26 +61,28 @@ pkgver() {
 }
 
 prepare() {
-  cd rhboot-grub
+  (
+    cd rhboot-grub
 
-  echo "Fix DejaVuSans.ttf location so that grub-mkfont can create *.pf2 files for starfield theme..."
-  sed 's|/usr/share/fonts/dejavu|/usr/share/fonts/dejavu /usr/share/fonts/TTF|g' -i "configure.ac"
+    echo "Fix DejaVuSans.ttf location so that grub-mkfont can create *.pf2 files for starfield theme..."
+    sed 's|/usr/share/fonts/dejavu|/usr/share/fonts/dejavu /usr/share/fonts/TTF|g' -i "configure.ac"
 
-  echo "Avoid problem with unifont during compile of grub..."
-  # http://savannah.gnu.org/bugs/?40330 and https://bugs.archlinux.org/task/37847
-  gzip -cd ../unifont-${_unifont_ver}.bdf.gz > unifont.bdf
+    echo "Avoid problem with unifont during compile of grub..."
+    # http://savannah.gnu.org/bugs/?40330 and https://bugs.archlinux.org/task/37847
+    gzip -cd ../unifont-${_unifont_ver}.bdf.gz > unifont.bdf
 
-  echo "Make translations reproducible..."
-  sed -i '1i /^PO-Revision-Date:/ d' po/*.sed
+    echo "Make translations reproducible..."
+    sed -i '1i /^PO-Revision-Date:/ d' po/*.sed
+  )
+
+  (
+    cd rhboot-gnulib
+    # Remove redhat's spec files from CFLAGS
+    sed -i 's@-specs=[^ ]* @ @g' gnulib-tool
+  )
 }
 
 build() {
-  (
-    echo "Run bootstrap..."
-    cd rhboot-grub
-    ./bootstrap --no-git --gnulib-srcdir=../rhboot-gnulib
-  )
-
   echo "Unset all compiler FLAGS..."
   unset CFLAGS
   unset CPPFLAGS
@@ -76,31 +90,53 @@ build() {
   unset LDFLAGS
   unset MAKEFLAGS
 
-  # TODO: find the cause and drop this
-  export HOST_CPPFLAGS=-I/usr/include
+  (
+    echo "Run bootstrap..."
+    cd rhboot-grub
+
+    GNULIB_REVISION=$_gnulib_commit ./bootstrap --no-git --gnulib-srcdir="${srcdir}"/rhboot-gnulib
+  )
 
   local common_configure_options=(
     FREETYPE="pkg-config freetype2"
     BUILD_FREETYPE="pkg-config freetype2"
+    --prefix=/usr
     --bindir=/usr/bin
     --datarootdir=/usr/share
     --infodir=/usr/share/info
+    --libexecdir=/usr/lib
     --mandir=/usr/share/man
-    --prefix=/usr
     --sbindir=/usr/bin
     --sysconfdir=/etc
-    --enable-mm-debug
-    --enable-nls
-    --enable-device-mapper
     --enable-cache-stats
+    --enable-device-mapper
     --enable-grub-mkfont
     --enable-grub-mount
+    --enable-mm-debug
+    --enable-nls
     --program-prefix=""
     --with-bootdir=/boot
     --with-grubdir=grub
     --disable-silent-rules
     --disable-werror
+    # https://github.com/rhboot/grub2/commit/81e155df39c9fbc97803cf9032f4138f5d9a0310
+    --disable-rpm-sort
+    # https://github.com/rhboot/grub2/commit/31cb958236ffacb250c14ac05d267bdd72ff55ca
+    --with-utils=host
   )
+
+  # TODO: drop this workaround
+# (
+#   mkdir -p gnulib-modules
+#   cd gnulib-modules
+#   ln -s ../gnulib-locale-configure.ac configure.ac
+#   ln -s ../gnulib-locale-Makefile.am Makefile.am
+#   ln -s ../rhboot-gnulib/gnulib-tool gnulib-tool
+#   ./gnulib-tool --import locale
+#   autoreconf -fiv
+#   make
+#   sed '/#include_next/d' lib/locale.h > ../rhboot-grub/grub-core/lib/gnulib/locale.h
+# )
 
   (
     echo "Build grub bios stuff..."
@@ -175,4 +211,6 @@ package() {
   rm -f "${pkgdir}"/usr/lib/grub/*/*.module || true
   rm -f "${pkgdir}"/usr/lib/grub/*/*.image || true
   rm -f "${pkgdir}"/usr/lib/grub/*/{kernel.exec,gdb_grub,gmodule.pl} || true
+
+  rm -rf "${pkgdir}"/usr/share/info
 }
