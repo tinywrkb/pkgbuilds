@@ -3,12 +3,12 @@
 
 pkgname=polkit-duktape
 pkgver=0.120.r3.ga2bf5c9
-pkgrel=1
+pkgrel=2
 pkgdesc="polkit with duktape as the javascript engine"
 arch=(x86_64)
 license=(LGPL)
 url="https://www.freedesktop.org/wiki/Software/polkit/"
-depends=(glib2 pam expat systemd 'duktape>=2.6.0-2')
+depends=(glib2 pam expat systemd 'duktape>=2.7.0-1')
 makedepends=(meson gtk-doc gobject-introspection git)
 checkdepends=(python-dbusmock)
 conflicts=(polkit)
