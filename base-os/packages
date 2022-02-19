@@ -330,7 +330,6 @@ packages=(
   aur/mimeo  # xdg-open alt
   private/fcitx5-flatpak-wrappers
   private/gtk3-nonsensefree  # TODO: waiting on gtk4 portal switch, and then drop
-  private/libcanberra-minimal  # xdg sound theme spec impl, required by gtk3, deperecated, TODO: drop this when moving into gtk4
   private/uosys-mods-fontconfig
   private/uosys-mods-gsettings-desktop-schemas  # setting different default fonts
   private/uosys-mods-mimeo
