@@ -102,6 +102,7 @@ packages=(
   s-nail  # TODO: automated mailing solution for log, drop this if not needed
 
   # network
+  # modemmanager  # enable this after systemd gains support for mm, https://github.com/systemd/systemd/pull/22315
   #bind  # moved into a flatpak
   avahi
   ethtool
