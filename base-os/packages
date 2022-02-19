@@ -349,9 +349,11 @@ packages=(
   libvdpau-va-gl
   mesa
   mesa-vdpau  # amd: radeon r300 and newer, nvidia: geforce 8 series and newer up until geforce gtx 750 
+  radeontool
   radeontop
   vdpauinfo
   vulkan-intel
+  vulkan-radeon
   vulkan-tools
   private/intel-gpu-tools-x11free
 
