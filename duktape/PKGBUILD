@@ -2,23 +2,19 @@
 # Contributor tinywrkb <tinywrkb@gmail.com>
 
 pkgname=duktape
-pkgver=2.6.0
-pkgrel=2
+pkgver=2.7.0
+pkgrel=1
 pkgdesc='Embeddable Javascript engine'
 arch=(x86_64)
 url='https://duktape.org/'
 license=(MIT)
 depends=(glibc)
-source=("https://duktape.org/duktape-$pkgver.tar.xz"
-        '0001-dist-backport-makefile-and-pkg-config-changes-to-v2-maintenance.patch')
-sha256sums=('96f4a05a6c84590e53b18c59bb776aaba80a205afbbd92b82be609ba7fe75fa7'
-            'af8665e119f6f5a4b507b685bbfec31c71ffe54e33a3459df0a07f4ceedfa672')
+source=("https://duktape.org/duktape-$pkgver.tar.xz")
+sha256sums=('90f8d2fa8b5567c6899830ddef2c03f3c27960b11aca222fa17aa7ac613c2890')
 
 prepare() {
   cd $pkgname-$pkgver
 
-  # https://github.com/svaarala/duktape/pull/2457
-  patch -Np1 -i ../0001-dist-backport-makefile-and-pkg-config-changes-to-v2-maintenance.patch
   mv Makefile.sharedlibrary Makefile
 
   # use our default optimization flag
