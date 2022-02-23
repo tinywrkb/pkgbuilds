@@ -47,13 +47,11 @@ _gnulib_commit=6db02d3d2febe5e6e855d94722bb24f097c80a6f  # branch/fixes
 _unifont_ver=14.0.01
 source=("rhboot-grub::git+https://github.com/rhboot/grub2.git#commit=${_commit}"
         "rhboot-gnulib::git+https://github.com/rhboot/gnulib.git#commit=${_gnulib_commit}"
-        "https://ftp.gnu.org/gnu/unifont/unifont-${_unifont_ver}/unifont-${_unifont_ver}.bdf.gz"
-        gnulib-locale-{configure.ac,Makefile.am})
+        "https://ftp.gnu.org/gnu/unifont/unifont-${_unifont_ver}/unifont-${_unifont_ver}.bdf.gz")
 
 sha256sums=('SKIP'
             'SKIP'
-            '391d194f6307fcd0915daafd360509a734e26f3e4013e63d47deb2530d59e66e'
-            'SKIP' 'SKIP')
+            '391d194f6307fcd0915daafd360509a734e26f3e4013e63d47deb2530d59e66e')
 
 pkgver() {
   cd rhboot-grub
@@ -94,6 +92,7 @@ build() {
     echo "Run bootstrap..."
     cd rhboot-grub
 
+    # set GNULIB_REVISION as --no-git option is not respected
     GNULIB_REVISION=$_gnulib_commit ./bootstrap --no-git --gnulib-srcdir="${srcdir}"/rhboot-gnulib
   )
 
@@ -124,19 +123,6 @@ build() {
     # https://github.com/rhboot/grub2/commit/31cb958236ffacb250c14ac05d267bdd72ff55ca
     --with-utils=host
   )
-
-  # TODO: drop this workaround
-# (
-#   mkdir -p gnulib-modules
-#   cd gnulib-modules
-#   ln -s ../gnulib-locale-configure.ac configure.ac
-#   ln -s ../gnulib-locale-Makefile.am Makefile.am
-#   ln -s ../rhboot-gnulib/gnulib-tool gnulib-tool
-#   ./gnulib-tool --import locale
-#   autoreconf -fiv
-#   make
-#   sed '/#include_next/d' lib/locale.h > ../rhboot-grub/grub-core/lib/gnulib/locale.h
-# )
 
   (
     echo "Build grub bios stuff..."
