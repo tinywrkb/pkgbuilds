@@ -1,0 +1,47 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+_pkgname=networkmanager
+pkgname=uosys-mods-${_pkgname}
+pkgver=2022.02.25.1
+pkgrel=1
+pkgdesc="$_pkgname uosys mods"
+arch=('any')
+license=('GPL')
+url=''
+depends=('uosys-mods')
+source=({networkmanager,systemd}.override)
+sha256sums=('SKIP' 'SKIP')
+
+build() {
+  cat << EOF > mods
+#target_list=()
+
+mv_list=(NetworkManager)
+
+#rmdir_list=()
+
+link_list=(NetworkManager)
+EOF
+
+  cat << EOF > tmpfiles.d.conf
+# $_pkgname
+d /var/lib/NetworkManager 0700 - - - -
+
+d /var/etc/NetworkManager 0755 - - - -
+d /var/etc/NetworkManager/conf.d 0755 - - - -
+d /var/etc/NetworkManager/dispatcher.d 0755 - - - -
+d /var/etc/NetworkManager/dnsmasq-shared.d 0755 - - - -
+d /var/etc/NetworkManager/dnsmasq.d 0755 - - - -
+d /var/etc/NetworkManager/system-connections 0700 - - - -
+C /var/etc/NetworkManager/NetworkManager.conf - - - - /usr/share/etc/NetworkManager/NetworkManager.conf
+EOF
+}
+
+package() {
+  depends+=($_pkgname)
+  provides+=(wpa_supplicant)
+  source /usr/lib/os/os-mods-install
+
+  install -Dm644 networkmanager.override ${pkgdir}/usr/lib/NetworkManager/conf.d/10-os.conf
+  install -Dm644 systemd.override ${pkgdir}/usr/lib/systemd/system/NetworkManager.service.d/10-os.conf
+}
