@@ -1,7 +1,7 @@
-# Maintainer: Alexander F. Rødseth <xyproto@archlinux.org>
-# Contributor tinywrkb <tinywrkb@gmail.com>
+# Maintainer tinywrkb <tinywrkb@gmail.com>
+# Contributor: Alexander F. Rødseth <xyproto@archlinux.org>
 
-pkgname=duktape
+pkgname=duktape-fixed
 pkgver=2.7.0
 pkgrel=1
 pkgdesc='Embeddable Javascript engine'
@@ -9,11 +9,13 @@ arch=(x86_64)
 url='https://duktape.org/'
 license=(MIT)
 depends=(glibc)
+conflicts=(duktape)
+provides=(duktape)
 source=("https://duktape.org/duktape-$pkgver.tar.xz")
 sha256sums=('90f8d2fa8b5567c6899830ddef2c03f3c27960b11aca222fa17aa7ac613c2890')
 
 prepare() {
-  cd $pkgname-$pkgver
+  cd duktape-$pkgver
 
   mv Makefile.sharedlibrary Makefile
 
@@ -25,12 +27,12 @@ prepare() {
 }
 
 build() {
-  cd $pkgname-$pkgver
+  cd duktape-$pkgver
   CFLAGS+=" -DDUK_USE_FASTINT" make INSTALL_PREFIX=/usr
 }
 
 package() {
-  cd $pkgname-$pkgver
+  cd duktape-$pkgver
   make DESTDIR="$pkgdir" INSTALL_PREFIX=/usr install
   install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
