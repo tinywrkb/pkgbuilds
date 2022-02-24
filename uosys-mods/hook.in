@@ -24,6 +24,7 @@ Target = linux-firmware
 Target = lm_sensors
 Target = lm_sensors-uosys
 Target = lxc
+Target = networkmanager
 Target = openssh
 Target = openssh-xdg
 Target = pacman
