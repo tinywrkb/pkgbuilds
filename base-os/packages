@@ -328,6 +328,7 @@ packages=(
   python-i3ipc  # for sway auto dim script
   xdg-user-dirs
   xkeyboard-config
+  aur/darkman
   aur/mimeo  # xdg-open alt
   private/fcitx5-flatpak-wrappers
   private/gtk3-nonsensefree  # TODO: waiting on gtk4 portal switch, and then drop
