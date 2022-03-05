@@ -362,7 +362,6 @@ packages=(
   flatpak
   xdg-desktop-portal
   xdg-desktop-portal-gtk
-  private/appstream-glib-gtkfree
   private/evince-previewer-flatpak-wrapper
   private/uosys-mods-flatpak
   private/wine-flatpak-wrapper
