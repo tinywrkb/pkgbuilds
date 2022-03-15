@@ -5,7 +5,7 @@
 # Contributor: Ralf Barth <archlinux.org@haggy.org>
 
 pkgname=smartmontools-fixed
-pkgver=7.2
+pkgver=7.3
 pkgrel=1
 pkgdesc="Control and monitor S.M.A.R.T. enabled ATA and SCSI Hard Drives"
 url="http://smartmontools.sourceforge.net"
@@ -17,11 +17,9 @@ optdepends=('s-nail: to get mail alerts to work')
 conflicts=(smartmontools smartmontools-uosys)
 provides=(smartmontools)
 replaces=(smartmontools-uosys)
-validpgpkeys=('847AF8F72DF4C7B492382C94BF0B339C64BCAA8B') # Smartmontools Signing Key (through 2020) <smartmontools-support@listi.jpberlin.de>
-source=("https://downloads.sourceforge.net/sourceforge/smartmontools/smartmontools-${pkgver}.tar.gz"{,.asc}
+source=("https://downloads.sourceforge.net/sourceforge/smartmontools/smartmontools-${pkgver}.tar.gz"
         'smartd.conf')
-sha256sums=('5cd98a27e6393168bc6aaea070d9e1cd551b0f898c52f66b2ff2e5d274118cd6'
-            'SKIP'
+sha256sums=('a544f8808d0c58cfb0e7424ca1841cb858a974922b035d505d4e4c248be3a22b'
             'c2c0f2f6b4a3f3d76da1c7706139297aef6e3f2a705eb7fdd800544812427c74')
 
 prepare() {
