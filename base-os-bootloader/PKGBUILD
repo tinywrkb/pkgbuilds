@@ -1,14 +1,16 @@
 # Maintainer: tinywrkb <tinywrkb@gmail.com>
 
-pkgname=uosys-bootloader
-pkgver=2021.06.14.1
+pkgname=base-os-bootloader
+pkgver=2022.03.13.1
 pkgrel=1
-pkgdesc='uosys bootloader'
-arch=('x86_64')
-license=('GPL')
+pkgdesc=""
+arch=(x86_64)
+license=(GPL)
 url=''
-makedepends=('grub')
-source=('grub.cfg')
+makedepends=(grub)
+conflicts=(uosys-bootloader)
+replaces=(uosys-bootloader)
+source=(grub.cfg)
 sha256sums=('SKIP')
 
 prepare() {
