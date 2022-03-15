@@ -1,0 +1,20 @@
+# uosys-mods.conf
+
+# base: filesystem
+# used by some daemons for chroot jail, e.g. sshd
+d /var/empty - - - - -
+d /var/lib/misc - - - - -
+d /var/local - - - - -
+L /var/lock - - - - ../run/lock
+d /var/log/old - - - - -
+L /var/mail - - - - spool/mail
+d /var/spool/mail - - - - -
+
+# file serving
+d /var/srv 755 - - - -
+d /var/srv/ftp 555 - - - -
+d /var/srv/git 755 - - - -
+d /var/srv/http 755 - - - -
+d /var/srv/nfs 755 - - - -
+d /var/srv/smb 755 - - - -
+d /var/srv/tftp 755 - - - -

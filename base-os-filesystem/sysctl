@@ -1,0 +1,7 @@
+# Raise inotify resource limits
+fs.inotify.max_user_instances = 1024
+fs.inotify.max_user_watches = 524288
+#
+# Allow unprivileged users create IPPROTO_ICMP sockets
+# https://wiki.archlinux.org/index.php/Sysctl#Allow_unprivileged_users_to_create_IPPROTO_ICMP_sockets
+net.ipv4.ping_group_range = 0 65535
