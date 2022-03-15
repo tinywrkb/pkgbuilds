@@ -15,6 +15,7 @@ mods=(
   fontconfig
   fuse-common
   fwupd
+  gcr
   glibc
   gnupg
   gsettings-desktop-schemas

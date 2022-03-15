@@ -45,9 +45,9 @@ cleanup_service() {
 
   local pkg=$1
 
-  if [ -f "/usr/lib/os/services_cleanup/${pkg}" ]; then
+  if [ ! -f "/usr/lib/os/services_cleanup/${pkg}" ]; then
    echo "Missing services_cleanup/${pkg} skipping service-cleanup"
-   continue
+   return 1
   fi
 
   source "/usr/lib/os/services_cleanup/${pkg}"
@@ -56,29 +56,26 @@ cleanup_service() {
   if [ ${#service_list[@]} -ne 0 ]; then
     echo "service-cleanup: Removing ${pkg} enabled services..."
     for f in "${service_list[@]}"; do
-      /bin/rm -fv "/etc/systemd/${f}"
+      /bin/rm -fv "/usr/share/etc/systemd/${f}"
     done
   fi
 
   if [ ${#rmdir_list[@]} -ne 0 ]; then
     echo "Removing empty systemd folders..."
     for d in "${rmdir_list[@]}"; do
-      /bin/rmdir -v --ignore-fail-on-non-empty "/etc/systemd/${d}"
+      /bin/rmdir -v --ignore-fail-on-non-empty "/usr/share/etc/systemd/${d}"
     done
   fi
 }
 
 if [ "${cleanup_all}" = "yes" ]; then
-  # TODO: only triggered mod list
-  source /usr/lib/os/cleanup_list
   (
-    shopt -o nullglob
+    shopt -s nullglob
     for f in $(find /usr/lib/os/services_cleanup/ -type f | sort ); do
       pkg=$(basename "${f}");
       echo "services-cleanup: Processing ${pkg}..."
       cleanup_service ${pkg}
     done
-    return 0
   )
 else
   for pkg in ${!pkgs[@]}; do

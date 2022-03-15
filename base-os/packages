@@ -18,6 +18,7 @@ packages=(
   private/base-os-create-user
   private/base-os-dracut-hooks
   private/base-os-dracut-module
+  private/base-os-filesystem
   private/base-os-live
   private/base-os-rootfs-images
 
@@ -92,6 +93,7 @@ packages=(
   iproute2
   iptables-nft
   iputils
+  networkmanager
   nftables
   nss-mdns
   systemd-resolvconf
