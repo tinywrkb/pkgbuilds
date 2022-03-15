@@ -2,14 +2,16 @@
 
 # TODO: maybe add dracut module for early deployment before switch_root and journald restart
 
-pkgname=uosys-live-media
-pkgver=2021.02.22.1
+pkgname=base-os-live
+pkgver=2022.03.13.1
 pkgrel=1
-pkgdesc='uosys-live-media'
-arch=('x86_64')
-license=('GPL')
+pkgdesc=''
+arch=(any)
+license=(GPL)
 url=''
 makedepends=(git)
+conflicts=(uosys-live-media)
+provides=(uosys-live-media)
 _homedir_commit=74dc2af7f88540d53fb269ecdd9b4ea6bd429278
 source=(archie.homedir::git+https://github.com/tinywrkb/uosys-live-media-homedir.git#commit=${_homedir_commit}
        getty issue journald
