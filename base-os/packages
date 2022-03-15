@@ -254,12 +254,12 @@ packages=(
   pipewire
   pipewire-alsa
   pipewire-jack
-  pipewire-media-session # TODO: switch to wireplumber
   pipewire-pulse
   pipewire-v4l2
   pipewire-zeroconf
   playerctl
   v4l-utils  # required by sane # TODO: move into a flatpak
+  wireplumber
   aur/ncpamixer
   private/libpulse-x11free
   private/mediainfo-minimal
