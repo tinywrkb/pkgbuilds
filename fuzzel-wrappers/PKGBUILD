@@ -1,0 +1,20 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+pkgname=fuzzel-wrappers
+pkgver=2022.03.13.1
+pkgrel=1
+pkgdesc='Systemd service to create user on a clean system during boot'
+arch=('any')
+license=('GPL')
+url=''
+conflicts=(dmenu rofi uosys-create-user)
+provides=(dmenu rofi)
+replaces=(uosys-create-user)
+sources=(dmenu fuzzel-launch{,-bin} rofi)
+sha256sums=(SKIP SKIP SKIP SKIP)
+
+package() {
+  depends=(fuzzel)
+  install -Dm755 -t ${pkgdir}/usr/bin/ \
+    dmenu fuzzel-launch{,-bin} rofi
+}
