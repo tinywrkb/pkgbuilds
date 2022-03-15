@@ -1,0 +1,1 @@
+install_list=(python.startup:usr/lib/python-startup/python.startup:0755)

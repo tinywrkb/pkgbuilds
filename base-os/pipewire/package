@@ -1,0 +1,3 @@
+service_list=(user/pipewire.service.wants/wireplumber.service
+              user/sockets.target.wants/{pipewire,pipewire-pulse}.socket)
+service_alias_list=(user/pipewire-session-manager.service:wireplumber.service)

@@ -1,0 +1,2 @@
+# libcgroup
+service_list=(system/sysinit.target.wants/cgconfig.service)

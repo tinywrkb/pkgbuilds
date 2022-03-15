@@ -1,0 +1,34 @@
+--- a/usr/lib/tmpfiles.d/home.conf
++++ b/usr/lib/tmpfiles.d/home.conf
+@@ -7,5 +7,5 @@
+ 
+ # See tmpfiles.d(5) for details
+ 
+-Q /home 0755 - - -
+-q /srv 0755 - - -
++#Q /home 0755 - - -
++#q /srv 0755 - - -
+--- a/usr/lib/tmpfiles.d/etc.conf
++++ b/usr/lib/tmpfiles.d/etc.conf
+@@ -7,8 +7,8 @@
+ 
+ # See tmpfiles.d(5) for details
+ 
+-L /etc/os-release - - - - ../usr/lib/os-release
+-L+ /etc/mtab - - - - ../proc/self/mounts
+-C! /etc/nsswitch.conf - - - -
+-C! /etc/pam.d - - - -
+-C! /etc/issue - - - -
++#L /etc/os-release - - - - ../usr/lib/os-release
++#L+ /etc/mtab - - - - ../proc/self/mounts
++#C! /etc/nsswitch.conf - - - -
++#C! /etc/pam.d - - - -
++#C! /etc/issue - - - -
+--- a/usr/lib/tmpfiles.d/systemd-resolve.conf
++++ b/usr/lib/tmpfiles.d/systemd-resolve.conf
+@@ -7,4 +7,4 @@
+ 
+ # See tmpfiles.d(5) for details
+ 
+-L! /etc/resolv.conf - - - - ../run/systemd/resolve/stub-resolv.conf
++#L! /etc/resolv.conf - - - - ../run/systemd/resolve/stub-resolv.conf

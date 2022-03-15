@@ -1,0 +1,9 @@
+# iptables-nft
+
+#target_list=()
+
+mv_list=(iptables)
+
+#rmdir_list=()
+
+link_list=(iptables)

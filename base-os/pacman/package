@@ -1,0 +1,17 @@
+# TODO: convert the install script now that the mods package was dropped
+link_list=(
+  etc/pacman.d/conf:/var/etc/pacman.d/conf
+  etc/pacman.d/gnupg:/var/etc/pacman.d/gnupg
+  etc/pacman.d/hooks:/var/etc/pacman.d/hooks
+)
+install_list=(
+  excluded.conf:etc/pacman.d/excluded.conf:0644
+  gpg.conf:etc/pacman.d/gpg.conf:0644
+  # install public keys
+  miffe.gpg:usr/share/pacman/keyrings/miffe.gpg:0644
+  # install pacman os db sync hook
+  sync-pacman-os-db.hook:usr/share/libalpm/hooks/zz-sync-pacman-os-db.hook:0644
+  # pacman var db sync service
+  sync-pacman-var-db.service:usr/lib/systemd/system/sync-pacman-var-db.service:0644
+)
+service_list=(system/multi-user.target.wants/sync-pacman-var-db.service)

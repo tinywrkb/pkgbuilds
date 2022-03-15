@@ -1,0 +1,3 @@
+install_list=(ssh-agent.service:/usr/lib/systemd/user/ssh-agent.service:0644)
+service_list=(system/multi-user.target.wants/sshd.service
+              user/default.target.wants/ssh-agent.service)

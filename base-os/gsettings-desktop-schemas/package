@@ -1,0 +1,7 @@
+# references
+# - https://developer.gnome.org/gio/stable/glib-compile-schemas.html
+# - https://gitlab.gnome.org/GNOME/gsettings-desktop-schemas/-/blob/master/schemas/org.gnome.desktop.interface.gschema.xml.in
+# - https://gitlab.gnome.org/GNOME/gsettings-desktop-schemas/-/merge_requests/17
+
+# override the default fonts
+install_list=(override:usr/share/glib-2.0/schemas/00_os_default_fonts.gschema.override:0644)

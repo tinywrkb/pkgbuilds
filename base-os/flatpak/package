@@ -1,0 +1,14 @@
+install_list=(
+  flatpak-uosys.sh:etc/profile.d/flatpak-uosys.sh:0644
+  os-store.conf:etc/flatpak/installations.d/os-store.conf:0644
+  flathub-beta.flatpakrepo:etc/flatpak/remotes.d/flathub-beta.flatpakrepo:0644
+  kdeapps.flatpakrepo:etc/flatpak/remotes.d/kdeapps.flatpakrepo:0644
+  private.flatpakrepo:etc/flatpak/remotes.d/private.flatpakrepo:0644
+
+  # flatpak system installation repo resources
+  config:usr/share/flatpak/repo/config:0644
+  flathub.trustedkeys.gpg:usr/share/flatpak/repo/flathub.trustedkeys.gpg:0644
+  flathub-beta.trustedkeys.gpg:usr/share/flatpak/repo/flathub-beta.trustedkeys.gpg:0644
+  kdeapps.trustedkeys.gpg:usr/share/flatpak/repo/kdeapps.trustedkeys.gpg:0644
+  private.trustedkeys.gpg:usr/share/flatpak/repo/private.trustedkeys.gpg:0644
+)

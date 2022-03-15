@@ -1,0 +1,9 @@
+# lm_sensors
+
+#target_list=()
+
+#mv_list=()
+
+rmdir_list=(sensors.d)
+
+link_list=(sensors.d)

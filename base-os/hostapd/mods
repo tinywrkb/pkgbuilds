@@ -1,0 +1,9 @@
+# hostapd
+
+#target_list=()
+
+mv_list=(hostapd)
+
+#rmdir_list=()
+
+link_list=(hostapd)

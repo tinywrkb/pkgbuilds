@@ -30,10 +30,24 @@ conflicts+=(${_merged_pkgs[@]})
 provides+=(${_merged_pkgs[@]})
 replaces+=(${_merged_pkgs[@]})
 
-source=(archlinux-base::git+https://github.com/tinywrkb/archlinux-base.git
-        mod_list packages
-        os-mods{,-hook.in}
-        services-cleanup{,.hook})
+#source=(archlinux-base::git+https://github.com/tinywrkb/archlinux-base.git
+# makepkg doesn't support folder sources
+source=(
+  # only generate tarball once
+  $(if [ "$FUNCNAME" = "source" ] && [ "$( basename "$PWD" )" = "base-os" ]; then
+      # TODO: maybe avoid generating a tarball if nothing changed
+      #if [ -f base-os.tar.zst ]; then
+      # _newhash="$(tar -cf - ${mods[@]} | zstd -f -T0 -2 - | sha256sum | awk '{print $1;}')"
+      # _oldhash="$(sha256sum base-os.tar.zst)"
+      #if
+      tar -cf - ${mods[@]} | zstd -f -T0 -2 - -o base-os.tar.zst 1>/dev/null
+    fi
+  )
+  base-os.tar.zst
+  mod_list packages
+  os-mods{,-hook.in}
+  services-cleanup{,.hook}
+)
 sha256sums=(${source[@]//*/SKIP})
 
 _package_mod() {

@@ -1,0 +1,2 @@
+# iptables-nft
+service_list=(system/multi-user.target.wants/ip{,6}tables.service)

@@ -1,0 +1,18 @@
+# systemd
+
+#target_list=()
+
+mv_list=(systemd
+         udev)
+
+rmdir_list=(modules-load.d
+            sysctl.d
+            tmpfiles.d)
+
+# TODO: handle /etc/system
+link_list=(systemd
+           modules-load.d
+           sysctl.d
+           tmpfiles.d
+           udev
+           userdb)

@@ -1,0 +1,7 @@
+# pipewire
+service_list=(user/pipewire.service.wants/wireplumber.service
+              user/sockets.target.wants/pipewire.socket
+              user/sockets.target.wants/pipewire-pulse.socket
+              user/pipewire-session-manager.service)
+rmdir_list=(user/pipewire.service.wants
+            user/sockets.target.wants)

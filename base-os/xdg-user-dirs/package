@@ -1,0 +1,1 @@
+service_list=(user/default.target.wants/xdg-user-dirs-update.service)

@@ -1,0 +1,1 @@
+link_list=(etc/fancontrol:/var/etc/lm_sensors/fancontrol)

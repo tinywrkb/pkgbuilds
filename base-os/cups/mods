@@ -1,0 +1,9 @@
+# cups
+
+#target_list=()
+
+mv_list=(cups)
+
+#rmdir_list=()
+
+link_list=(cups)

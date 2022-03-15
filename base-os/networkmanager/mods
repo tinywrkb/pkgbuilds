@@ -1,0 +1,9 @@
+# networkmanager
+
+#target_list=()
+
+mv_list=(NetworkManager)
+
+#rmdir_list=()
+
+link_list=(NetworkManager)

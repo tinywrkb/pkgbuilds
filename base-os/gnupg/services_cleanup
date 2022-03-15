@@ -1,0 +1,6 @@
+# gnupg
+
+service_list=(user/sockets.target.wants/dirmngr.socket
+              user/sockets.target.wants/gpg-agent{,-browser,-extra,-ssh}.socket)
+
+rmdir_list=(user/sockets.target.wants)

@@ -1,0 +1,2 @@
+# util-linux
+service_list=(system/timers.target.wants/fstrim.timer)

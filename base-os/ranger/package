@@ -1,0 +1,1 @@
+install_list=(ranger-xdg-open.desktop:usr/share/applications/ranger-xdg-open.desktop:0644)

@@ -1,0 +1,6 @@
+# create /etc/iwd as it might be included in future releases
+mkdir_list=(etc/iwd:0755)
+install_list=(README:etc/iwd/README:0644)
+# socket activated systemd-rfkill makes it possible to restore power state and avoid auto-connecting
+# TODO: maybe disable until it will be possible to disable auto-connect globally
+service_list=(system/multi-user.target.wants/iwd.service)

@@ -1,0 +1,20 @@
+#!/bin/sh
+
+if barid="$(cat $XDG_RUNTIME_DIR/sway/barid 2>/dev/null)"; then
+  case "$barid" in
+    swaybar)
+     # TODO: swaybar&waybar: read mode from ipc/swaymsg and toggle it between invisible and dock, or read and set the hidden_state
+      exit 1
+      ;;
+    waybar)
+      killall -SIGUSR1 waybar
+      ;;
+    yambar)
+      # TODO: https://codeberg.org/dnkl/yambar/issues/80
+      exit 1
+      ;;
+    *)
+      exit 1
+      ;;
+  esac
+fi

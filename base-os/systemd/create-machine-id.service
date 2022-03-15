@@ -1,0 +1,32 @@
+# create machine-id
+## don't trust tmpfiles.d, it's too late and breaks even networking
+#cmdline_machid=$(getarg systemd.machine_id)
+#if [ ! -f /sysroot/var/etc/machine-id ]; then
+#  mkdir -p /sysroot/var/etc
+#  if [ "$cmdline_machid" ]; then
+#    echo $cmdline_machid > /sysroot/var/etc/machine-id
+#  else
+#    touch /sysroot/var/etc/machine-id
+#  fi
+#fi
+[Unit]
+Description=Sysroot create machine-id
+DefaultDependencies=no
+ConditionPathExists=!/sysroot/var/etc/machine-id
+ConditionPathIsDirectory=/sysroot/var
+ConditionPathIsReadWrite=/sysroot/var
+# TODO: make sure this being run after fstab and /var mounting so it will not break homed by having a different machine-id
+After=dracut-mount.service initrd-parse-etc.service sysroot.mount sysroot-mount.service sysroot-etc.mount
+
+# TODO: fix error: "current command vanished from the unit file execution of the command list won't be resumed"
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+#ExecStartPre=/bin/mkdir -p /sysroot/var/etc
+##ExecStart=/bin/echo > /sysroot/var/etc/machine-id
+ # this has the potential to break homed
+#ExecStart=/bin/sh -c '/bin/uuidgen | tr -d "-" > /sysroot/var/etc/machine-id'
+ExecStart=/usr/lib/os/create-machine-id
+
+[Install]
+WantedBy=initrd-fs.target

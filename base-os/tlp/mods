@@ -1,0 +1,9 @@
+# tlp
+
+#target_list=()
+
+mv_list=(tlp.d)
+
+#rmdir_list=()
+
+link_list=(tlp.d)

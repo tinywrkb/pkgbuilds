@@ -1,0 +1,1 @@
+install_list=(glibc.hook:usr/share/libalpm/hooks/12-glibc-initial-locale-gen.hook:0644)

@@ -1,0 +1,9 @@
+# avahi
+
+#target_list=()
+
+mv_list=(avahi)
+
+#rmdir_list=()
+
+link_list=(avahi)

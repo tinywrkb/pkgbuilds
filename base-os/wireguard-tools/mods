@@ -1,0 +1,9 @@
+# wireguard-tools
+
+#target_list=()
+
+#mv_list=()
+
+rmdir_list=(wireguard,0700)
+
+link_list=(wireguard)

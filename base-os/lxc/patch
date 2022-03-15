@@ -1,0 +1,6 @@
+--- a/etc/lxc/default.conf
++++ b/etc/lxc/default.conf
+@@ -1 +1,3 @@
+ lxc.net.0.type = empty
++lxc.idmap = u 0 100000 65536
++lxc.idmap = g 0 100000 65536

@@ -1,0 +1,1 @@
+service_list=(system/sockets.target.wants/pcscd.socket)

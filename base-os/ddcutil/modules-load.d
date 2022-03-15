@@ -1,0 +1,2 @@
+# CONFIG_I2C_CHARDEV
+i2c-dev

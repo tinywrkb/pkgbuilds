@@ -1,0 +1,11 @@
+# kmod
+
+# TODO: consider adding /etc/depmod.d to links
+
+#target_list=()
+
+#mv_list=()
+
+rmdir_list=(modprobe.d)
+
+link_list=(modprobe.d)

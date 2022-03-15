@@ -1,0 +1,5 @@
+# p11-kit
+
+service_list=(user/sockets.target.wants/p11-kit-server.socket)
+
+rmdir_list=(user/sockets.target.wants)

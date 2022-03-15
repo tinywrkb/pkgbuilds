@@ -1,0 +1,7 @@
+# systemd
+
+service_list=(system/getty.target.wants/getty@tty1.service
+              system/multi-user.target.wants/remote-fs.target)
+
+rmdir_list=(system/getty.target.wants
+            system/multi-user.target.wants)

@@ -1,0 +1,10 @@
+# iwd
+
+#target_list=()
+
+# prefer moving iwd, even if it's empty as it might not be empty in the future
+mv_list=(iwd)
+
+#rmdir_list=()
+
+link_list=(iwd)

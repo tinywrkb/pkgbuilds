@@ -1,0 +1,1 @@
+install_list=(cockpit.conf:etc/cockpit/cockpit.conf:0644)

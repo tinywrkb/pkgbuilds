@@ -1,0 +1,2 @@
+service_list=(user/sockets.target.wants/gcr-ssh-agent.socket)
+rmdir_list=(user/sockets.target.wants)

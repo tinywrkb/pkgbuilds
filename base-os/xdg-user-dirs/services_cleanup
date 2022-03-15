@@ -1,0 +1,5 @@
+# xdg-user-dirs
+
+service_list=(user/default.target.wants/xdg-user-dirs-update.service)
+
+rmdir_list=(user/default.target.wants)

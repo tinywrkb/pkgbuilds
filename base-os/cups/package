@@ -1,0 +1,2 @@
+# printcap symlink might break
+link_list=(etc/printcap:/var/etc/cups/printcap)

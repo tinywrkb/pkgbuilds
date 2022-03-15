@@ -1,0 +1,43 @@
+#!/bin/sh
+
+unset DISPLAY XAUTHORITY WAYLAND_DISPLAY
+export SWAYSOCK="${XDG_RUNTIME_DIR}"/sway/sway-ipc.sock
+
+die() {
+  2>&1 echo "start-sway: ${@:-Something went wrong!}"
+  exit 1
+}
+
+# remove the socket if already exist
+if [ -e "$SWAYSOCK" ]; then
+  # is sway already running?
+  if  $(swaymsg -t get_version &>/dev/null); then
+    die "Sway is already running!"
+  else
+    /bin/rm -f "$SWAYSOCK"
+  fi
+fi
+
+case "${XDG_CURRENT_DESKTOP}:" in
+  # possibly the user set a default value, so if the sock test pass, then it's safe to continue, as this is not nested
+  sway:*|:)
+    # this could move out of the case, but let's avoid noop
+    export XDG_CURRENT_DESKTOP=${XDG_CURRENT_DESKTOP:-sway}
+    ;;
+  # might be running under a different desktop, not safe to start with the default config (systemd and dbus environment vars)
+  *)
+    die "Don't use the default config to run as nested compositor!"
+    ;;
+esac
+
+if [ -r "$XDG_CONFIG_HOME"/sway/shell.conf ]; then
+  export SWAYCONF="$XDG_CONFIG_HOME"/sway/shell.conf
+elif [ -r /etc/sway/shell.conf ]; then
+  export SWAYCONF=/etc/sway/shell.conf
+else
+  export SWAYCONF=/etc/sway/config
+fi
+
+systemctl --user import-environment XDG_CURRENT_DESKTOP
+
+exec /usr/bin/sway --config "$SWAYCONF" &>"${XDG_CACHE_HOME:-$HOME/.cache}"/sway.log

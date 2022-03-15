@@ -1,0 +1,9 @@
+# openssh
+
+#target_list=()
+
+mv_list=(ssh)
+
+#rmdir_list=()
+
+link_list=(ssh)

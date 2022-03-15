@@ -1,0 +1,12 @@
+#!/bin/sh
+
+mkdir -p /sysroot/var/etc ||
+  { echo 'error: failed creating folder /sysroot/var/etc'; exit 1; }
+
+# create machine-id just in case uuidgen is failing
+echo > /sysroot/var/etc/machine-id
+
+# generate uuid
+uuidgen | /bin/tr -d '-' | cat /sysroot/var/etc/machine-id
+
+exit 0

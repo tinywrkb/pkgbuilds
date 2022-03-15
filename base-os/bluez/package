@@ -1,0 +1,2 @@
+service_list=(system/bluetooth.target.wants/bluetooth.service)
+service_alias_list=(system/dbus-org.bluez.service:bluetooth.service)

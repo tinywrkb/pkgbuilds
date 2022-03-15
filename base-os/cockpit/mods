@@ -1,0 +1,11 @@
+# cockpit
+
+#target_list=()
+
+#mv_list=()
+
+rmdir_list=(cockpit/machines.d
+            cockpit/ws-certs.d)
+
+link_list=(cockpit/machines.d
+           cockpit/ws-certs.d)

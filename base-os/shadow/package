@@ -1,0 +1,40 @@
+# shadow
+install_list=()
+service_list=()
+
+# install helper
+install_list+=(enable_root_account:usr/bin/enable_root_account:0755)
+
+# install initrd services and dracut module
+#install_list+=(
+#  module-setup.sh:usr/lib/dracut/modules.d/95uosys-shadow/module-setup.sh:0644
+#  sysroot-etc-shadow-premount-check.service:usr/lib/systemd/system/sysroot-etc-shadow-premount-check.service:0644
+#  sysroot-etc-shadow.mount:usr/lib/systemd/system/sysroot-etc-shadow.mount:0644
+#)
+#service_list+=(system/initrd-fs.target.wants/sysroot-etc-shadow-premount-check.service
+#                system/initrd-fs.target.wants/sysroot-etc-shadow.mount)
+
+# multi-user.target seperate system services
+# somehow ths creates a dependency cycle when using the basic target so this
+#  is installed to the multi-user.target
+#install_list+=(
+#etc-shadow-premount-check.service:usr/lib/systemd/system/etc-shadow-premount-check.service:0644
+#etc-shadow.mount:usr/lib/systemd/system/etc-shadow.mount:0644
+#)
+#service_list+=(
+#  system/multi-user.target.wants/etc-shadow-premount-check.service
+#  system/multi-user.target.wants/etc-shadow.mount
+#  system/basic.target.wants/etc-shadow-mount.service
+#)
+
+# unified system service
+# needed because systemd tries to create source folder for bind mount with a .mount service
+# TODO: maybe move into sysinit.target but not in the initrd so it will applied also to rescure.target
+#       need to figure out if this is too early and tmpfiles needed before or maybe not if using unit condition
+install_list+=(etc-shadow-mount.service:usr/lib/systemd/system/etc-shadow-mount.service:0644)
+service_list+=(system/basic.target.wants/etc-shadow-mount.service)
+
+# install pre-defined subuid and subgid lists
+#   required by lxc and rootless podman
+install_list+=(subid:etc/subuid:0644
+               subid:etc/subgid:0644)

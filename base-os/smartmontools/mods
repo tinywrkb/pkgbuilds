@@ -1,0 +1,9 @@
+# smartmontools
+
+#target_list=()
+
+mv_list=(smartmontools)
+
+#rmdir_list=()
+
+link_list=(smartmontools)

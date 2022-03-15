@@ -1,0 +1,3 @@
+# sudo
+mkdir_list=(etc/sudoers.d:0750)
+install_list=(sudoers.d:etc/sudoers.d/os:0440)
