@@ -1,8 +1,0 @@
-#!/bin/bash
-
-while true; do
-  echo "Enter username to create: "
-  read username
-  /usr/bin/homectl create $username --storage=directory -G adbusers,gitea,i2c,input,kvm,libvirt,lp,pacman,pmnt_sec,users,uucp,vboxusers,wheel,wireshark --uid=1000 --shell=/bin/bash
-  [ $? -eq 0 ] && break
-done

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# groups owners
+#  - android-udev: adbusers
+#  - base-os/filesystem: i2c, pacman, pmnt_sec
+#  - systemd: input, kvm, lp, users, uucp, wheel
+# missing groups of uninstalled packages
+#  - libvirt
+#  - vboxusers
+#  - wireshark
+while true; do
+  echo "Enter username to create: "
+  read username
+  /usr/bin/homectl create $username --storage=directory -G adbusers,i2c,input,kvm,lp,pacman,pmnt_sec,users,uucp,wheel --uid=1000 --shell=/bin/bash
+  [ $? -eq 0 ] && break
+done
