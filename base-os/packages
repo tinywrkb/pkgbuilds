@@ -15,34 +15,23 @@ packages=(
   sysfsutils
   systemd-swap  # TODO: remove after switching to zram-generator
   zram-generator
-  private/dracut-hooks-uosys
-  private/dracut-module-uosys
-  private/filesystem-uosys  # TODO: maybe remove the uosys-rootfs dependency
-  private/uosys-create-user
-  private/uosys-live-media
-  private/uosys-mods
-  private/uosys-mods-glibc
-  private/uosys-mods-kmod
-  private/uosys-mods-linux-firmware
-  private/uosys-mods-pacman
-  private/uosys-mods-shadow
-  private/uosys-mods-systemd
-  private/uosys-mods-util-linux
-  private/uosys-rootfs
-  private/uosys-tools
+  private/base-os-create-user
+  private/base-os-dracut-hooks
+  private/base-os-dracut-module
+  private/base-os-live
+  private/base-os-rootfs-images
 
   # bootloader
   efibootmgr
   efitools
   aur/plymouth-theme-arch-charge-big
   private/amd-ucode-fixed
-  private/grub-editenv  # TODO: evalute setting efi vars instead, and decide what to do with legacy boot for vps & vms
+  private/base-os-bootloader
+  private/grub-editenv  # TODO: evaluate setting efi vars instead, and decide what to do with legacy boot for vps & vms
   private/intel-ucode-fixed
   private/plymouth-fixed  # TODO: maybe drop this, project maintainer ignores requests for bug fixes releases, there's no stable channel/branch, the whole idea is questionable, should be handled by the init
-  private/uosys-bootloader
 
   # containers & resource allocation
-  #private/uosys-mods-qemu  # TODO: reconsider packaging the udev rule
   buildah
   crun  # podman support for unified cgroupsv2, might be integrated in runc in the future
   dnsmasq  # required by lxd (opt for lxc), libvirt networking
@@ -55,11 +44,6 @@ packages=(
   private/podman-compose-fixed
   private/podman-dnsname-fixed
   private/podman-tui-fixed
-  private/uosys-mods-libcgroup
-  private/uosys-mods-lxc
-  private/uosys-mods-lxcfs
-  private/uosys-mods-lxd
-  private/uosys-mods-podman
 
   # docs
   man-db
@@ -88,13 +72,11 @@ packages=(
   multipath-tools
   parted
   squashfs-tools  # TODO: evaluate switching to fuse and moving into a flatpak
-  aur/bindfs  # workaround for missing idmap support with mount --bind
+  aur/bindfs  # mount --bind with idmap support, flexible late bind mount into lxc container using an intermediary mount target-source
   aur/btrfs-du
   aur/ntfsprogs-ntfs3
   private/libblockdev-minimal  # required by udisks2
   private/udisks2-minimal
-  private/uosys-mods-fuse-common
-  private/uosys-mods-udisks2
 
   # logging
   libmicrohttpd  # systemd's remote journald capabilities
@@ -116,11 +98,6 @@ packages=(
   wireguard-tools
   wol
   private/openssh-xdg
-  private/uosys-mods-avahi
-  private/uosys-mods-iproute2
-  private/uosys-mods-iptables-nft
-  private/uosys-mods-openssh
-  private/uosys-mods-wireguard-tools
 
   # netowrk/filesystem
   sshfs  # TODO: maybe not needed after openssh update, or move into flatpak
@@ -135,9 +112,6 @@ packages=(
   iw
   iwd
   wireless_tools
-  private/uosys-mods-bluez
-  private/uosys-mods-hostapd
-  private/uosys-mods-iwd
 
   # shell
   bash
@@ -156,10 +130,6 @@ packages=(
   aur/bash-complete-alias
   aur/console-solarized-git
   aur/powerline-go
-  private/uosys-mods-bash
-  private/uosys-mods-sudo
-  private/uosys-mods-tmux
-  private/uosys-mods-zsh
 
   # security
   #rng-tools  # entropy, supports hw backed entropy generator, /dev/hwrng
@@ -181,11 +151,6 @@ packages=(
   volume_key  # required by libblockdev
   aur/polkit-duktape
   aur/spectre-meltdown-checker
-  private/uosys-mods-gnupg
-  private/uosys-mods-krb5
-  private/uosys-mods-libfido2
-  private/uosys-mods-p11-kit
-  private/uosys-mods-pcsclite
 
   ################################################
   # systemd
@@ -200,7 +165,6 @@ packages=(
   kmon
   aur/chkservice
   aur/gettext-hostname  # provides inetutils which is a requirement for cockpit
-  private/uosys-mods-cockpit
 
   # cpu
   i7z
@@ -209,7 +173,6 @@ packages=(
 
   # fw
   fwupd
-  private/uosys-mods-fwupd
 
   # hwinfo
   dmidecode
@@ -226,7 +189,6 @@ packages=(
   usbip
   usbmuxd
   usbutils
-  private/uosys-mods-android-udev  # TODO: maybe drop this
 
   # iomon
   iotop
@@ -241,7 +203,6 @@ packages=(
   power-profiles-daemon
   powertop
   upower
-  private/uosys-mods-upower
 
   # proc
   procps-ng
@@ -255,8 +216,7 @@ packages=(
   # storage
   hddtemp
   hdparm
-  private/smartmontools-uosys  # TODO: set up alerts
-  private/uosys-mods-smartmontools
+  private/smartmontools-fixed  # TODO: set up alerts
 
   # stress
   #s-tui  # switched to flatpak due to the python dependencies
@@ -265,8 +225,7 @@ packages=(
   # thermal
   thermald
   tmon
-  private/lm_sensors-uosys
-  private/uosys-mods-lm_sensors
+  private/lm_sensors-fixed
 
   # utils
   sysstat
@@ -283,7 +242,6 @@ packages=(
   colord
   cups  # TODO: evaluate disabling daemon network access in cups 3.0 and only keep the unix socket
   ipp-usb  # cups http-ipp over usb
-  private/uosys-mods-cups
 
   ################################################
   # media
@@ -305,8 +263,6 @@ packages=(
   aur/ncpamixer
   private/libpulse-x11free
   private/mediainfo-minimal
-  private/uosys-mods-alsa-utils
-  private/uosys-mods-pipewire
 
   ################################################
   # graphical envirnoment
@@ -316,10 +272,8 @@ packages=(
   # TODO: implement backlight control daemon with ddc support and wire it up in upowerd
   #light  # TODO: enable if backlight daemon is not ready
   private/ddcutil-x11free
-  private/uosys-mods-ddcutil
 
   # common
-  #private/uosys-mods-adwaita-icon-theme  # not needed when libxcursor is installed
   adwaita-icon-theme
   dex
   evtest  #TODO: maybe move into a flatpak, need to be able to handle input group without root
@@ -332,11 +286,6 @@ packages=(
   aur/mimeo  # xdg-open alt
   private/fcitx5-flatpak-wrappers
   private/gtk3-nonsensefree  # TODO: waiting on gtk4 portal switch, and then drop
-  private/uosys-mods-fontconfig
-  private/uosys-mods-gsettings-desktop-schemas  # setting different default fonts
-  private/uosys-mods-mimeo
-  private/uosys-mods-xdg-user-dirs
-  private/uosys-mods-xkeyboard-config
 
   # drivers
   # https://wiki.archlinux.org/index.php/Hardware_video_acceleration
@@ -363,7 +312,6 @@ packages=(
   xdg-desktop-portal
   xdg-desktop-portal-gtk
   private/evince-previewer-flatpak-wrapper
-  private/uosys-mods-flatpak
   private/wine-flatpak-wrapper
 
   # fonts
@@ -372,7 +320,7 @@ packages=(
   powerline-fonts
   ttf-fira-code
   ttf-hack
-  ttf-liberation  # TODO: maybe switch to noto-fonts-vf, changes are needed in uosys-mods-gsettings-desktop-schemas
+  ttf-liberation  # TODO: maybe switch to noto-fonts-vf
   aur/awesome-terminal-fonts-patched  # needed for oh-my, TODO: maybe can be dropped in favor of the non-patch package
   aur/noto-fonts-cjk-vf
   aur/noto-fonts-emoji
@@ -403,12 +351,12 @@ packages=(
   aur/caffeinated
   aur/fnott
   aur/wev
-  private/uosys-mods-fuzzel
-  private/uosys-mods-sway  # TODO: convert shell scripts to compiled code and drop jq dependency
+  private/fuzzel-wrappers
   private/yambar-x11free
 
   # x11 only
   xorg-xwayland
+  xorg-xrandr  # setting primary display, TODO: drop after sway gains output primary command https://github.com/swaywm/sway/issues/5758
 
   ################################################
   # tools
@@ -440,7 +388,6 @@ packages=(
 
   # deployment
   stow
-  private/python-startup  # TODO: replace with something that doesn't break in containers, rename to uosys-mods-python
 
   # downloader
   axel
@@ -451,7 +398,6 @@ packages=(
   neovim
   python-pynvim
   vi
-  private/uosys-mods-vi
 
   # filemanager
   broot
@@ -484,7 +430,6 @@ packages=(
   fzf
   mlocate
   ripgrep
-  private/uosys-mods-mlocate
 
   # shell
   neofetch
@@ -507,7 +452,7 @@ packages=(
   dos2unix
   git
   git-lfs
-  jq  # required by asp, aurutils, mako (optional), yq, uosys-mods-sway
+  jq  # required by asp, aurutils, mako (optional), yq
   patch
   patchutils
   perl-authen-sasl  # git-mail
@@ -519,7 +464,6 @@ packages=(
   aur/git-extras
   aur/gitflow-avh
   aur/gitflow-bashcompletion-avh
-  private/uosys-mods-audit
 
   # dev/archlinux
   #aur/pkgbuild-introspection

@@ -1,0 +1,50 @@
+[Trigger]
+Type = Package
+Operation = $$ALPM_OP$$
+Operation = Upgrade
+Target = base-os
+Target = audit
+Target = avahi
+Target = bash
+Target = bluez
+Target = cni-plugins
+Target = cni-plugins-fixed
+Target = cockpit
+Target = containers-common
+Target = cups
+Target = cups-filters
+Target = fuse-common
+Target = glibc
+Target = hostapd
+Target = iptables-nft
+Target = iwd
+Target = kmod
+Target = linux-firmware
+Target = lm_sensors
+Target = lm_sensors-fixed
+Target = lxc
+Target = networkmanager
+Target = openssh
+Target = openssh-xdg
+Target = pacman
+Target = podman
+Target = podman-compose
+Target = podman-compose-fixed
+Target = podman-compose-git
+Target = shadow
+Target = smartmontools
+Target = smartmontools-fixed
+Target = systemd
+Target = systemd-idmap
+Target = systemd-swap
+Target = util-linux
+Target = wireguard-tools
+Target = xdg-user-dirs
+
+[Action]
+Description = $$ALPM_DESC$$
+Exec = /usr/share/libalpm/scripts/os-mods $$MOD_TYPE$$
+When = $$ALPM_TRANS$$
+Depends = base-os
+Depends = patch
+NeedsTargets

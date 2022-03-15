@@ -1,5 +1,0 @@
-@kvm hard memlock unlimited
-@kvm soft memlock unlimited
-
-@users soft memlock 8650752
-@users hard memlock 9437184

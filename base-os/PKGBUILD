@@ -1,16 +1,384 @@
 # Maintainer: tinywrkb <tinywrkb@gmail.com>
+#
+# core/filesystem
+#   Contributor: Sébastien Luttringer
+#   Contributor: Tom Gundersen <teg@jklm.no>
+
+# TODO: confirm permissions of implicitly created folders by install_list and link_list
 
 pkgname=base-os
-pkgver=2022.03.05.1
+pkgver=2022.03.13.1
 pkgrel=1
 pkgdesc=""
-arch=('any')
-license=('GPL')
+arch=(any)
+license=(GPL)
 url=''
-source=('packages')
-sha256sums=('SKIP')
+backup=(etc/{group,gshadow,passwd,shadow,shells})
+makedepends=(git)
+# not backed-up: etc/{crypttab,fstab,host.conf,hosts,issue,ld.so.conf,nsswitch.conf,profile}
+conflicts=(filesystem)
+provides=(filesystem)
+
+# packaged networkmanager override sets iwd as the default backend
+provides+=(wpa_supplicant)
+# packaged gsettings-desktop-schemas override set ttf-liberation as default fonts
+provides+=(adobe-source-code-pro-fonts cantarell-fonts)
+
+source mod_list
+
+# TODO: remove these after update
+_merged_pkgs=(
+  python-startup
+  filesystem-uosys
+  uosys-mods
+  uosys-mods-${mods[@]}
+)
+conflicts+=(${_merged_pkgs[@]})
+provides+=(${_merged_pkgs[@]})
+replaces+=(${_merged_pkgs[@]})
+
+source=(archlinux-base::git+https://github.com/tinywrkb/archlinux-base.git
+        mod_list packages
+        os-mods{,-hook.in}
+        services-cleanup{,.hook})
+sha256sums=(${source[@]//*/SKIP})
+
+_package_mod() {
+  unset {install,link,package,service,service_alias}_list
+  source package
+
+  # process mkdir_list, must be first to set non-default modes
+  # mkdir_list=(dir:mode}
+  for e in "${mkdir_list[@]}"; do
+    d="$(echo "$e" | cut -d':' -f1)"  # dir
+    m="$(echo "$e" | cut -s -d':' -f2)"  # mode
+    m=${m:-0755}  # default mode
+    if [ -n "$d" ]; then
+      if [ -d "${pkgdir}/${d}" ]; then
+        2>&1 echo "${1}/package: The folder $d already exist!"
+          continue
+      fi
+      install -dm${m} "${pkgdir}/${d}" ||
+        2>&1 echo "${1}/package: Failed creating the folder ${d}"
+    else
+      2>&1 echo "${1}/package: Failed parsing mkdir_list entry: ${e}"
+    fi
+  done
+
+  # process install_list
+  # install_list=(source:target<:mode>)
+  for e in "${install_list[@]}"; do
+    s="$(echo "$e" | cut -d':' -f1)"  # source
+    t="$(echo "$e" | cut -s -d':' -f2)"  # target
+    m="$(echo "$e" | cut -s -d':' -f3)"  # mode
+
+    if [ -z "$s" ]; then
+      2>&1 echo "${1}/package: source is empty in install_list entry $e" &&
+        continue
+    fi
+
+    if [ -z "$t" ]; then
+      2>&1 echo "${1}/package: target is empty in install_list entry $e" &&
+        continue
+    fi
+
+    m=${m:-0644}  # default mode
+    install -Dm${m} "${s}" "${pkgdir}/${t}" ||
+      2>&1 echo "${1}/package: Failed install ${s} to ${t}"
+  done
+
+  # process link_list
+  # link_list=(link:target)
+  for e in "${link_list[@]}"; do
+    l="$(echo "$e" | cut -d':' -f1)"  # link
+    t="$(echo "$e" | cut -s -d':' -f2)"  # target
+
+    if [ -z "$l" ]; then
+      2>&1 echo "${1}/package: link is empty in link_list entry $e" &&
+        continue
+    fi
+
+    if [ -z "$t" ]; then
+      2>&1 echo "${1}/package: target is empty in link_list entry $e" &&
+        continue
+    fi
+
+    # create parent folder if it doesn't exist
+    d="$(dirname "$l")"
+    [ -e "${pkgdir}/${d}" ] ||
+      install -dm755 "${pkgdir}/${d}"
+
+    ln -s "${t}" "${pkgdir}/${l}"
+  done
+  # process service_list
+  # service_list=([system/user]/targetname.target.wants/symlink.service<:target>)
+  #   e.g. service_list=(system/getty.target.wants/getty@tty1.service:getty@.service)
+  for e in "${service_list[@]}"; do
+    s="$(echo "$e" | cut -d':' -f1)"  # service
+    t="$(echo "$e" | cut -s -d':' -f2)"  # target
+
+    if [ -z "$s" ]; then
+      2>&1 echo "${1}/package: service is empty in service_list entry $e" &&
+        continue
+    fi
+
+    # create parent folder if it doesn't exist
+    d="$(dirname "$s")"
+    [ -e "${pkgdir}/usr/lib/systemd/${d}" ] ||
+      install -dm755 "${pkgdir}/usr/lib/systemd/${d}"
+
+    if [ -z "$t" ]; then
+      ln -s "../$(basename "$s")" "${pkgdir}/usr/lib/systemd/${s}"
+    else
+      ln -s "../${t}" "${pkgdir}/usr/lib/systemd/${s}"
+    fi
+  done
+
+  # process service_alias_list
+  # service_alias_list=([system/user]/alias.service:target.service)
+  for e in "${service_alias_list[@]}"; do
+    a="$(echo "$e" | cut -d':' -f1)"  # alias
+    t="$(echo "$e" | cut -s -d':' -f2)"  # target
+
+    if [ -z "$a" ]; then
+      2>&1 echo "${1}/package: alias is empty in service_alias_list entry $e" &&
+        continue
+    fi
+
+    if [ -z "$t" ]; then
+      2>&1 echo "${1}/package: target is empty in service_alias_list entry $e" &&
+        continue
+    fi
+
+    # create parent folder if it doesn't exist
+    d="$(dirname "$a")"
+    [ -e "${pkgdir}/usr/lib/systemd/${d}" ] ||
+      install -dm755 "${pkgdir}/usr/lib/systemd/${d}"
+
+    # create the alias symlink
+    ln -s "$t" "${pkgdir}/usr/lib/systemd/${a}"
+  done
+}
+
+build() {
+  mkdir -p build
+
+  # generate install.hook
+  sed \
+    -e 's/\$\$ALPM_OP\$\$/Install/' \
+    -e 's/\$\$ALPM_DESC\$\$/OS mods in progress.../' \
+    -e 's/\$\$ALPM_TRANS\$\$/PostTransaction/' \
+    -e 's/\$\$MOD_TYPE\$\$/post/' \
+    os-mods-hook.in > build/install.hook
+
+  # generate restore.hook
+  sed \
+    -e 's/\$\$ALPM_OP\$\$/Remove/' \
+    -e 's/\$\$ALPM_DESC\$\$/Reverting OS mods.../' \
+    -e 's/\$\$ALPM_TRANS\$\$/PreTransaction/' \
+    -e 's/\$\$MOD_TYPE\$\$/pre/' \
+    os-mods-hook.in > build/restore.hook
+}
 
 package() {
   source packages
-  depends=($(echo ${packages[@]} | sed 's@aur/@@g;s@private/@@g'))
+  depends=(iana-etc)
+  depends+=($(echo ${packages[@]} | sed 's@aur/@@g;s@private/@@g'))
+
+  # package filesystem
+  (
+  cd archlinux-base/filesystem
+  # TODO: report bug: timedatectl doesn't follow /etc/adjtime symlink
+  # TODO: report bug: homectl create doesn't follow skel symlink
+  # TODO: maybe install a default .updated to usr/etc so the systemd-update-done.service won't fail,
+  #        also needs setting timestamp of /usr in the initramfs
+  #        current workaround is to avoid the service by using a kernel parameter
+
+
+  # filesystem: create hierarchy
+
+  # setup /usr hierarchy
+  install -dm755 ${pkgdir}/usr/{bin,include,lib,share/{misc,pacman/db,pixmaps},src}
+  install -dm755 ${pkgdir}/usr/share/man/man{1..8}
+
+  # add lib symlinks
+  [[ $CARCH = 'x86_64' ]] && {
+    ln -s lib ${pkgdir}/usr/lib64
+  }
+
+  # add bin symlink
+  ln -s bin ${pkgdir}/usr/sbin
+
+  # setup etc hierarchy
+  install -dm755 ${pkgdir}/etc/{issue.d,ld.so.conf.d,skel,profile.d}
+
+
+  # filesystem: install files
+
+  # wallpapers generated with archur:
+  #   $ archur -o black-1920x1080.png --text '' -r 1920x1080  -fg '#eeeeee' -bg '#101010'
+  #   $ archur -o solarized-1920x1080.png --text '' -r 1920x1080  -fg '#93a1a1' -bg '#002b36'
+
+  # TODO: install resolv.conf as a template? can somehow be used as a fallback?
+
+  install -Dm644 -t ${pkgdir}/etc/ \
+    arch-release issue \
+    fstab \
+    group passwd \
+    host.conf hosts nsswitch.conf \
+    ld.so.conf locale.conf profile shells vconsole.conf
+
+  install -Dm600 -t ${pkgdir}/etc/ \
+    crypttab \
+    gshadow shadow
+
+  install -Dm644 -t ${pkgdir}/etc/profile.d/ \
+    locale.sh
+
+  # os-release
+  install -Dm644 -t ${pkgdir}/usr/lib/ \
+    os-release
+  # relative symlinks breaking out of /etc are bad for compatibility between folder and symlink /etc
+  # this needs disabling the relevant line in systemd's tmpfiles.d/etc.conf to avoid a possible conflict
+  #ln -s -t ${pkgdir}/etc/ \
+  #  ../usr/lib/os-release
+  install -Dm644 -t ${pkgdir}/etc/ \
+    os-release
+
+  # setup pam_limits
+  install -Dm644 limits ${pkgdir}/etc/security/os.conf
+
+  # setup systemd-sysctl
+  install -Dm644 sysctl ${pkgdir}/usr/lib/sysctl.d/10-os.conf
+
+  # setup systemd-sysusers
+  install -Dm644 sysusers ${pkgdir}/usr/lib/sysusers.d/os.conf
+
+  # setup systemd-tmpfiles
+  install -Dm644 tmpfiles ${pkgdir}/usr/lib/tmpfiles.d/os.conf
+
+  # setup systemd.environment-generator
+  install -Dm755 env-generator-system ${pkgdir}/usr/lib/systemd/system-environment-generators/10-os
+  install -Dm755 env-generator-user ${pkgdir}/usr/lib/systemd/user-environment-generators/10-os
+  install -Dm755 env-generator-user-video ${pkgdir}/usr/lib/systemd/user-environment-generators/12-video
+
+  # add logo
+  install -Dm644 -t ${pkgdir}/usr/share/pixmaps/ \
+    archlinux-logo{.{png,svg},-text{,-dark}.svg}
+
+  # add backgrounds
+  for f in background-{black,solarized}-1920x1080.png; do
+    install -Dm644 $f ${pkgdir}/usr/share/backgrounds/os/${f#background-}
+  done
+
+  # /etc/mtab
+  # requirement: must be relative
+  # users in a booted-up system:
+  #   - fusermount/fuse, flatpak (had some code changes for systems where it doesn't exist)
+  # users in a container/chroot
+  #   - systemd-tmpfiles.d, systemd-nspawn
+  # possible workarounds:
+  #   - only bind usr/etc to etc, never use a symlink
+  #   - add a second level of symlink to point to the right location
+  ln -s ../proc/self/mounts ${pkgdir}/etc/mtab
+  # compat for etc symlink
+  mkdir -p ${pkgdir}/usr/proc/self
+  echo 'compat symlink for systems where /etc is a symlink pointing to /usr/etc' \
+    > ${pkgdir}/usr/proc/self/README
+  ln -s ../../../proc/self/mounts  ${pkgdir}/usr/proc/self/mounts
+
+
+  # filesystem: var symlinks
+
+  ln -s -t ${pkgdir}/etc/ \
+    /var/etc/{adjtime,resolv.conf}
+
+  # localtime symlink
+  # it's time to stop usign this symlink and replaced with something
+  # dynamic that doesn't depend on manually changing files in /etc
+  # patching systemd to recursively reslove symlink is not a proper solution
+  # as it will break applications that expect a single level of symlink (e.g. flatpak)
+  # just hardcode the system timezone and use TZ environment variable for the user
+  ln -s /usr/share/zoneinfo/UTC ${pkgdir}/etc/localtime
+
+  # machine specific identifiers
+  # TODO: replace systemd's utils
+  # mount points for compatibility with systemd's utils
+  #touch {,usr/}etc/{hostname,machine-id,machine-info}
+  ln -s -t ${pkgdir}/etc/ \
+    /var/etc/{hostname,machine-id,machine-info}
+  )
+
+
+  # package modutils
+  # minimal runtime dependencies: patch, rsync (pacman)
+
+  # directory tree structure
+  install -dm755 $pkgdir/usr/lib/os/{mods,patches,scripts}
+  install -dm755 $pkgdir/usr/share/etc
+
+  # os-mods alpm script
+  install -Dm755 os-mods -t ${pkgdir}/usr/share/libalpm/scripts/
+
+  # os-mods alpm hook
+  install -Dm644 build/install.hook ${pkgdir}/usr/share/libalpm/hooks/00-os-mods-install.hook
+  install -Dm644 build/restore.hook ${pkgdir}/usr/share/libalpm/hooks/00-os-mods-restore.hook
+
+  # systemd services cleanup alpm hook
+  install -Dm644 services-cleanup.hook ${pkgdir}/usr/share/libalpm/hooks/zy-services-cleanup.hook
+  install -Dm755 services-cleanup ${pkgdir}/usr/share/libalpm/scripts/services-cleanup
+
+
+  # package mods
+  # TODO: document mod util functions
+  #       package.mods
+  #        - target_list=()
+  #        - mv_list=()
+  #        - rmdir_list=()
+  #        - link_list=()
+  #       package.tmpfiles.d.conf
+  #       package.script.pre
+  #       package.script.post
+  #       package.services_cleanup
+  #        - service_list=()
+  #        - rmdir_list=()
+  # TODO: services_cleanup: merge with mods
+
+  #install -Dm644 mod_list -t ${pkgdir}/usr/lib/os/
+
+  for _mod in ${mods[@]}; do
+    (
+      echo "Packaging mods for ${_mod}..."
+      cd archlinux-base/${_mod}
+      [ -f environment.d ] &&
+        install -Dm644 environment.d ${pkgdir}/usr/lib/environment.d/${_mod}.conf
+      [ -f mods ] &&
+        install -Dm644 mods ${pkgdir}/usr/lib/os/mods/${_mod}.mods
+      [ -f modules-load.d ] &&
+        install -Dm644 modules-load.d ${pkgdir}/usr/lib/modules-load.d/${_mod}.conf
+      [ -f patch ] &&
+        install -Dm755 patch ${pkgdir}/usr/lib/os/patches/${_mod}.patch
+      [ -f script.pre ] &&
+        install -Dm644 script.pre ${pkgdir}/usr/lib/os/scripts/${_mod}.pre
+      [ -f script.post ] &&
+        install -Dm644 script.post ${pkgdir}/usr/lib/os/scripts/${_mod}.post
+      [ -f services_cleanup ] &&
+        install -Dm644 services_cleanup ${pkgdir}/usr/lib/os/services_cleanup/${_mod}
+      [ -f user-tmpfiles.d ] &&
+        install -Dm644 user-tmpfiles.d ${pkgdir}/usr/share/user-tmpfiles.d/${_mod}.conf
+      [ -f tmpfiles.d ] &&
+        install -Dm644 tmpfiles.d ${pkgdir}/usr/lib/tmpfiles.d/${_mod}.conf
+      [ -f rules.d ] &&
+        install -Dm644 rules.d ${pkgdir}/usr/lib/udev/rules.d/${_mod}.rules
+      (
+        shopt -s nullglob
+        for f in *.rules.d; do
+          install -Dm644 $f ${pkgdir}/usr/lib/udev/rules.d/${f%.rules.d}.rules
+        done
+      )
+      [ -f package ] && _package_mod ${_mod}
+      [ -f package.sh ] && (source package.sh)
+      return 0
+    )
+  done
 }

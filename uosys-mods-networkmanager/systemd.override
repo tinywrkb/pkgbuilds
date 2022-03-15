@@ -1,5 +1,0 @@
-# adapted from aur/networkmanager-iwd-overlay maintained by Sergey Shatunov <me@prok.pw>
-
-[Unit]
-Wants=iwd.service
-After=iwd.service

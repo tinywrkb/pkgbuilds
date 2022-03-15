@@ -1,3 +1,0 @@
-# /etc/zsh/zshenv
-
-export ZDOTDIR=~/.config/zsh
