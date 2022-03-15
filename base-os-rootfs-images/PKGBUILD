@@ -1,13 +1,15 @@
 # Maintainer: tinywrkb <tinywrkb@gmail.com>
 
-pkgname=uosys-rootfs
-pkgver=2021.06.19.1
+pkgname=base-os-rootfs-images
+pkgver=2022.03.13.1
 pkgrel=1
-pkgdesc='uosys rootfs images'
-arch=('x86_64')
-license=('GPL')
+pkgdesc="rootfs images for /usr only system"
+arch=(any)
+license=(GPL)
 url=''
-makedepends=('squashfs-tools')
+makedepends=(squashfs-tools)
+conflicts=(uosys-rootfs)
+provides=(uosys-rootfs)
 
 build() {
   # create rootfs{,-compat}.img
@@ -43,9 +45,8 @@ build() {
 }
 
 package() {
-  cd "$pkgdir"
-  install -Dm644 -t usr/lib/os/rootfs/ \
-    "${srcdir}"/rootfs{,-compat}.img
+  install -Dm644 -t "$pkgdir"/usr/lib/os/rootfs/ \
+    rootfs{,-compat}.img
 }
 
 # vim:set ts=2 sw=2 et:
