@@ -3,7 +3,7 @@
 
 pkgname=gtk4-nonsensefree
 pkgver=4.6.1
-pkgrel=2
+pkgrel=3
 epoch=1
 pkgdesc="GTK4 without Cloudproviders, GStreamer, and Tracker"
 url="https://www.gtk.org/"
@@ -68,7 +68,7 @@ build() {
 
 package() {
   depends+=(gtk-update-icon-cache)
-  optdepends=('evince: Default print preview command')
+  optdepends=('evince-previewer: Default print preview command')
   provides+=(libgtk-4.so)
 
   meson install -C build --destdir "$pkgdir"
