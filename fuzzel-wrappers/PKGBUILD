@@ -10,7 +10,7 @@ url=''
 conflicts=(dmenu rofi uosys-create-user)
 provides=(dmenu rofi)
 replaces=(uosys-create-user)
-sources=(dmenu fuzzel-launch{,-bin} rofi)
+source=(dmenu fuzzel-launch{,-bin} rofi)
 sha256sums=(SKIP SKIP SKIP SKIP)
 
 package() {
