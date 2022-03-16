@@ -247,6 +247,19 @@ while read -r pkg; do
       ;;
   esac
 
+  # services-cleanup triggers, run the systemd mod so newly enabled services will always be in /usr/share/etc/systemd 
+  case ${pkg} in
+    # os-mods should not run, package has no mods or patch, only services_cleanup
+    gcr|gnupg|p11-kit|\
+    pipewire|pipewire-fixed-git|pipewire-git|pipewire-media-session|pipewire-media-session-git|\
+    wireplumber|wireplumber-git)
+      pkg=systemd
+      ;;
+    # os-mods should run, package has also mods and/or patch
+    xdg-user-dirs)
+      pkgs+=([systemd]=1)
+  esac
+
   # base-os was updated
   if [ "${pkg}" = "base-os" ]; then
     echo "os-mods: ${pkg} was changed, apply all ${op} mods will be applied!"

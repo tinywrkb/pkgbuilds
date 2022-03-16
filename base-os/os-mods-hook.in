@@ -40,6 +40,17 @@ Target = systemd-swap
 Target = util-linux
 Target = wireguard-tools
 Target = xdg-user-dirs
+# services-cleanup only targets, require running the systemd mod
+Target = gcr
+Target = gnupg
+Target = p11-kit
+Target = pipewire
+Target = pipewire-fixed-git
+Target = pipewire-git
+Target = pipewire-media-session
+Target = pipewire-media-session-git
+Target = wireplumber
+Target = wireplumber-git
 
 [Action]
 Description = $$ALPM_DESC$$
