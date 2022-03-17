@@ -1,0 +1,14 @@
+diff --git a/meson.build b/meson.build
+index dd09b28..81a3f3f 100644
+--- a/meson.build
++++ b/meson.build
+@@ -137,7 +137,8 @@ duktape_req_version = '>= 2.2.0'
+ 
+ js_engine = get_option('js_engine')
+ if js_engine == 'duktape'
+-  js_dep = dependency('duktape', version: duktape_req_version)
++  #js_dep = declare_dependency( include_directories :[ 'duktape/src' ], link_args : [ 'duktape/src/duktape.o' ] )
++  js_dep = declare_dependency( include_directories :[ 'duktape/src' ], sources : [ 'duktape/src/duktape.c' ] )
+   libm_dep = cc.find_library('m')
+   thread_dep = dependency('threads')
+   func = 'pthread_condattr_setclock'

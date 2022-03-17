@@ -18,13 +18,11 @@ backup=(etc/pam.d/polkit-1)
 _commit=b10a1bdb697045db40774f2a9a8c58ae5c7189c3  # 0.120.r6.gb10a1bd
 _dukver=2.7.0
 source=("git+https://gitlab.freedesktop.org/polkit/polkit.git#commit=$_commit"
-        '0001-meson-0.61.patch'
         "https://duktape.org/duktape-$_dukver.tar.xz"
-        '0002-duktape-static-link.patch')
+        '0001-duktape-static-link.patch')
 sha256sums=('SKIP'
-            '9a84b59d38b3f86c70c5fc3a28cbfe8d7a22cf190eb20ff433f7f53f5ff73a9a'
             '90f8d2fa8b5567c6899830ddef2c03f3c27960b11aca222fa17aa7ac613c2890'
-            'SKIP')
+            '5fdb5ba83d56ab5fb97be5c7e42bb9071021753da497f6e9ff2a99399ed7bb0a')
 
 pkgver() {
   cd polkit
@@ -35,8 +33,10 @@ prepare() {
   cd polkit
 
   # https://gitlab.freedesktop.org/polkit/polkit/-/merge_requests/99
-  patch -Np1 -i ../0001-meson-0.61.patch
-  patch -Np1 -i ../0002-duktape-static-link.patch
+  git fetch origin refs/merge-requests/99/head
+  git cherry-pick -n a96c5119f726225f8d79b222c85d71a9f0e32419
+
+  patch -Np1 -i ../0001-duktape-static-link.patch
 }
 
 build() {
