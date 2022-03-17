@@ -3,12 +3,12 @@
 
 pkgname=polkit-duktape
 pkgver=0.120.r6.gb10a1bd
-pkgrel=1
+pkgrel=2
 pkgdesc="polkit with duktape as the javascript engine"
 arch=(x86_64)
 license=(LGPL)
 url="https://www.freedesktop.org/wiki/Software/polkit/"
-depends=(glib2 pam expat systemd duktape-fixed)
+depends=(glib2 pam expat systemd)
 makedepends=(meson gtk-doc gobject-introspection git)
 checkdepends=(python-dbusmock)
 provides=(libpolkit-{agent,gobject}-1.so)
@@ -16,10 +16,15 @@ conflicts=(polkit)
 provides=(polkit)
 backup=(etc/pam.d/polkit-1)
 _commit=b10a1bdb697045db40774f2a9a8c58ae5c7189c3  # 0.120.r6.gb10a1bd
+_dukver=2.7.0
 source=("git+https://gitlab.freedesktop.org/polkit/polkit.git#commit=$_commit"
-        '0001-meson-0.61.patch')
+        '0001-meson-0.61.patch'
+        "https://duktape.org/duktape-$_dukver.tar.xz"
+        '0002-duktape-static-link.patch')
 sha256sums=('SKIP'
-            '9a84b59d38b3f86c70c5fc3a28cbfe8d7a22cf190eb20ff433f7f53f5ff73a9a')
+            '9a84b59d38b3f86c70c5fc3a28cbfe8d7a22cf190eb20ff433f7f53f5ff73a9a'
+            '90f8d2fa8b5567c6899830ddef2c03f3c27960b11aca222fa17aa7ac613c2890'
+            'SKIP')
 
 pkgver() {
   cd polkit
@@ -31,9 +36,17 @@ prepare() {
 
   # https://gitlab.freedesktop.org/polkit/polkit/-/merge_requests/99
   patch -Np1 -i ../0001-meson-0.61.patch
+  patch -Np1 -i ../0002-duktape-static-link.patch
 }
 
 build() {
+  ln -s ../duktape-$_dukver polkit/duktape
+  # build duktape
+  #(
+  #  cd duktape-$_dukver
+  #  echo "Compiling duktape..."
+  #  gcc $CFLAGS -DDUK_USE_FASTINT $CPPFLAGS -c -fPIC -Wall -Wextra -o src/duktape.o src/duktape.c
+  #)
   local meson_options=(
     --prefix=/usr
     -D session_tracking=libsystemd-login
