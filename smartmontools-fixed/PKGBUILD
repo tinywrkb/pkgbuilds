@@ -14,9 +14,8 @@ arch=(x86_64)
 depends=(bash gcc-libs libcap-ng systemd-libs)
 makedepends=(systemd)
 optdepends=('s-nail: to get mail alerts to work')
-conflicts=(smartmontools smartmontools-uosys)
+conflicts=(smartmontools)
 provides=(smartmontools)
-replaces=(smartmontools-uosys)
 source=("https://downloads.sourceforge.net/sourceforge/smartmontools/smartmontools-${pkgver}.tar.gz"
         'smartd.conf')
 sha256sums=('a544f8808d0c58cfb0e7424ca1841cb858a974922b035d505d4e4c248be3a22b'

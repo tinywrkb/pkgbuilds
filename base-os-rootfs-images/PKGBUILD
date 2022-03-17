@@ -8,8 +8,6 @@ arch=(any)
 license=(GPL)
 url=''
 makedepends=(squashfs-tools)
-conflicts=(uosys-rootfs)
-provides=(uosys-rootfs)
 
 build() {
   # create rootfs{,-compat}.img

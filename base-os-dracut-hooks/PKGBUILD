@@ -10,8 +10,6 @@ url=https://dracut.wiki.kernel.org/index.php/Main_Page
 arch=(any)
 license=(BSD)
 depends=(dracut)
-conflict=(dracut-hooks-uosys)
-replaces=(dracut-hooks-uosys)
 source=(
   "60-dracut-remove.hook"
   "90-dracut-install.hook"

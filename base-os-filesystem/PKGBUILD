@@ -13,7 +13,7 @@ license=(GPL)
 url=''
 backup=(etc/{group,gshadow,passwd,shadow,shells})
 # not backed-up: etc/{crypttab,fstab,host.conf,hosts,issue,ld.so.conf,nsswitch.conf,profile}
-conflicts=(filesystem filesystem-uosys)
+conflicts=(filesystem)
 provides=(filesystem)
 
 source=(arch-release issue os-release

@@ -14,9 +14,8 @@ license=(GPL LGPL)
 optdepends=('perl: for sensor detection and configuration convert'
             'rrdtool: for logging with sensord')
 makedepends=(git perl rrdtool)
-conflicts=(lm_sensors lm_sensors-uosys)
+conflicts=(lm_sensors)
 provides=(lm_sensors libsensors.so)
-replaces=(lm_sensors-uosys)
 source=("lm-sensors::git+https://github.com/groeck/lm-sensors.git#commit=${_commit}"
         healthd healthd.conf healthd.service sensord.conf
         0001-pwmconfig-uosys-config-path.patch)

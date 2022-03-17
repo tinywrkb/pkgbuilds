@@ -8,8 +8,6 @@ pkgdesc='Systemd service to create user on a clean system during boot'
 arch=('any')
 license=('GPL')
 url=''
-conflicts=(uosys-create-user)
-replaces=(uosys-create-user)
 source=(base-os-create-user.service create-default-user)
 sha256sums=('SKIP' 'SKIP')
 

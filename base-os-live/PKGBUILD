@@ -10,8 +10,6 @@ arch=(any)
 license=(GPL)
 url=''
 makedepends=(git)
-conflicts=(uosys-live-media)
-provides=(uosys-live-media)
 _homedir_commit=74dc2af7f88540d53fb269ecdd9b4ea6bd429278
 source=(archie.homedir::git+http://gitea.net.private/tinywrkb/archlinux-live-homedir.git#commit=${_homedir_commit}
        getty issue journald

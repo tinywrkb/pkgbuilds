@@ -8,8 +8,6 @@ arch=(x86_64)
 license=(GPL)
 url=''
 makedepends=(grub)
-conflicts=(uosys-bootloader)
-replaces=(uosys-bootloader)
 source=(grub.cfg)
 sha256sums=('SKIP')
 

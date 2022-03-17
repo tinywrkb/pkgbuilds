@@ -9,8 +9,6 @@ url=''
 arch=(any)
 license=(GPL)
 depends=(dracut)
-conflict=(dracut-module-uosys)
-replaces=(dracut-module-uosys)
 source=('module-setup.sh'
         'sysroot-etc.mount'
          run-os-mount{,.service}

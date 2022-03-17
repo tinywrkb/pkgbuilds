@@ -7,9 +7,8 @@ pkgdesc='Systemd service to create user on a clean system during boot'
 arch=('any')
 license=('GPL')
 url=''
-conflicts=(dmenu rofi uosys-create-user)
+conflicts=(dmenu rofi)
 provides=(dmenu rofi)
-replaces=(uosys-create-user)
 source=(dmenu fuzzel-launch{,-bin} rofi)
 sha256sums=(SKIP SKIP SKIP SKIP)
 
