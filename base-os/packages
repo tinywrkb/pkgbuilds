@@ -151,8 +151,8 @@ packages=(
   pwgen
   qrencode  # barcode
   volume_key  # required by libblockdev
-  aur/polkit-duktape
   aur/spectre-meltdown-checker
+  private/polkit-duktape
 
   ################################################
   # systemd
@@ -442,8 +442,6 @@ packages=(
   ################################################
   # dev
   ################################################
-
-  # TODO: use containers for development and packaging, and remove archlinux specific tools
 
   # dev
   #yq  # switched to flatpak
