@@ -30,6 +30,6 @@ build() {
 }
 
 package() {
-  depends+=('podman' 'libdevmapper.so' 'libgpgme.so' 'libudev.so' 'libassuan.so' 'libgpg-error.so')
+  depends+=('podman' 'libdevmapper.so' 'libgpgme.so')
   install -Dm755 build/podman-tui -t "${pkgdir}"/usr/bin/
 }
