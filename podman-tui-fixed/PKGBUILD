@@ -1,7 +1,7 @@
 # Maintainer: tinywrkb <tinywrkb@gmail.com>
 
 pkgname=podman-tui-fixed
-pkgver=0.2.0.r11.g8a89096
+pkgver=0.3.0
 pkgrel=1
 pkgdesc="Podman Terminal UI"
 arch=('x86_64')
@@ -9,7 +9,7 @@ license=('APACHE')
 url="https://github.com/containers/podman-tui"
 # systemd make dependency because libudev.pc is incorrectly packaged in systemd instead of systemd-libs
 makedepends=('btrfs-progs' 'git' 'go' 'systemd')
-_commit=8a890960ddedf6a2129ac4286b1c131113bf36a0  # 0.2.0.r11.g8a89096
+_commit=aeda8ec4e9eef64e88120296ff3f89970b1eb30a  # tags/v0.3.0
 source=("podman-tui::git+https://github.com/containers/podman-tui.git#commit=${_commit}")
 sha256sums=('SKIP')
 
