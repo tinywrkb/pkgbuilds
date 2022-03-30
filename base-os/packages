@@ -34,9 +34,11 @@ packages=(
 
   # containers & resource allocation
   buildah
+  catatonit  # podman run --init
   crun  # podman support for unified cgroupsv2, might be integrated in runc in the future
   dnsmasq  # required by lxd (opt for lxc), libvirt networking
   lxd
+  netavark
   podman
   podman-docker
   aur/libcgroup
