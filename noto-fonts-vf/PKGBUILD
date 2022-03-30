@@ -126,7 +126,7 @@ _package(){
   ln -st "$pkgdir"/usr/share/fontconfig/conf.default/ \
     ../conf.avail/{46,66}-noto-{mono,serif,sans}.conf
 
-  echo -e '\nCopying License...'
+  echo -e '\nCopying license...'
   install -vDm644 LICENSE -t "$pkgdir"/usr/share/licenses/${pkgname}/
 }
 
