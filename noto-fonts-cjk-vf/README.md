@@ -16,7 +16,7 @@ There are 3 types of packages here:
   For this to work correctly, HarfBuzz 3.3.0 or newer is required, see more details below.
 * `noto-fonts-cjk{-language}-vf`: `Variable Multilingual OTF`  
   Multi-lingual CJK with a default language set for applications that don't apply OpenType locl.  
-  You can still set  `LANG` or `LANGUAGE` environment variables and the setting will be respected,  
+  You can still set  `LANG` or `LANGUAGE` environment variables and this setting will be respected,  
   but if you don't then it will use the default language set in the font.
 * `noto-fonts{-language}-vf`: `Variable Region-specific OTF`  
   Containing only a subset version of the font for a specific language.  
