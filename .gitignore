@@ -7,9 +7,11 @@
 *.deb
 *.gz
 *.log
+*.otf.ttc
 *.pkg.tar.zst
 *.sig
 *.sign
 *.tar.gz
 *.tar.xz
 *.tar.zst
+*.zip
