@@ -5,7 +5,7 @@
 # Contributor: George Rawlinson <grawlinson@archlinux.org>
 
 pkgname=libmediainfo-minimal
-pkgver=21.09
+pkgver=22.03
 pkgrel=1
 pkgdesc="shared library for mediainfo"
 url="https://mediaarea.net"
@@ -13,15 +13,8 @@ arch=('x86_64')
 license=('BSD')
 depends=(curl glib2 libmms libzen tinyxml2)
 conflicts=(libmediainfo)
-source=("https://mediaarea.net/download/source/libmediainfo/$pkgver/libmediainfo_$pkgver.tar.xz"
-        'fix_unresolved_symbols.patch::https://patch-diff.githubusercontent.com/raw/MediaArea/MediaInfoLib/pull/1434.patch')
-sha512sums=('a0b5ea9c6fce3f5551176d411b8c227927f579c3f09442316f6c380926acc545ea346e044f808b66403b1f0aac6f88ed4413c8231e792256d3cd7676133ef3be'
-            'c374e1307ffb95ea9c23f803ddcd9be55a47600a60491a71f367c07c178225deaa83165b14f7eb2b2a6d3e5ebc923f527fec1f018537b9504943a55a29a79845')
-
-prepare() {
-  cd MediaInfoLib
-  patch -p1 -i ../fix_unresolved_symbols.patch
-}
+source=("https://mediaarea.net/download/source/libmediainfo/$pkgver/libmediainfo_$pkgver.tar.xz")
+sha512sums=('cae1df09f38e60363ef3c1d0f7324301b701f21c3fde84318f6389f91311b706037699fe83448f8e5b4d1f8af81ddf357b1630fe5f03aeccfa90fe0f9ae86477')
 
 build() {
   cd MediaInfoLib/Project/GNU/Library
