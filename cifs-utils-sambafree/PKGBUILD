@@ -4,7 +4,7 @@
 # TODO: link against a static libwbclient
 
 pkgname=cifs-utils-sambafree
-pkgver=6.14
+pkgver=6.15
 pkgrel=1
 pkgdesc="CIFS filesystem user-space tools"
 arch=(x86_64)
@@ -16,7 +16,7 @@ conlicts=(cifs-utils)
 provides=(cifs-utils)
 source=("https://download.samba.org/pub/linux-cifs/cifs-utils/cifs-utils-$pkgver.tar.bz2")
 
-sha256sums=('6609e8074b5421295ff012a31f02ccd9a058415c619c81362ebb788dbf0756b8')
+sha256sums=('a7b6940e93250c1676a6fa66b6ead91b78cd43a5fee99cc462459c8b9cf1e6f4')
 
 prepare() {
   cd cifs-utils-$pkgver
