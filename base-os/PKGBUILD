@@ -3,7 +3,7 @@
 # TODO: confirm permissions of implicitly created folders by install_list and link_list
 
 pkgname=base-os
-pkgver=2022.06.14.1
+pkgver=2022.06.14.2
 pkgrel=1
 pkgdesc=""
 arch=(any)
