@@ -15,7 +15,7 @@
 
 pkgname=cni-plugins-fixed
 pkgver=1.1.1
-pkgrel=1
+pkgrel=2
 pkgdesc='Some standard networking plugins, maintained by the CNI team'
 arch=(x86_64)
 url="https://github.com/containernetworking/plugins"
@@ -23,7 +23,7 @@ license=(APACHE)
 depends=(glibc)
 makedepends=(git go)
 conflicts=(cni-plugins)
-provides=(container-network-stack cni-plugins)
+provides=(container-network-stack=1 cni-plugins)
 options=(!lto)
 _commit=4744ec27b89c083194e7df498de50f03a8a1d3ec  # tags/v1.1.1
 # unable to build with LTO: https://github.com/containernetworking/plugins/issues/706
