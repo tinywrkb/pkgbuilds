@@ -24,6 +24,7 @@ packages=(
 
   # bootloader
   efibootmgr
+  efifs
   efitools
   aur/plymouth-theme-arch-charge-big
   private/amd-ucode-fixed
