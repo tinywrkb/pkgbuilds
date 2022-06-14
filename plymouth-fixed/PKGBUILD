@@ -8,12 +8,12 @@
 
 _pkgname=plymouth
 pkgname=${_pkgname}-fixed
-pkgver=0.9.5.r31.gc74b3ae
+pkgver=22.02.122
 pkgrel=1
 pkgdesc="A graphical boot splash screen with kernel mode-setting support"
 url="https://www.freedesktop.org/wiki/Software/Plymouth/"
 license=('GPL')
-_commit=c74b3aef9c34c1c51b2c9c14f10f2906925ed380
+_commit=27764b2a2c2e21ad988cae01dc59d4bb78e5c1dc  # tags/22.02.122
 source=("${_pkgname}::git+https://gitlab.freedesktop.org/plymouth/plymouth.git#commit=$_commit"
         'arch-logo.png' 'plymouthd.defaults.patch')
 sha256sums=('SKIP'
@@ -30,7 +30,7 @@ options=('!emptydirs')
 
 pkgver() {
   cd ${_pkgname}
-  git describe --long 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+  git describe --tags 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
 }
 
 prepare() {
