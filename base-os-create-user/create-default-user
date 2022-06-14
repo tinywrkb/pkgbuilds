@@ -11,6 +11,6 @@
 while true; do
   echo "Enter username to create: "
   read username
-  /usr/bin/homectl create $username --storage=directory -G adbusers,i2c,input,kvm,lp,pacman,pmnt_sec,users,uucp,wheel --uid=1000 --shell=/bin/bash
+  /usr/bin/homectl create $username --storage=directory -G adbusers,i2c,input,kvm,lp,pacman,pmnt_sec,seat,users,uucp,wheel --uid=1000 --shell=/bin/bash
   [ $? -eq 0 ] && break
 done

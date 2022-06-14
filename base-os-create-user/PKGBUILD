@@ -2,7 +2,7 @@
 
 # TODO: add more deployment helpers
 pkgname=base-os-create-user
-pkgver=2022.03.13.1
+pkgver=2022.06.14.1
 pkgrel=1
 pkgdesc='Systemd service to create user on a clean system during boot'
 arch=('any')
