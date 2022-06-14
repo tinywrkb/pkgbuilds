@@ -17,6 +17,7 @@ mods=(
   fwupd
   gcr
   glibc
+  gnome-keyring
   gnupg
   gsettings-desktop-schemas
   hostapd

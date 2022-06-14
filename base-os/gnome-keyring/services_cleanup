@@ -1,0 +1,2 @@
+service_list=(user/sockets.target.wants/gnome-keyring-daemon.socket)
+rmdir_list=(user/sockets.target.wants)
