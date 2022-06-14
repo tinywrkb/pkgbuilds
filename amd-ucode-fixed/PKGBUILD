@@ -2,7 +2,7 @@
 
 pkgname=amd-ucode-fixed
 pkgdesc='Microcode update files for AMD CPUs'
-pkgver=20220411.705f19a
+pkgver=20220509.b19cbdc
 pkgrel=1
 arch=(x86_64)
 url="https://git.kernel.org/?p=linux/kernel/git/firmware/linux-firmware.git;a=summary"
@@ -10,7 +10,7 @@ license=(custom)
 arch=('any')
 options=(!strip)
 source=("https://mirror.bethselamin.de/core/os/x86_64/amd-ucode-${pkgver}-${pkgrel}-any.pkg.tar.zst")
-sha256sums=('29bf40748f8a4012fa2b7b4b724f4ed5288db696c96edb18285a9d4c4b01c8a9')
+sha256sums=('5e8ea70980ee548727ee4f661552cef97b5120a1acf9b0761ec4fba2b92e70bc')
 
 package() {
   install -Dm644 -t "${pkgdir}"/usr/lib/firmware/amd-ucode/ \
