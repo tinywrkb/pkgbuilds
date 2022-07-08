@@ -471,11 +471,11 @@ packages=(
   # dev/archlinux
   #aur/pkgbuild-introspection
   arch-audit  # TODO: implement something that integrates better with the system tree builder
+  arch-install-scripts
   asp
   aurpublish
   debuginfod
   expac
   pacman-contrib  # TODO: evaluate dropping this
   aur/aurutils
-  private/arch-install-scripts-fixed  # TODO: maybe drop this completely in favor of a minimal solution that isn't shipped broken
 )
