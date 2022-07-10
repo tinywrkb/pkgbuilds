@@ -1,0 +1,11 @@
+#! /bin/sh
+
+# mount.ntfs : catch {,-tauto,-tntfs} NTFS mounts
+# ===============================================
+# (c) DLCB 2/11-2021
+
+if zgrep CONFIG_NTFS3_FS /proc/config.gz &>/dev/null; then
+  exec mount -tntfs3 "$@"
+else
+  exec ntfs-3g "$@"
+fi

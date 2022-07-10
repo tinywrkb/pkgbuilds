@@ -1,0 +1,85 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+# Contributor: Gaetan Bisson <bisson@archlinux.org>
+# Contributor: Ronald van Haren <ronald.archlinux.org>
+# Contributor: Thomas Bächler <thomas.archlinux.org>
+# Contributor: Tom Gundersen <teg@jklm.no>
+# Contributor: okhsunrog <me@gornushko.com>
+
+pkgbase=ntfs-3g-fixed
+pkgname=({ntfsprogs,ntfs-3g,ntfs3-udev}-fixed)
+pkgver=2022.5.17
+pkgrel=1
+pkgdesc='NTFS filesystem driver and utilities'
+url='https://www.tuxera.com/company/open-source/'
+arch=('x86_64')
+license=('GPL2')
+depends=('util-linux')
+makedepends=('fuse2' 'git')
+_commit=875a1d4e90874457151466870fe2c70a2bedfd98  # tags/2022.5.17
+source=("ntfs-3g::git+https://github.com/tuxera/ntfs-3g#commit=$_commit"
+        'mount.ntfs'
+        'ntfs3.rules')
+sha256sums=('SKIP'
+            '6ce6b3545eb5e98220ce1ea663b46a0a4e8346f472ad00a7580b9aa38e074fa5'
+            '35cbd5290944b8ce9536dcee42321e5b418ff135f5b623bed6797760e1a1ad5b')
+
+pkgver() {
+  cd ntfs-3g
+  git describe --tags | sed 's/^v//;s/[^-]*-g/r&/;s/-/+/g'
+}
+
+_pick() {
+  local p="$1" f d; shift
+  for f; do
+    d="$srcdir/$p/${f#$pkgdir/}"
+    mkdir -p "$(dirname "$d")"
+    mv "$f" "$d"
+    rmdir -p --ignore-fail-on-non-empty "$(dirname "$f")"
+  done
+}
+
+build() {
+  cd ntfs-3g
+
+  local configure_options=(
+    --prefix=/usr
+    --sbin=/usr/bin
+    --mandir=/usr/share/man
+    --disable-ldconfig
+    --disable-static
+    --disable-mount-helper
+    --enable-crypto
+    --enable-extras
+    --enable-posix-acls
+    --enable-xattr-mappings
+    --with-fuse=external
+  )
+
+  autoreconf -vfi
+  ./configure "${configure_options[@]}"
+  make ntfsprogs
+}
+
+package_ntfsprogs-fixed() {
+  pkgdesc='NTFS filesystem utilities'
+  depends+=('gnutls')
+  make -C ntfs-3g ntfsprogs DESTDIR="${pkgdir}" rootbindir=/usr/bin install
+  install -Dm755 mount.ntfs -t "${pkgdir}"/usr/bin/
+
+  cd "${pkgdir}"
+  _pick ntfs-3g-fuse usr/bin/*ntfs-3g*
+  _pick ntfs-3g-fuse usr/share/man/man8/*ntfs-3g*
+}
+
+package_ntfs-3g-fixed() {
+  pkgdesc='NTFS filesystem driver for FUSE'
+  depends+=('fuse2' 'ntfsprogs')
+  mv ntfs-3g-fuse/* "${pkgdir}"
+  ln -s /usr/bin/lowntfs-3g "${pkgdir}"/usr/bin/mount.lowntfs-3g
+  ln -s /usr/bin/ntfs-3g "${pkgdir}"/usr/bin/mount.ntfs-3g
+}
+
+package_ntfs3-udev-fixed() {
+  pkgdesc='Udev rule to use ntfs3 kernel driver by default'
+  install -Dm644 ntfs3.rules "${pkgdir}"/usr/lib/udev/rules.d/99-ntfs3.rules
+}
