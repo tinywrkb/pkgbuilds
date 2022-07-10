@@ -64,6 +64,7 @@ package_ntfsprogs-fixed() {
   pkgdesc='NTFS filesystem utilities'
   depends+=('gnutls')
   make -C ntfs-3g ntfsprogs DESTDIR="${pkgdir}" rootbindir=/usr/bin install
+  rm "${pkgdir}"/usr/share/man/man8/ntfsfallocate.8
   install -Dm755 mount.ntfs -t "${pkgdir}"/usr/bin/
 
   cd "${pkgdir}"
