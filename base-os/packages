@@ -78,8 +78,8 @@ packages=(
   squashfs-tools  # TODO: evaluate switching to fuse and moving into a flatpak
   aur/bindfs  # mount --bind with idmap support, flexible late bind mount into lxc container using an intermediary mount target-source
   aur/btrfs-du
-  aur/ntfsprogs-ntfs3
   private/libblockdev-minimal  # required by udisks2
+  private/ntfsprogs-fixed  # TODO: ntfs-3g should be fixed, https://bugs.archlinux.org/task/73431
   private/udisks2-minimal
 
   # logging
