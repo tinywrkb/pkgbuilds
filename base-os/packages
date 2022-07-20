@@ -64,6 +64,7 @@ packages=(
   duperemove
   e2fsprogs
   exfat-utils
+  f2fs-tools
   fuse-overlayfs  # TODO: evaluate dropping this now that rootless podman can use overlayfs directly, https://bugs.archlinux.org/task/71358
   fuse2  # also used by flatpak fusermount wrappers # TODO: evaluate dropping this in favor of fusermount symlink
   fuse3  # also used by flatpak fusermount wrappers
