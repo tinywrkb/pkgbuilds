@@ -2,8 +2,8 @@ install_list=(
   # systemd services defaults
   journald.conf:usr/lib/systemd/journald.conf.d/0default.conf:0644
   resolved.conf:usr/lib/systemd/resolved.conf.d/0default.conf:0644
-  # systemd-swap service defaults
-  swap.conf:usr/lib/systemd/swap.conf.d/0default.conf:0644
+  # zram-generator defaults
+  zram-generator.conf:usr/lib/systemd/zram-generator.conf.d/0default.conf:0644
   # create-machine-id service and dracut hook
   create-machine-id.service:usr/lib/systemd/system/create-machine-id.service:0644
   module-setup.sh:usr/lib/dracut/modules.d/95create-machine-id/module-setup.sh:0644
@@ -15,7 +15,7 @@ service_list=(
   system/getty.target.wants/getty@tty1.service:getty@.service
   system/multi-user.target.wants/remote-fs.target
   # extra
-  system/multi-user.target.wants/systemd-{homed,networkd,resolved,swap}.service
+  system/multi-user.target.wants/systemd-{homed,networkd,resolved}.service
   system/network-online.target.wants/systemd-networkd-wait-online.service
   system/sockets.target.wants/systemd-networkd.socket
   system/sysinit.target.wants/systemd-timesyncd.service

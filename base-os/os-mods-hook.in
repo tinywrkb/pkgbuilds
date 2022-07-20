@@ -36,10 +36,10 @@ Target = smartmontools
 Target = smartmontools-fixed
 Target = systemd
 Target = systemd-idmap
-Target = systemd-swap
 Target = util-linux
 Target = wireguard-tools
 Target = xdg-user-dirs
+Target = zram-generator
 # services-cleanup only targets, require running the systemd mod
 Target = gcr
 Target = gnome-keyring

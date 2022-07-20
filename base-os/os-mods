@@ -242,7 +242,7 @@ while read -r pkg; do
     smartmontools-fixed)
       pkg=smartmontools
       ;;
-    systemd-idmap|systemd-swap)
+    systemd-idmap|zram-generator)
       pkg=systemd
       ;;
   esac

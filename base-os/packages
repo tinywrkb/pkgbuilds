@@ -13,7 +13,6 @@ packages=(
   lsb-release
   rtkit
   sysfsutils
-  systemd-swap  # TODO: remove after switching to zram-generator
   zram-generator
   private/base-os-create-user
   private/base-os-dracut-hooks

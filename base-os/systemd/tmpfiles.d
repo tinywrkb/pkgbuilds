@@ -28,9 +28,8 @@ L+ /var/etc/systemd/system.conf - - - - /usr/share/etc/systemd/system.conf
 L+ /var/etc/systemd/timesyncd.conf - - - - /usr/share/etc/systemd/timesyncd.conf
 L+ /var/etc/systemd/user.conf - - - - /usr/share/etc/systemd/user.conf
 
-# systemd-swap
-L+ /var/etc/systemd/swap.conf - - - - /usr/share/etc/systemd/swap.conf
-d /var/lib/systemd-swap - - - - -
+# zram-generator
+L+ /var/etc/systemd/zram-generator.conf.example - - - - /usr/share/doc/zram-generator/zram-generator.conf.example
 
 d /var/etc/tmpfiles.d - - - - -
 
