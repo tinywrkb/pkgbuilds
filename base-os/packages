@@ -151,11 +151,11 @@ packages=(
   p11-kit
   paperkey  # barcode
   pcsclite
+  polkit
   pwgen
   qrencode  # barcode
   volume_key  # required by libblockdev
   aur/spectre-meltdown-checker
-  private/polkit-duktape
 
   ################################################
   # systemd
