@@ -124,7 +124,7 @@ for kernel in "${kernels[@]}"; do
   # TODO: test without: systemd-sysusers dbus dbus-broker dbus-daemon systemd-ask-password systemd-coredump systemd-modules-load systemd-repart systemd-sysctl systemd-sysusers
   add_dracutmodules=' btrfs fs-lib '
   omit_dracutmodules=' biosdevname bootchart busybox cifs dash dm fcoe fcoe-uefi iscsi mksh multipath '
-  omit_dracutmodules+=' nbd network network-legacy nfs rngd stratis '
+  omit_dracutmodules+=' nbd network network-legacy nfs ostree rngd stratis '
   omit_dracutmodules+=' crypt dmraid lunmask lvm mdraid modsign nvdimm rootfs-block usrmnt qemu qemu-net kernel-network-modules '
 
   path=$(grep -lE "^${kernel}\$" /usr/lib/modules/*/pkgbase | grep -v linux)
