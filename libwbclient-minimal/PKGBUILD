@@ -3,13 +3,13 @@
 # TODO: build from source
 pkgname=libwbclient-minimal
 pkgdesc='Winbind client libs'
-pkgver=4.16.2
+pkgver=4.16.3
 pkgrel=1
 arch=(x86_64)
 url='https://www.samba.org'
 license=(LGPL)
 source=("smbclient-${pkgver}-${pkgrel}-x86_64.pkg.tar.zst::https://archlinux.org/packages/extra/x86_64/smbclient/download")
-sha256sums=('74008f2f59cbeebc4c76676b42cc30174a1e8e00c809d3c3addad23d273e44e6')
+sha256sums=('f1eac88837baef84b38521f66711fc679f2fd679ac14e8c1bdd7d9d627f2fe11')
 
 package() {
   depends=(libbsd)
