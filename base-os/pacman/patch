@@ -72,7 +72,7 @@
 +[private]
 +SigLevel = Optional TrustAll
 +Server = http://pacman.net.private
-+Server = file:///srv/pacman
++Server = file:///var/srv/pacman
 +
 +# AUR / Unofficial User Repositories
 +#[miffe]
