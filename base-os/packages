@@ -380,6 +380,7 @@ packages=(
   # backup & sync
   borg  # TODO: maybe switch with restic
   python-llfuse  # borg: mounting backups as a fuse file system
+  restic
   rsync
   private/backup-scripts-git
 
