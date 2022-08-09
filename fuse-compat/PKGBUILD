@@ -1,0 +1,18 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+pkgname=fuse-compat
+pkgver=2.9.9
+pkgrel=1
+pkgdesc='fuse2 symlinks to fuse3'
+url='https://github.com/libfuse/libfuse'
+arch=('any')
+license=('GPL2')
+provides=('fuse=2.9.9' 'fuse2')
+conflicts=('fuse2')
+
+package() {
+  depends+=('fuse3')
+  install -dm755 "${pkgdir}"/usr/bin
+  ln -s fusermount3 "${pkgdir}"/usr/bin/fusermount
+  ln -s mount.fuse3 "${pkgdir}"/usr/bin/mount.fuse
+}
