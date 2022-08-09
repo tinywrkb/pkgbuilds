@@ -146,6 +146,7 @@ packages=(
   gcr
   gnome-keyring
   gnupg
+  gocryptfs
   libfido2
   opensc
   p11-kit
