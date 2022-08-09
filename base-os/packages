@@ -55,6 +55,7 @@ packages=(
   texinfo  # being kept for the install-info alpm hooks
 
   # filesystem
+  # private/fuse-compat # TODO: replace fuse2 after: flatpak>={1.14,1.16},drop encfs&borg
   btrfs-progs
   cdrtools  # iso
   compsize
@@ -67,7 +68,6 @@ packages=(
   fuse-overlayfs  # TODO: evaluate dropping this now that rootless podman can use overlayfs directly, https://bugs.archlinux.org/task/71358
   fuse2  # also used by flatpak fusermount wrappers # TODO: evaluate dropping this in favor of fusermount symlink
   fuse3  # also used by flatpak fusermount wrappers
-  fuseiso  # TODO: drop this in favor of flatpak, dead project, fuse3 port is not likely
   gptfdisk
   jfsutils
   mdadm
