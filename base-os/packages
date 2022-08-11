@@ -335,7 +335,6 @@ packages=(
   # remote access
   # TODO: missing spice-vdagent impl for wayland
   qemu-guest-agent
-  wayvnc
 
   # wayland only
   # TODO: wlroots screencasting region selection helper
