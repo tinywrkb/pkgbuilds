@@ -6,7 +6,6 @@ Target = base-os
 Target = audit
 Target = avahi
 Target = bash
-Target = bluez
 Target = cni-plugins
 Target = cni-plugins-fixed
 Target = cockpit
