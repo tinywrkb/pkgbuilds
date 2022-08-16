@@ -55,7 +55,7 @@ packages=(
   texinfo  # being kept for the install-info alpm hooks
 
   # filesystem
-  # private/fuse-compat # TODO: replace fuse2 after: flatpak>={1.14,1.16},drop encfs&borg
+  # private/fuse-compat # TODO: replace fuse2 after: flatpak>={1.14,1.16},drop borg
   btrfs-progs
   cdrtools  # iso
   compsize
@@ -66,7 +66,7 @@ packages=(
   exfatprogs
   f2fs-tools
   fuse-overlayfs  # TODO: evaluate dropping this now that rootless podman can use overlayfs directly, https://bugs.archlinux.org/task/71358
-  fuse2  # also used by flatpak fusermount wrappers # TODO: evaluate dropping this in favor of fusermount symlink
+  fuse2  # also used by flatpak fusermount wrappers
   fuse3  # also used by flatpak fusermount wrappers
   gptfdisk
   jfsutils
@@ -140,7 +140,6 @@ packages=(
   #rng-tools  # entropy, supports hw backed entropy generator, /dev/hwrng
   ccid
   cryptsetup  # required by systemd, volume_key
-  encfs  # TODO: switch to gocryptfs or drop when subvol encryption is ready, and use flatpak apps for extra stores
   fprintd
   fsverity-utils
   gcr
@@ -282,7 +281,7 @@ packages=(
   # common
   adwaita-icon-theme
   dex
-  evtest  #TODO: maybe move into a flatpak, need to be able to handle input group without root
+  evtest  # TODO: maybe move into a flatpak, need to be able to handle input group without root
   fontconfig
   libnotify  # notify-send util
   python-i3ipc  # for sway auto dim script
@@ -318,6 +317,7 @@ packages=(
   xdg-desktop-portal
   xdg-desktop-portal-gtk
   private/evince-previewer-flatpak-wrapper
+  private/ostree-fuse3  # TODO: drop when extra/ostree makes the switch, https://bugs.archlinux.org/task/75410
   private/wine-flatpak-wrapper
 
   # fonts
