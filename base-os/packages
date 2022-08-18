@@ -55,7 +55,6 @@ packages=(
   texinfo  # being kept for the install-info alpm hooks
 
   # filesystem
-  # private/fuse-compat # TODO: replace fuse2 after: flatpak>={1.14,1.16},drop borg
   btrfs-progs
   cdrtools  # iso
   compsize
@@ -66,7 +65,6 @@ packages=(
   exfatprogs
   f2fs-tools
   fuse-overlayfs  # TODO: evaluate dropping this now that rootless podman can use overlayfs directly, https://bugs.archlinux.org/task/71358
-  fuse2  # also used by flatpak fusermount wrappers
   fuse3  # also used by flatpak fusermount wrappers
   gptfdisk
   jfsutils
@@ -78,8 +76,9 @@ packages=(
   squashfs-tools  # TODO: evaluate switching to fuse and moving into a flatpak
   aur/bindfs  # mount --bind with idmap support, flexible late bind mount into lxc container using an intermediary mount target-source
   aur/btrfs-du
+  private/fuse-compat
   private/libblockdev-minimal  # required by udisks2
-  private/ntfsprogs-fixed  # TODO: ntfs-3g should be fixed, https://bugs.archlinux.org/task/73431
+  private/ntfsprogs-fixed  # TODO: ntfs-3g should be a split package, https://bugs.archlinux.org/task/73431
   private/udisks2-minimal
 
   # logging
@@ -127,7 +126,7 @@ packages=(
   mosh
   reptyr
   screen
-  sudo  # TODO: evaluate replacing with kexec wrapper (session cookie handler), and adding a minimal alternative (doas?) for a fallback for when polkit is down
+  sudo  # TODO: replace with doas?
   tmux
   which
   zsh
@@ -317,7 +316,6 @@ packages=(
   xdg-desktop-portal
   xdg-desktop-portal-gtk
   private/evince-previewer-flatpak-wrapper
-  private/ostree-fuse3  # TODO: drop when extra/ostree makes the switch, https://bugs.archlinux.org/task/75410
   private/wine-flatpak-wrapper
 
   # fonts
@@ -377,8 +375,7 @@ packages=(
   upx
 
   # backup & sync
-  borg  # TODO: maybe switch with restic
-  python-llfuse  # borg: mounting backups as a fuse file system
+  borg  # TODO: switch with restic
   restic
   rsync
   private/backup-scripts-git
