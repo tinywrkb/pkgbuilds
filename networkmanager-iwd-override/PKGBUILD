@@ -1,0 +1,20 @@
+# Maintainer: tinywrkb <tinywrkb@gmail.com>
+
+pkgname=networkmanager-iwd-override
+pkgver=2022.08.22.1
+pkgrel=1
+pkgdesc=""
+arch=(any)
+license=(GPL)
+url=''
+# packaged gsettings-desktop-schemas override set ttf-liberation as default fonts
+source=('override' 'systemd.override')
+sha256sums=('SKIP' 'SKIP')
+
+package() {
+  depends=(iwd)
+  # packaged networkmanager override sets iwd as the default backend
+  provides=(wpa_supplicant)
+  install -Dm644 override "${pkgdir}/usr/lib/NetworkManager/conf.d/10-os.conf"
+  install -Dm644 systemd.override "${pkgdir}/usr/lib/systemd/system/NetworkManager.service.d/10-os.conf"
+}

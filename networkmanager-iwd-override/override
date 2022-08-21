@@ -1,0 +1,4 @@
+# adapted from aur/networkmanager-iwd-overlay maintained by Sergey Shatunov <me@prok.pw>
+
+[device]
+wifi.backend=iwd
