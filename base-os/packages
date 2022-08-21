@@ -101,6 +101,7 @@ packages=(
   systemd-resolvconf
   wireguard-tools
   wol
+  private/networkmanager-iwd-override
   private/openssh-xdg
 
   # netowrk/filesystem

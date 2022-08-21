@@ -3,7 +3,7 @@
 # TODO: confirm permissions of implicitly created folders by install_list and link_list
 
 pkgname=base-os
-pkgver=2022.08.22.1
+pkgver=2022.08.22.2
 pkgrel=1
 pkgdesc=""
 arch=(any)
@@ -11,9 +11,6 @@ license=(GPL)
 url=''
 makedepends=(git)
 provides=()
-
-# packaged networkmanager override sets iwd as the default backend
-provides+=(wpa_supplicant)
 
 source mod_list
 

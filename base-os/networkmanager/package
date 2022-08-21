@@ -1,4 +1,0 @@
-install_list=(
-  override:usr/lib/NetworkManager/conf.d/10-os.conf:0644
-  systemd.override:usr/lib/systemd/system/NetworkManager.service.d/10-os.conf:0644
-)
