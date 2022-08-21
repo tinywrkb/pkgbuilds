@@ -1,0 +1,4 @@
+[org.gnome.desktop.interface]
+font-name='Liberation Sans 11'
+document-font-name='Liberation Sans 11'
+monospace-font-name='Liberation Mono 10'
