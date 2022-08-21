@@ -19,7 +19,6 @@ mods=(
   glibc
   gnome-keyring
   gnupg
-  gsettings-desktop-schemas
   hostapd
   iproute2
   iptables-nft
