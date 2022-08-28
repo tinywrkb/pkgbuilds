@@ -73,7 +73,7 @@ packages=(
   mtools
   multipath-tools
   parted
-  squashfs-tools  # TODO: evaluate switching to fuse and moving into a flatpak
+  squashfs-tools  # required by lxd, can't be dropped
   aur/bindfs  # mount --bind with idmap support, flexible late bind mount into lxc container using an intermediary mount target-source
   aur/btrfs-du
   private/fuse-compat
@@ -105,7 +105,7 @@ packages=(
   private/openssh-xdg
 
   # netowrk/filesystem
-  sshfs  # TODO: maybe not needed after openssh update, or move into flatpak
+  sshfs
   private/cifs-utils-sambafree
 
   # network/wireless
@@ -137,6 +137,7 @@ packages=(
   aur/powerline-go
 
   # security
+  #fscrypt  # TODO: enable when btrfs support is in lts kernel
   #rng-tools  # entropy, supports hw backed entropy generator, /dev/hwrng
   ccid
   cryptsetup  # required by systemd, volume_key
@@ -374,7 +375,7 @@ packages=(
   p7zip  # deflating self-extrating *.exe
   rpmextract  # TODO: drop in favour of flatpak
   unrar  # TODO: drop in favour of flatpak
-  upx
+  upx  # TODO: drop in favour of flatpak
 
   # backup & sync
   borg  # TODO: switch with restic
