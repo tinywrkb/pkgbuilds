@@ -250,7 +250,7 @@ while read -r pkg; do
   # services-cleanup triggers, run the systemd mod so newly enabled services will always be in /usr/share/etc/systemd 
   case ${pkg} in
     # os-mods should not run, package has no mods or patch, only services_cleanup
-    gcr|gnome-keyring|gnupg|p11-kit|\
+    gcr|gnome-keyring|p11-kit|\
     pipewire|pipewire-fixed-git|pipewire-git|pipewire-media-session|pipewire-media-session-git|\
     wireplumber|wireplumber-git)
       pkg=systemd

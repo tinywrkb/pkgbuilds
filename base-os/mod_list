@@ -18,7 +18,6 @@ mods=(
   gcr
   glibc
   gnome-keyring
-  gnupg
   hostapd
   iproute2
   iptables-nft

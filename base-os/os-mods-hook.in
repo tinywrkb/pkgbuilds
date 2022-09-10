@@ -42,7 +42,6 @@ Target = zram-generator
 # services-cleanup only targets, require running the systemd mod
 Target = gcr
 Target = gnome-keyring
-Target = gnupg
 Target = p11-kit
 Target = pipewire
 Target = pipewire-fixed-git
