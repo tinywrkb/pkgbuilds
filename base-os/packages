@@ -369,21 +369,21 @@ packages=(
   ################################################
 
   # archive
-  cabextract  # TODO: drop in favour of flatpak
+  #cabextract
+  #rpmextract
+  #unrar
+  #upx
   cpio
   libarchive
-  p7zip  # deflating self-extrating *.exe
-  rpmextract  # TODO: drop in favour of flatpak
-  unrar  # TODO: drop in favour of flatpak
-  upx  # TODO: drop in favour of flatpak
+  p7zip
 
   # backup & sync
-  borg  # TODO: switch with restic
   restic
   rsync
   private/backup-scripts-git
 
   # coreutils_alt
+  bat  # cat alternative
   exa  # ls alternative, TODO: only keep one
   lsd  # ls alternative, TODO: only keep one
   aur/rmtrash  # rm alternative
@@ -400,9 +400,9 @@ packages=(
   wget
 
   # editors
+  #python-pynvim
   kakoune
   neovim
-  python-pynvim
   vi
 
   # filemanager
@@ -448,35 +448,32 @@ packages=(
   ################################################
 
   # dev
-  #yq  # switched to flatpak
+ #perl-authen-sasl  # git-mail
+ #perl-mime-tools  # git-mail
+ #perl-net-smtp-ssl  # git-mail
+ #aur/git-extras
+ #aur/gitflow-avh
+ #aur/gitflow-bashcompletion-avh
   audit
-  bat  # bash testing
   colordiff
   diffutils
   dos2unix
   git
   git-lfs
-  jq  # required by asp, aurutils, mako (optional), yq
+  jq  # required by asp, aurutils, mako (optional)
   patch
   patchutils
-  perl-authen-sasl  # git-mail
-  perl-mime-tools  # git-mail
-  perl-net-smtp-ssl  # git-mail
   strace
-  tig  # git tui, TODO: move into flatpak
-  tokei  # loc, TODO: move into flatpak
-  aur/git-extras
-  aur/gitflow-avh
-  aur/gitflow-bashcompletion-avh
 
   # dev/archlinux
+  # NOTE: most of these have been moved into a dedicated lxc container
+  #asp
+  #aurpublish
+  #aur/aurutils  # TODO: maybe bring back when this would actaully be useful without devtools
   #aur/pkgbuild-introspection
   arch-audit  # TODO: implement something that integrates better with the system tree builder
   arch-install-scripts
-  asp
-  aurpublish
   debuginfod
   expac
-  pacman-contrib  # TODO: evaluate dropping this
-  aur/aurutils
+  pacman-contrib  # TODO: add wrappers and bind mount for container and then drop this
 )
