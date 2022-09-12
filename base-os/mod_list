@@ -8,6 +8,7 @@ mods=(
   avahi
   bash
   bluez
+  byobu
   cockpit
   cups
   ddcutil

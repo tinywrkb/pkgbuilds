@@ -1,1 +1,1 @@
-link_list=(usr/bin/vim:nvim)
+link_list=(usr/bin/e:nvim usr/bin/vim:nvim)
