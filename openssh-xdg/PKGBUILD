@@ -7,101 +7,107 @@
 
 pkgname=openssh-xdg
 _pkgname=openssh
-pkgver=9.0p1
-pkgrel=1
-pkgdesc='Premier connectivity tool for remote login with the SSH protocol'
+pkgver=9.1p1
+pkgrel=3
+pkgdesc="SSH protocol implementation for remote login, command execution and file transfer"
+arch=('x86_64')
 url='https://www.openssh.com/portable.html'
 license=('custom:BSD')
-arch=('x86_64')
-depends=('glibc' 'krb5' 'openssl' 'libedit' 'ldns' 'libxcrypt' 'libcrypt.so' 'zlib' 'pam')
-makedepends=('linux-headers' 'libfido2')
-optdepends=('xorg-xauth: X11 forwarding'
-            'x11-ssh-askpass: input passphrase in X'
-            'libfido2: FIDO/U2F support')
+depends=(
+  'glibc'
+  'krb5'
+  'ldns'
+  'libcrypt.so'
+  'libedit'
+  'libxcrypt'
+  'openssl'
+  'pam'
+  'zlib'
+)
+makedepends=('libfido2' 'linux-headers')
+optdepends=(
+  'libfido2: FIDO/U2F support'
+  'x11-ssh-askpass: input passphrase in X'
+  'xorg-xauth: X11 forwarding'
+)
+backup=(
+  'etc/pam.d/sshd'
+  'etc/ssh/ssh_config'
+  'etc/ssh/sshd_config'
+)
 provides=(openssh)
 conflicts=(openssh)
-#source=("git://anongit.mindrot.org/openssh.git?signed#tag=V_8_2_P1"
-source=("https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/${_pkgname}-${pkgver}.tar.gz"
-        'sshdgenkeys.service'
-        'sshd.service'
-        'sshd.conf'
-        'sshd.pam')
-sha256sums=('03974302161e9ecce32153cfa10012f1e65c8f3750f573a73ab1befd5972a28a'
-            '4031577db6416fcbaacf8a26a024ecd3939e5c10fe6a86ee3f0eea5093d533b7'
+source=(
+  "https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/${_pkgname}-${pkgver}.tar.gz"
+  "sshd_config.patch"
+  'sshdgenkeys.service'
+  'sshd.service'
+  'sshd.conf'
+  'sshd.pam'
+)
+sha256sums=('19f85009c7e3e23787f0236fbb1578392ab4d4bf9f8ec5fe6bc1cd7e8bfdd288'
+            '18aa8cc83dd09872ca5903edafde4c0bcb3dd4ade4cbfeed532ad0ec150e8c5b'
+            'e5305767b2d317183ad1c5022a5f6705bd9014a8b22495a000fd482713738611'
             'e40f8b7c8e5e2ecf3084b3511a6c36d5b5c9f9e61f2bb13e3726c71dc7d4fbc7'
             '4effac1186cc62617f44385415103021f72f674f8b8e26447fc1139c670090f6'
             '64576021515c0a98b0aaf0a0ae02e0f5ebe8ee525b1e647ab68f369f81ecd846')
 
-backup=('etc/ssh/ssh_config' 'etc/ssh/sshd_config' 'etc/pam.d/sshd')
-
-install=install
-
 prepare() {
-	cd "${srcdir}/${_pkgname}-${pkgver}"
+  cd "${_pkgname}-${pkgver}"
 
-	# check-config target is failing in chroot(nspawn), missing host keys
-	sed -i 's/^\(install: .*\) check-config$/\1/' Makefile.in
+  # check-config target is failing in chroot(nspawn), missing host keys
+  sed -i 's/^\(install: .*\) check-config$/\1/' Makefile.in
 
-	autoreconf
+  autoreconf
+
+  patch -Np1 -i ../sshd_config.patch
 }
 
 build() {
-	cd "${srcdir}/${_pkgname}-${pkgver}"
+  cd "${_pkgname}-${pkgver}"
 
-	sed -i 's#"\.ssh"#".config/ssh"#' pathnames.h
-	./configure \
-		--prefix=/usr \
-		--sbindir=/usr/bin \
-		--libexecdir=/usr/lib/ssh \
-		--sysconfdir=/etc/ssh \
-		--disable-strip \
-		--with-ldns \
-		--with-libedit \
-		--with-security-key-builtin \
-		--with-ssl-engine \
-		--with-pam \
-		--with-privsep-user=nobody \
-		--with-kerberos5=/usr \
-		--with-xauth=/usr/bin/xauth \
-		--with-md5-passwords \
-		--with-pid-dir=/run \
-		--with-default-path='/usr/local/sbin:/usr/local/bin:/usr/bin' \
+  sed -i 's#"\.ssh"#".config/ssh"#' pathnames.h
+  ./configure \
+    --prefix=/usr \
+    --sbindir=/usr/bin \
+    --libexecdir=/usr/lib/ssh \
+    --sysconfdir=/etc/ssh \
+    --disable-strip \
+    --with-ldns \
+    --with-libedit \
+    --with-security-key-builtin \
+    --with-ssl-engine \
+    --with-pam \
+    --with-privsep-user=nobody \
+    --with-kerberos5=/usr \
+    --with-xauth=/usr/bin/xauth \
+    --with-pid-dir=/run \
+    --with-default-path='/usr/local/sbin:/usr/local/bin:/usr/bin' \
 
-	make
+  make
 }
 
 check() {
-	cd "${srcdir}/${_pkgname}-${pkgver}"
+  cd "${_pkgname}-${pkgver}"
 
-	# Tests require openssh to be already installed system-wide,
-	# also connectivity tests will fail under makechrootpkg since
-        # it runs as nobody which has /bin/false as login shell.
-
-	if [[ -e /usr/bin/scp && ! -e /.arch-chroot ]]; then
-		make tests
-	fi
+  # NOTE: make t-exec does not work in our build environment
+  make file-tests interop-tests unit
 }
 
 package() {
-	cd "${srcdir}/${_pkgname}-${pkgver}"
+  cd "${_pkgname}-${pkgver}"
 
-	make DESTDIR="${pkgdir}" install
+  make DESTDIR="${pkgdir}" install
 
-	ln -sf ssh.1.gz "${pkgdir}"/usr/share/man/man1/slogin.1.gz
-	install -Dm644 LICENCE "${pkgdir}/usr/share/licenses/${pkgname}/LICENCE"
+  ln -sf ssh.1.gz "${pkgdir}"/usr/share/man/man1/slogin.1.gz
+  install -Dm644 LICENCE -t "${pkgdir}/usr/share/licenses/${pkgname}/"
 
-	install -Dm644 ../sshdgenkeys.service "${pkgdir}"/usr/lib/systemd/system/sshdgenkeys.service
-	install -Dm644 ../sshd.service "${pkgdir}"/usr/lib/systemd/system/sshd.service
-#	install -Dm644 ../sshd.conf "${pkgdir}"/usr/lib/tmpfiles.d/sshd.conf
-	install -Dm644 ../sshd.pam "${pkgdir}"/etc/pam.d/sshd
+  install -Dm644 ../sshdgenkeys.service -t "${pkgdir}"/usr/lib/systemd/system/
+  install -Dm644 ../sshd.service -t "${pkgdir}"/usr/lib/systemd/system/
+#	install -Dm644 ../sshd.conf -t "${pkgdir}"/usr/lib/tmpfiles.d/
+  install -Dm644 ../sshd.pam "${pkgdir}"/etc/pam.d/sshd
 
-	install -Dm755 contrib/findssl.sh "${pkgdir}"/usr/bin/findssl.sh
-	install -Dm755 contrib/ssh-copy-id "${pkgdir}"/usr/bin/ssh-copy-id
-	install -Dm644 contrib/ssh-copy-id.1 "${pkgdir}"/usr/share/man/man1/ssh-copy-id.1
-
-	sed \
-		-e '/^#KbdInteractiveAuthentication yes$/c KbdInteractiveAuthentication no' \
-		-e '/^#PrintMotd yes$/c PrintMotd no # pam does that' \
-		-e '/^#UsePAM no$/c UsePAM yes' \
-		-i "${pkgdir}"/etc/ssh/sshd_config
+  install -Dm755 contrib/findssl.sh -t "${pkgdir}"/usr/bin/
+  install -Dm755 contrib/ssh-copy-id -t "${pkgdir}"/usr/bin/
+  install -Dm644 contrib/ssh-copy-id.1 -t "${pkgdir}"/usr/share/man/man1/
 }
