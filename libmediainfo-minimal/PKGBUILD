@@ -5,7 +5,7 @@
 # Contributor: George Rawlinson <grawlinson@archlinux.org>
 
 pkgname=libmediainfo-minimal
-pkgver=22.06
+pkgver=22.09
 pkgrel=1
 pkgdesc="shared library for mediainfo"
 url="https://mediaarea.net"
@@ -14,7 +14,7 @@ license=('BSD')
 depends=(curl glib2 libmms libzen tinyxml2)
 conflicts=(libmediainfo)
 source=("https://mediaarea.net/download/source/libmediainfo/$pkgver/libmediainfo_$pkgver.tar.xz")
-sha512sums=('ae00ea32732e4a4086714d678fdd51b43bde2c478ad21b74c70e992eb70589efb48ba13cf59e53f04a1ad5b2b9cc37c7578425af1f44e9536f1b455f37139779')
+sha512sums=('4204f0ad73f5b826ec89df88607d7e491ecdad512c6bdae12f72b551827b1e4818aa2b88a46a46cb1f8fca46f3638fbe0243e252c685ca46b2d33a9acb00198c')
 
 build() {
   cd MediaInfoLib/Project/GNU/Library
