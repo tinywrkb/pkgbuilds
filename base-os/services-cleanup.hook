@@ -2,7 +2,7 @@
 Type = Package
 Operation = Install
 Target = base-os
-Target = gcr
+Target = gcr-4
 Target = p11-kit
 Target = pipewire
 Target = pipewire-fixed-git

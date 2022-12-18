@@ -143,7 +143,7 @@ packages=(
   cryptsetup  # required by systemd, volume_key
   fprintd
   fsverity-utils
-  gcr
+  gcr-4
   gnome-keyring
   gnupg
   gocryptfs

@@ -40,7 +40,7 @@ Target = wireguard-tools
 Target = xdg-user-dirs
 Target = zram-generator
 # services-cleanup only targets, require running the systemd mod
-Target = gcr
+Target = gcr-4
 Target = gnome-keyring
 Target = p11-kit
 Target = pipewire

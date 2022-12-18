@@ -16,7 +16,7 @@ mods=(
   fontconfig
   fuse-common
   fwupd
-  gcr
+  gcr-4
   glibc
   gnome-keyring
   hostapd
