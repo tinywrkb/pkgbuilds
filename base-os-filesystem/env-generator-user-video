@@ -3,7 +3,7 @@
 # video hardware acceleration
 if [ -f /sys/class/drm/card0/device/graphics/fb0/name ] &&
   [ "$(cat /sys/class/drm/card0/device/graphics/fb0/name 2>/dev/null)" == "i915drmfb" ]; then
-  LIBVA_DRIVER_NAME=i965
+  LIBVA_DRIVER_NAME=iHD
   VDPAU_DRIVER=va_gl
 fi
 

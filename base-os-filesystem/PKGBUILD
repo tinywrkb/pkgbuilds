@@ -5,7 +5,7 @@
 #   Contributor: Tom Gundersen <teg@jklm.no>
 
 pkgname=base-os-filesystem
-pkgver=2022.03.15.1
+pkgver=2022.12.19.1
 pkgrel=1
 pkgdesc=""
 arch=(any)
