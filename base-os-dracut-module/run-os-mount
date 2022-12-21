@@ -22,7 +22,7 @@ mkdir -p /run/os || \
 
 mount \
   -t btrfs \
-  -o rw,noatime,ssd,space_cache,compress-force=zstd,subvolid=5,subvol=/ \
+  -o rw,noatime,ssd,compress-force=zstd,subvolid=5,subvol=/ \
   UUID=$uuid \
   /run/os || \
     die 'Failed mounting os filesystem on /run/os'

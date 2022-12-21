@@ -2,7 +2,7 @@
 # TODO: move uuid function to its own service that adds it to the system environment as a variable
 
 pkgname=base-os-dracut-module
-pkgver=2022.03.13.1
+pkgver=2022.12.20.1
 pkgrel=1
 pkgdesc='dracut mount module for /usr only system'
 url=''

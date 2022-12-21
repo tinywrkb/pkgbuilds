@@ -64,13 +64,13 @@ if [ "$mode" = ab ] ||
         break
       fi
     done
-    mount -t btrfs -o ro,noatime,ssd,space_cache,compress-force=zstd,subvol=system/${active} UUID=$uuid /sysroot/usr
-    mount -t btrfs -o rw,noatime,ssd,space_cache,compress-force=zstd,subvol=apps UUID=$uuid /sysroot/apps
+    mount -t btrfs -o ro,noatime,ssd,compress-force=zstd,subvol=system/${active} UUID=$uuid /sysroot/usr
+    mount -t btrfs -o rw,noatime,ssd,compress-force=zstd,subvol=apps UUID=$uuid /sysroot/apps
     if [ "$islive" = '1' ]; then
       mount -t tmpfs tmpfs /sysroot/var
     else
-      mount -t btrfs -o rw,noatime,ssd,space_cache,compress-force=zstd,subvol=var UUID=$uuid /sysroot/var
-      mount -t btrfs -o rw,noatime,ssd,space_cache,compress-force=zstd,subvol=data UUID=$uuid /sysroot/data
+      mount -t btrfs -o rw,noatime,ssd,compress-force=zstd,subvol=var UUID=$uuid /sysroot/var
+      mount -t btrfs -o rw,noatime,ssd,compress-force=zstd,subvol=data UUID=$uuid /sysroot/data
     fi
   elif [ "$mode" = virtiofs_ab ]; then
     mkdir -p /run/os
