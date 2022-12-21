@@ -63,7 +63,7 @@ for kernel in "${kernels[@]}"; do
 
   add_drivers=''
   # modprobe vfio and gvt kernel modules
-  force_drivers=' i915 kvmgt mdev vfio vfio_iommu_type1 vfio_pci vfio_virqfd virtio-gpu virtio-pci virtiofs fuse usb_storage sg virtio-scsi '
+  force_drivers=' i915 kvmgt mdev nvme vfio vfio_iommu_type1 vfio_pci vfio_virqfd virtio-gpu virtio-pci virtiofs fuse usb_storage sg virtio-scsi '
   # added fs driver: btrfs cifs exfat ext4 fat fuse msdos squashfs vfat virtiofs
   omit_drivers_fs=' 9p affs befs cachefiles ceph coda cramfs cuse dlm ecryptfs erofs f2fs fscache '
   omit_drivers_fs+=' gfs2 grace hfs hfsplus isofs jbd2 jffs2 jfs kafs '
