@@ -4,7 +4,7 @@
 # Contributor: hydro <hydro@freenet.de>
 
 pkgname=mediainfo-minimal
-pkgver=22.09
+pkgver=22.12
 pkgrel=1
 pkgdesc="Supplies technical and tag information about a video or audio file (CLI interface)"
 url="https://mediaarea.net/"
@@ -14,7 +14,7 @@ depends=(libmediainfo-minimal)
 conflicts=(mediainfo)
 provides=(mediainfo)
 source=(https://mediaarea.net/download/source/mediainfo/$pkgver/mediainfo_$pkgver.tar.xz)
-sha512sums=('acdeef13153fd74c29d54b9bdf4e983dd81525ace47550977d99cb5950ab72579cbbfc1ae39d81d89e03c491ea559177a16853d9db20d83a995eff300b864d4d')
+sha512sums=('a3c942b9b1cb7f1c816f3e5c21bbca7d1d95bcb271ae06460b465e7921d9865ef514adb9268a6a05d86078e1aa30879ea36bbf72cccf8e78b3ce8f392c2a291e')
 
 build() {
   cd MediaInfo/Project/GNU/CLI
