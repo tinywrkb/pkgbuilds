@@ -5,12 +5,12 @@
 
 pkgname=cifs-utils-sambafree
 pkgver=7.0
-pkgrel=1
+pkgrel=2
 pkgdesc="CIFS filesystem user-space tools"
 arch=(x86_64)
 url="https://wiki.samba.org/index.php/LinuxCIFS_utils"
 license=('GPL')
-depends=(libcap libwbclient-minimal python talloc)
+depends=(libcap libwbclient python talloc)
 makedepends=(python-docutils)
 conlicts=(cifs-utils)
 provides=(cifs-utils)
