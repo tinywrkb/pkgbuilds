@@ -7,8 +7,8 @@
 
 pkgname=openssh-xdg
 _pkgname=openssh
-pkgver=9.1p1
-pkgrel=3
+pkgver=9.2p1
+pkgrel=1
 pkgdesc="SSH protocol implementation for remote login, command execution and file transfer"
 arch=('x86_64')
 url='https://www.openssh.com/portable.html'
@@ -45,7 +45,7 @@ source=(
   'sshd.conf'
   'sshd.pam'
 )
-sha256sums=('19f85009c7e3e23787f0236fbb1578392ab4d4bf9f8ec5fe6bc1cd7e8bfdd288'
+sha256sums=('3f66dbf1655fb45f50e1c56da62ab01218c228807b21338d634ebcdf9d71cf46'
             '18aa8cc83dd09872ca5903edafde4c0bcb3dd4ade4cbfeed532ad0ec150e8c5b'
             'e5305767b2d317183ad1c5022a5f6705bd9014a8b22495a000fd482713738611'
             'e40f8b7c8e5e2ecf3084b3511a6c36d5b5c9f9e61f2bb13e3726c71dc7d4fbc7'
