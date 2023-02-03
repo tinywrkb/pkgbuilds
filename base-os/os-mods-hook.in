@@ -20,6 +20,7 @@ Target = linux-firmware
 Target = lm_sensors
 Target = lm_sensors-fixed
 Target = lxc
+Target = netavark
 Target = networkmanager
 Target = openssh
 Target = openssh-xdg

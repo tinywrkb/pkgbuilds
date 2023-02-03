@@ -236,7 +236,7 @@ while read -r pkg; do
     openssh-xdg)
       pkg=openssh
       ;;
-    podman-compose|podman-compose-git|podman-compose-fixed|containers-common)
+    podman-compose|podman-compose-git|podman-compose-fixed|containers-common|netavark)
       pkg=podman
       ;;
     smartmontools-fixed)

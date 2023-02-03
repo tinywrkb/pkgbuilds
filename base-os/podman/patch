@@ -1,0 +1,11 @@
+--- a/etc/containers/containers.conf
++++ b/etc/containers/containers.conf
+@@ -280,7 +280,7 @@
+ # Before changing this value all containers must be stopped otherwise it is likely that
+ # iptables rules and network interfaces might leak on the host. A reboot will fix this.
+ #
+-#network_backend = ""
++network_backend = "netavark"
+ 
+ # Path to directory where CNI plugin binaries are located.
+ #

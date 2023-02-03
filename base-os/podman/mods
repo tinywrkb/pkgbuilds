@@ -6,4 +6,4 @@
 
 rmdir_list=(cni/net.d containers/compose)
 
-link_list=(cni/net.d containers/compose)
+link_list=(cni/net.d containers/compose containers/networks)
